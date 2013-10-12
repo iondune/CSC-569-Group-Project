@@ -1,0 +1,31 @@
+Team ACID
+CSC 468
+Lab 1
+10/1/13
+
+-Running instructions-
+xmlBreakdown and xmlBreakdownSAX can both be compiled by
+running 'make'.
+
+-Team contributions-
+Jessica Cosio
+Contributed code to both parser implementations. Worked on debugging
+and performance testing. Set up team wiki.
+
+Kelly Daniels
+Contributed code and concepts primarily to xmlBreakdownSAX. Wrote
+a significant amount of the research paper introduction and
+implementation details.
+
+Ray Go
+Headed up the xmlBreakdown implementation. Contributed a discussion
+of its implementation to the research paper.
+
+David O'Connor
+Contributed code to both parser implementations. Worked on debugging
+and performance testing.
+
+Austin Wylie
+Contributed code to xmlBreakdownSAX. Set up research paper template
+and formatting. Headed up research paper analysis writing.
+
