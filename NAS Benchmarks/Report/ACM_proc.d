@@ -32,6 +32,9 @@ ACM_proc.aux ACM_proc.aux.make ACM_proc.d ACM_proc.pdf: $(call path-norm,acm_pro
 -include Pics-Lab/BT.png.gpi.d
 ACM_proc.d: $$(call graphics-source,Pics-Lab/BT.png)
 ACM_proc.pdf ACM_proc._graphics: $$(call graphics-target,Pics-Lab/BT.png)
+-include Pics-Lab/EP.png.gpi.d
+ACM_proc.d: $$(call graphics-source,Pics-Lab/EP.png)
+ACM_proc.pdf ACM_proc._graphics: $$(call graphics-target,Pics-Lab/EP.png)
 -include Pics-Lab/FT.png.gpi.d
 ACM_proc.d: $$(call graphics-source,Pics-Lab/FT.png)
 ACM_proc.pdf ACM_proc._graphics: $$(call graphics-target,Pics-Lab/FT.png)

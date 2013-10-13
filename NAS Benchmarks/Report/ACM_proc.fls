@@ -121,6 +121,9 @@ INPUT Pics-Lab/BT.png
 INPUT ./Pics-Lab/BT.png
 OUTPUT ACM_proc.pdf
 INPUT ./Pics-Lab/BT.png
+INPUT Pics-Lab/EP.png
+INPUT ./Pics-Lab/EP.png
+INPUT ./Pics-Lab/EP.png
 INPUT Pics-Lab/FT.png
 INPUT ./Pics-Lab/FT.png
 INPUT ./Pics-Lab/FT.png
