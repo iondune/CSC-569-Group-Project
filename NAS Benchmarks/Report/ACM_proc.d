@@ -29,12 +29,42 @@ ACM_proc.aux ACM_proc.aux.make ACM_proc.d ACM_proc.pdf: $(call path-norm,/usr/lo
 ACM_proc.aux ACM_proc.aux.make ACM_proc.d ACM_proc.pdf: $(call path-norm,ACM_proc.tex)
 ACM_proc.aux ACM_proc.aux.make ACM_proc.d ACM_proc.pdf: $(call path-norm,acm_proc_article-sp.cls)
 .SECONDEXPANSION:
--include Tests001to008.png.gpi.d
-ACM_proc.d: $$(call graphics-source,Tests001to008.png)
-ACM_proc.pdf ACM_proc._graphics: $$(call graphics-target,Tests001to008.png)
--include Tests101to115.png.gpi.d
-ACM_proc.d: $$(call graphics-source,Tests101to115.png)
-ACM_proc.pdf ACM_proc._graphics: $$(call graphics-target,Tests101to115.png)
--include Tests201to210.png.gpi.d
-ACM_proc.d: $$(call graphics-source,Tests201to210.png)
-ACM_proc.pdf ACM_proc._graphics: $$(call graphics-target,Tests201to210.png)
+-include Pics-Lab/BT.png.gpi.d
+ACM_proc.d: $$(call graphics-source,Pics-Lab/BT.png)
+ACM_proc.pdf ACM_proc._graphics: $$(call graphics-target,Pics-Lab/BT.png)
+-include Pics-Lab/FT.png.gpi.d
+ACM_proc.d: $$(call graphics-source,Pics-Lab/FT.png)
+ACM_proc.pdf ACM_proc._graphics: $$(call graphics-target,Pics-Lab/FT.png)
+-include Pics-Lab/IS.png.gpi.d
+ACM_proc.d: $$(call graphics-source,Pics-Lab/IS.png)
+ACM_proc.pdf ACM_proc._graphics: $$(call graphics-target,Pics-Lab/IS.png)
+-include Pics-Lab/LU.png.gpi.d
+ACM_proc.d: $$(call graphics-source,Pics-Lab/LU.png)
+ACM_proc.pdf ACM_proc._graphics: $$(call graphics-target,Pics-Lab/LU.png)
+-include Pics-Lab/MG.png.gpi.d
+ACM_proc.d: $$(call graphics-source,Pics-Lab/MG.png)
+ACM_proc.pdf ACM_proc._graphics: $$(call graphics-target,Pics-Lab/MG.png)
+-include Pics-Lab/SP.png.gpi.d
+ACM_proc.d: $$(call graphics-source,Pics-Lab/SP.png)
+ACM_proc.pdf ACM_proc._graphics: $$(call graphics-target,Pics-Lab/SP.png)
+-include Pics-Pi/BT.png.gpi.d
+ACM_proc.d: $$(call graphics-source,Pics-Pi/BT.png)
+ACM_proc.pdf ACM_proc._graphics: $$(call graphics-target,Pics-Pi/BT.png)
+-include Pics-Pi/EP.png.gpi.d
+ACM_proc.d: $$(call graphics-source,Pics-Pi/EP.png)
+ACM_proc.pdf ACM_proc._graphics: $$(call graphics-target,Pics-Pi/EP.png)
+-include Pics-Pi/FT.png.gpi.d
+ACM_proc.d: $$(call graphics-source,Pics-Pi/FT.png)
+ACM_proc.pdf ACM_proc._graphics: $$(call graphics-target,Pics-Pi/FT.png)
+-include Pics-Pi/IS.png.gpi.d
+ACM_proc.d: $$(call graphics-source,Pics-Pi/IS.png)
+ACM_proc.pdf ACM_proc._graphics: $$(call graphics-target,Pics-Pi/IS.png)
+-include Pics-Pi/LU.png.gpi.d
+ACM_proc.d: $$(call graphics-source,Pics-Pi/LU.png)
+ACM_proc.pdf ACM_proc._graphics: $$(call graphics-target,Pics-Pi/LU.png)
+-include Pics-Pi/MG.png.gpi.d
+ACM_proc.d: $$(call graphics-source,Pics-Pi/MG.png)
+ACM_proc.pdf ACM_proc._graphics: $$(call graphics-target,Pics-Pi/MG.png)
+-include Pics-Pi/SP.png.gpi.d
+ACM_proc.d: $$(call graphics-source,Pics-Pi/SP.png)
+ACM_proc.pdf ACM_proc._graphics: $$(call graphics-target,Pics-Pi/SP.png)

@@ -33,7 +33,7 @@
 
 \raggedbottom
 
-\title{MPI NAS Parallel Benchmarks}
+\title{MPI NAS Parallel Benchmarking}
 \subtitle{CSC 569}
 
 \numberofauthors{4} 
@@ -68,80 +68,203 @@ Austin Wylie\\
 \date{13 October 2013}
 
 \maketitle
-\begin{abstract}
-Small abstract here.
-\end{abstract}
 
-\section{Setup}
-Describe benchmarking process here.
+\section{Introduction}
+With the goal of exploring the performance benefits and drawbacks of distributed computing, we set up and ran various computationally-distributable benchmarks on two cluster types. A set of the Numerical Aerodynamic Simulation (NAS) Parallel Benchmarks (NPB) were run on both the machines in lab 14-302 (with 1 to 32 nodes) and Raspberry Pis (with 1 to 5 nodes). The Message Passing Interface (MPI) library was responsible for inter-machine communication. As an extra note, the lab machines have 3 GHz processors and 4 GB of memory; the Rasperry Pis have 700 MHz processors and 512 MB of memory.
 
 \section{Results}
+The primary metric we explore in the benchmarks is speedup, which is calculated by dividing the time taken by the benchmark on the fewest number of nodes (usually one or two) by the time taken by the current run. We could comment on the raw runtimes of these different scenarios and the effect of different processors and RAM setups, but speedup best quantifies the improvement from actually distributing the work.
+
+Tables~\ref{LabTable} and~\ref{PiTable} shows the NPB results for the lab machine cluster and the Pi cluster, including the specific benchmark, runtime in seconds, speedup, millions of operations per second (MOPS), and MOPS per process.
+
+Note that, in the graphs, vertical axes show the speedup and horizontal aces show the number of nodes the benchmark was run on.
+
+%%%%% LAB MACHINES %%%%%
 \subsection{Lab Machines}
-Lab machine results here.
 
+%%%%% TABLE %%%%%
+Table~\ref{LabTable} shows the lab machines' NPB results. The class B benchmarks were used.
+
+\begin{table*}[tbp]
+\centering
+\caption{Lab Machine Benchmark Results}
+\label{LabTable}
+\begin{tabular}{ c | c || c | c | c | c }
+	Benchmark & Nodes & Time & Speedup & MOPS & Process MOPS\\ \hline
+    BT    & 1     & 339.12 & 1.00  & 2070.57 & 2070.57 \\
+    BT    & 4     & 106.65 & 3.18  & 6583.81 & 1645.95 \\
+    BT    & 9     & 73.82 & 4.59  & 9512.50 & 1056.94 \\
+    BT    & 16    & 53.13 & 6.38  & 13215.32 & 825.96 \\
+    FT    & 1     & 90.52 & 1.00  & 1016.91 & 1016.91 \\
+    FT    & 2     & 76.86 & 1.18  & 1197.60 & 598.80 \\
+    FT    & 4     & 85.40  & 1.06  & 1077.93 & 269.48 \\
+    FT    & 8     & 79.99 & 1.13  & 1150.81 & 143.85 \\
+    FT    & 16    & 44.97 & 2.01  & 2046.97 & 127.94 \\
+    FT    & 32    & 41.38 & 2.19  & 2224.35 & 69.51 \\
+    IS    & 1     & 3.27  & 1.00  & 102.74 & 102.74 \\
+    IS    & 2     & 4.64  & 0.70  & 72.30  & 36.15 \\
+    IS    & 4     & 8.52  & 0.38  & 39.36 & 9.84 \\
+    IS    & 8     & 9.07  & 0.36  & 37.01 & 4.63 \\
+    IS    & 16    & 5.53  & 0.59  & 60.67 & 3.79 \\
+    IS    & 32    & 6.28  & 0.52  & 53.41 & 1.67 \\
+    LU    & 1     & 433.46 & 1.00  & 1150.80 & 1150.80 \\
+    LU    & 2     & 182.47 & 2.38  & 2733.81 & 1366.90 \\
+    LU    & 4     & 94.46 & 4.59  & 5280.61 & 1320.15 \\
+    LU    & 8     & 57.91 & 7.49  & 8613.65 & 1076.71 \\
+    LU    & 16    & 33.63 & 12.89 & 14830.88 & 926.93 \\
+    LU    & 32    & 32.51 & 13.33 & 15342.58 & 479.46 \\
+    MG    & 1     & 12.40  & 1.00     & 1569.20 & 1569.24 \\
+    MG    & 2     & 7.04  & 1.76  & 2765.10 & 1382.56 \\
+    MG    & 4     & 5.58  & 2.22  & 3486.50 & 871.62 \\
+    MG    & 8     & 4.98  & 2.49  & 3911.00  & 488.87 \\
+    MG    & 16    & 3.20   & 3.88  & 6080.60 & 380.03 \\
+    MG    & 32    & 4.07  & 3.05  & 4779.10 & 149.35 \\
+    SP    & 1     & 399.86 & 1.00  & 887.84 & 887.84 \\
+    SP    & 4     & 131.83 & 3.03  & 2692.99 & 673.25 \\
+    SP    & 9     & 101.47 & 3.94  & 3498.67 & 388.74 \\
+    SP    & 16    & 77.29 & 5.17  & 4593.14 & 287.07 \\
+\end{tabular}
+\end{table*}
+
+%%%%% FIGURES %%%%%
+Figures~\ref{LabBT} through~\ref{LabSP} graph those speedup results.
+
+\begin{figure}[tbp]
+  \centering
+  \caption{BT Benchmark on Lab Machines}
+	\label{LabBT}
+  \includegraphics[width=20pc]{Pics-Lab/BT.png}
+\end{figure}
+
+\begin{figure}[tbp]
+  \centering
+  \caption{FT Benchmark on Lab Machines}
+	\label{LabFT}
+  \includegraphics[width=20pc]{Pics-Lab/FT.png}
+\end{figure}
+
+\begin{figure}[tbp]
+  \centering
+  \caption{IS Benchmark on Lab Machines}
+	\label{LabIS}
+  \includegraphics[width=20pc]{Pics-Lab/IS.png}
+\end{figure}
+
+\begin{figure}[tbp]
+  \centering
+  \caption{LU Benchmark on Lab Machines}
+	\label{LabLU}
+  \includegraphics[width=20pc]{Pics-Lab/LU.png}
+\end{figure}
+
+\begin{figure}[tbp]
+  \centering
+  \caption{MG Benchmark on Lab Machines}
+	\label{LabMG}
+  \includegraphics[width=20pc]{Pics-Lab/MG.png}
+\end{figure}
+
+\begin{figure}[tbp]
+  \centering
+  \caption{SP Benchmark on Lab Machines}
+	\label{LabSP}
+  \includegraphics[width=20pc]{Pics-Lab/SP.png}
+\end{figure}
+
+\clearpage
+
+%%%%% RASPBERRY PIS %%%%%
 \subsection{Raspberry Pis}
-Raspberry Pi results here.
 
-Table~\ref{xmarkTable} shows \_.
+%%%%% TABLE %%%%%
+Table~\ref{PiTable} shows the Pis' NPB results. The class A benchmarks were used.
 
-\begin{table}[tbp]
+\begin{table*}[tbp]
 \centering
-\caption{XMark Test Results}
-\label{xmarkTable}
-\begin{tabular}{ c || c | c | c }
-
-	Test & Tree & SAX & Diff\\ \hline
-	01 & 0.003 & 0.003 & 0.000 \\
-	02 & 0.091 & 0.054 & 0.037 \\
-	03 & 0.180 & 0.104 & 0.076 \\
-	04 & 0.354 & 0.206 & 0.148 \\
-	05 & 0.434 & 0.261 & 0.173 \\
-	06 & 0.520 & 0.296 & 0.224 \\
-	07 & 0.682 & 0.392 & 0.290 \\
-	08 & 0.861 & 0.509 & 0.352 \\
+\caption{Raspberry Pi Benchmark Results}
+\label{PiTable}
+\begin{tabular}{ c | c || c | c | c | c }
+	Benchmark & Nodes & Time & Speedup & MOPS & Process MOPS\\ \hline
+    BT & 1 & 4252.40 & 1.00  & 39.57 & 39.57 \\
+    BT & 4 & 858.28 & 4.95  & 196.07 & 49.02 \\
+    EP & 1 & 334.98 & 1.00  & 1.60   & 1.60 \\
+    EP & 2 & 167.65 & 2.00  & 3.20   & 1.60 \\
+    EP & 3 & 111.90 & 2.99  & 4.80   & 1.60 \\
+    EP & 4 & 84.16 & 3.98  & 6.38  & 1.59 \\
+    EP & 5 & 67.38 & 4.97  & 7.97  & 1.59 \\
+    FT & 2 & 211.66 & 1.00  & 33.72 & 16.86 \\
+    FT & 4 & 93.78 & 2.26  & 76.10  & 19.02 \\
+    IS & 1 & 24.78 & 1.00  & 3.39  & 3.39 \\
+    IS & 2 & 24.99 & 0.99  & 3.36  & 1.68 \\
+    IS & 4 & 16.07 & 1.54  & 5.22  & 1.31 \\
+    LU & 1 & 2507.90 & 1.00  & 47.57 & 47.57 \\
+    LU & 2 & 1297.50 & 1.93  & 91.95 & 45.97 \\
+    LU & 4 & 675.59 & 3.71  & 176.58 & 44.15 \\
+    MG & 2 & 98.53 & 1.00  & 39.50  & 19.75 \\
+    MG & 4 & 40.84 & 2.41  & 95.30  & 23.82 \\
+    SP & 1 & 3474.10 & 1.00  & 24.47 & 24.47 \\
+    SP & 4 & 938.64 & 3.70  & 90.57 & 22.64 \\
 \end{tabular}
-\end{table}
+\end{table*}
 
-The graphs in Figures~\ref{tests001to008} through~\ref{tests201to210} also show \_.
+%%%%% FIGURES %%%%%
+Figures~\ref{PiBT} through~\ref{PiSP} graph those speedup results.
 
 \begin{figure}[tbp]
   \centering
-  \caption{XMark Test Results (1 to 8)}
-	\label{tests001to008}
-  \includegraphics[width=20pc]{Tests001to008.png}
+  \caption{BT Benchmark on Pis}
+	\label{PiBT}
+  \includegraphics[width=20pc]{Pics-Pi/BT.png}
 \end{figure}
 
 \begin{figure}[tbp]
   \centering
-  \caption{XMark Test Results (101 to 115)}
-	\label{tests101to115}
-  \includegraphics[width=20pc]{Tests101to115.png}
+  \caption{EP Benchmark on Pis}
+	\label{PiEP}
+  \includegraphics[width=20pc]{Pics-Pi/EP.png}
 \end{figure}
 
 \begin{figure}[tbp]
   \centering
-  \caption{XMark Test Results (201 to 210)}
-	\label{tests201to210}
-  \includegraphics[width=20pc]{Tests201to210.png}
+  \caption{FT Benchmark on Pis}
+	\label{PiFT}
+  \includegraphics[width=20pc]{Pics-Pi/FT.png}
 \end{figure}
 
-Table~\ref{stressTable} outlines \_.
+\begin{figure}[tbp]
+  \centering
+  \caption{IS Benchmark on Pis}
+	\label{PiIS}
+  \includegraphics[width=20pc]{Pics-Pi/IS.png}
+\end{figure}
 
-\begin{table}[tbp]
-\centering
-\caption{Stress Test Results}
-\label{stressTable}
-\begin{tabular}{ c || c | c }
+\begin{figure}[tbp]
+  \centering
+  \caption{LU Benchmark on Pis}
+	\label{PiLU}
+  \includegraphics[width=20pc]{Pics-Pi/LU.png}
+\end{figure}
 
-	Test & Tree & SAX\\ \hline
-	SWISS-PROT & 2.921 & 1.628\\
-	PIR & Not Available & 12.758\\
+\begin{figure}[tbp]
+  \centering
+  \caption{MG Benchmark on Pis}
+	\label{PiMG}
+  \includegraphics[width=20pc]{Pics-Pi/MG.png}
+\end{figure}
 
-\end{tabular}
-\end{table}
+\begin{figure}[tbp]
+  \centering
+  \caption{SP Benchmark on Pis}
+	\label{PiSP}
+  \includegraphics[width=20pc]{Pics-Pi/SP.png}
+\end{figure}
 
 \section{Analysis}
-Analysis here.
+Although it's not always the case, we typically notice a linear improvement of runtime when the number of nodes increases. This indicates that the NAS benchmarks, to some extent, are able to divide up their work to be performed on separate systems with their own memory and simply combine the results as needed.
+
+Of course, the higher the speedup, the less relient the nodes are on each other. In some cases, we notice that the number of nodes is almost completely tied to the speedup, with perhaps only a small performance hit due to slight overhead. In other situations, there's a very significant performance hit when the workload is distributed (see Figures~\ref{LabIS} and~\ref{PiIS}) and the speedup can even descrease. This happens when the distributed system has to spend more time per node dealing with the added overhead of initializing and message passing than it spends on the benchmark processing itself.
+
+In a way, this benchmarking exercise serves to validate distrbuted computing in our eyes. Especially on the Raspberry Pis, despite being somewhat underwhelming on their own, we see that having them work together provides a huge increase in performance and that there's real value in using many unremarkable systems to process large amounts of data.
 
 \bibliographystyle{abbrv}
 %\bibliography{sample}

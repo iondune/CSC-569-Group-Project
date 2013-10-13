@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-2.4-1.40.13 (TeX Live 2012) (format=pdflatex 2012.6.30)  1 OCT 2013 18:23
+This is pdfTeX, Version 3.1415926-2.4-1.40.13 (TeX Live 2012) (format=pdflatex 2012.6.30)  12 OCT 2013 21:52
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -184,7 +184,29 @@ Package: float 2001/11/08 v1.3d Float enhancements (AL)
 \float@box=\box30
 \@float@everytoks=\toks37
 \@floatcapt=\box31
-) (./ACM_proc.aux)
+) (./ACM_proc.aux
+
+LaTeX Warning: Label `xmarkTable' multiply defined.
+
+
+LaTeX Warning: Label `tests001to008' multiply defined.
+
+
+LaTeX Warning: Label `tests001to008' multiply defined.
+
+
+LaTeX Warning: Label `tests001to008' multiply defined.
+
+
+LaTeX Warning: Label `tests001to008' multiply defined.
+
+
+LaTeX Warning: Label `tests001to008' multiply defined.
+
+
+LaTeX Warning: Label `tests001to008' multiply defined.
+
+)
 \openout1 = `ACM_proc.aux'.
 
 LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 32.
@@ -251,65 +273,89 @@ G,.JBIG2,.JB2,.eps]
 File: epstopdf-sys.cfg 2010/07/13 v1.3 Configuration of (r)epstopdf for TeX Liv
 e
 ))
-LaTeX Font Info:    Try loading font information for U+msa on input line 76.
+LaTeX Font Info:    Try loading font information for U+msa on input line 70.
 (/usr/local/texlive/2012/texmf-dist/tex/latex/amsfonts/umsa.fd
 File: umsa.fd 2009/06/22 v3.00 AMS symbols A
 )
-LaTeX Font Info:    Try loading font information for U+msb on input line 76.
+LaTeX Font Info:    Try loading font information for U+msb on input line 70.
 (/usr/local/texlive/2012/texmf-dist/tex/latex/amsfonts/umsb.fd
 File: umsb.fd 2009/06/22 v3.00 AMS symbols B
 )
-LaTeX Font Info:    Try loading font information for U+lasy on input line 76.
+LaTeX Font Info:    Try loading font information for U+lasy on input line 70.
 (/usr/local/texlive/2012/texmf-dist/tex/latex/base/ulasy.fd
 File: ulasy.fd 1998/08/17 v2.2e LaTeX symbol font definitions
 )
-Overfull \hbox (1.022pt too wide) in paragraph at lines 88--89
-\T1/aer/m/n/9 In Cal Poly's CSC 468, stu-dents are im-ple-ment-ing a database
- []
 
+LaTeX Warning: Reference `tests201to210' on page \thepage  undefined on input l
+ine 149.
+
+<Pics-Pi/BT.png, id=1, 188.8656pt x 187.902pt>
+File: Pics-Pi/BT.png Graphic file (type png)
+<use Pics-Pi/BT.png>
+Package pdftex.def Info: Pics-Pi/BT.png used on input line 155.
+(pdftex.def)             Requested size: 240.0pt x 238.78197pt.
+<Pics-Pi/EP.png, id=3, 188.8656pt x 187.902pt>
+File: Pics-Pi/EP.png Graphic file (type png)
+<use Pics-Pi/EP.png>
+Package pdftex.def Info: Pics-Pi/EP.png used on input line 162.
+(pdftex.def)             Requested size: 240.0pt x 238.78197pt.
+<Pics-Pi/FT.png, id=4, 189.3474pt x 175.857pt>
+File: Pics-Pi/FT.png Graphic file (type png)
+<use Pics-Pi/FT.png>
+Package pdftex.def Info: Pics-Pi/FT.png used on input line 169.
+(pdftex.def)             Requested size: 240.0pt x 222.90388pt.
+<Pics-Pi/IS.png, id=5, 188.8656pt x 175.857pt>
+File: Pics-Pi/IS.png Graphic file (type png)
+<use Pics-Pi/IS.png>
+Package pdftex.def Info: Pics-Pi/IS.png used on input line 176.
+(pdftex.def)             Requested size: 240.0pt x 223.47543pt.
+<Pics-Pi/LU.png, id=6, 189.3474pt x 175.857pt>
+File: Pics-Pi/LU.png Graphic file (type png)
+<use Pics-Pi/LU.png>
+Package pdftex.def Info: Pics-Pi/LU.png used on input line 183.
+(pdftex.def)             Requested size: 240.0pt x 222.90388pt.
+<Pics-Pi/MG.png, id=7, 188.8656pt x 175.857pt>
+File: Pics-Pi/MG.png Graphic file (type png)
+<use Pics-Pi/MG.png>
+Package pdftex.def Info: Pics-Pi/MG.png used on input line 190.
+(pdftex.def)             Requested size: 240.0pt x 223.47543pt.
+<Pics-Pi/SP.png, id=8, 188.8656pt x 175.857pt>
+File: Pics-Pi/SP.png Graphic file (type png)
+<use Pics-Pi/SP.png>
+Package pdftex.def Info: Pics-Pi/SP.png used on input line 197.
+(pdftex.def)             Requested size: 240.0pt x 223.47543pt.
 [1{/usr/local/texlive/2012/texmf-var/fonts/map/pdftex/updmap/pdftex.map}
 
 
-]
-Overfull \hbox (4.83994pt too wide) in paragraph at lines 116--117
-\T1/aer/m/n/9 large XML files. The first was SWISS-PROT, a 115-Megabyte
- []
+ <./Pics-Pi/BT.png>] [2] [3 <./Pics-Pi/EP.png> <./Pics-Pi/FT.png> <./Pics-Pi/IS
+.png> <./Pics-Pi/LU.png>] [4
 
-<Tests001to008.png, id=10, 374.3586pt x 334.851pt>
-File: Tests001to008.png Graphic file (type png)
-<use Tests001to008.png>
-Package pdftex.def Info: Tests001to008.png used on input line 171.
-(pdftex.def)             Requested size: 240.0pt x 214.67688pt.
-<Tests101to115.png, id=12, 374.3586pt x 335.3328pt>
-File: Tests101to115.png Graphic file (type png)
-<use Tests101to115.png>
-Package pdftex.def Info: Tests101to115.png used on input line 178.
-(pdftex.def)             Requested size: 240.0pt x 214.98578pt.
-[2 <./Tests001to008.png>] <Tests201to210.png, id=18, 374.8404pt x 334.851pt>
-File: Tests201to210.png Graphic file (type png)
-<use Tests201to210.png>
-Package pdftex.def Info: Tests201to210.png used on input line 185.
-(pdftex.def)             Requested size: 240.0pt x 214.40097pt.
-[3 <./Tests101to115.png> <./Tests201to210.png>] (./ACM_proc.aux) ) 
+ <./Pics-Pi/MG.png> <./Pics-Pi/SP.png>] (./ACM_proc.aux)
+
+LaTeX Warning: There were undefined references.
+
+
+LaTeX Warning: There were multiply-defined labels.
+
+ ) 
 Here is how much of TeX's memory you used:
- 2844 strings out of 493488
- 36284 string characters out of 3141326
- 101667 words of memory out of 3000000
- 6083 multiletter control sequences out of 15000+200000
+ 2860 strings out of 493488
+ 36498 string characters out of 3141326
+ 108682 words of memory out of 3000000
+ 6095 multiletter control sequences out of 15000+200000
  45986 words of font info for 62 fonts, out of 3000000 for 9000
  957 hyphenation exceptions out of 8191
- 41i,10n,26p,1065b,246s stack positions out of 5000i,500n,10000p,200000b,50000s
-{/usr/local/t
-exlive/2012/texmf-dist/fonts/enc/dvips/base/8r.enc}</usr/local/texlive/2012/tex
-mf-dist/fonts/type1/public/amsfonts/cm/cmbx9.pfb></usr/local/texlive/2012/texmf
--dist/fonts/type1/public/amsfonts/cm/cmr9.pfb></usr/local/texlive/2012/texmf-di
-st/fonts/type1/urw/helvetic/uhvb8a.pfb></usr/local/texlive/2012/texmf-dist/font
-s/type1/urw/helvetic/uhvr8a.pfb></usr/local/texlive/2012/texmf-dist/fonts/type1
-/urw/times/utmb8a.pfb>
-Output written on ACM_proc.pdf (3 pages, 168260 bytes).
+ 41i,10n,26p,270b,248s stack positions out of 5000i,500n,10000p,200000b,50000s
+{/usr/local/texlive/2012/texmf-dist/fonts/enc/dvips/base/8r.enc}</usr/local/t
+exlive/2012/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx9.pfb></usr/local/tex
+live/2012/texmf-dist/fonts/type1/public/amsfonts/cm/cmr9.pfb></usr/local/texliv
+e/2012/texmf-dist/fonts/type1/urw/helvetic/uhvb8a.pfb></usr/local/texlive/2012/
+texmf-dist/fonts/type1/urw/helvetic/uhvr8a.pfb></usr/local/texlive/2012/texmf-d
+ist/fonts/type1/urw/times/utmb8a.pfb>
+Output written on ACM_proc.pdf (4 pages, 136114 bytes).
 PDF statistics:
- 42 PDF objects out of 1000 (max. 8388607)
- 25 compressed objects within 1 object stream
+ 53 PDF objects out of 1000 (max. 8388607)
+ 27 compressed objects within 1 object stream
  0 named destinations out of 1000 (max. 500000)
- 16 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 36 words of extra memory for PDF output out of 10000 (max. 10000000)
 
