@@ -81,13 +81,38 @@ Tables~\ref{LabTable} and~\ref{PiTable} shows the NPB results for the lab machin
 
 Note that not all benchmarks can use any number of processes: many require a square number or a power of two, which  is why some datapoints are absent in the following results.
 
-In the graphs, vertical axes show the speedup and horizontal axes show the number of nodes the benchmark was run on.
+In the graphs, vertical axes show the speedup, and horizontal axes show the number of nodes the benchmark was run on.
 
 %%%%% LAB MACHINES %%%%%
 \subsection{Lab Machines}
 
 %%%%% TABLE %%%%%
 Table~\ref{LabTable} shows the lab machines' NPB results.
+
+Figures~\ref{LabBT} through~\ref{LabSP} graph those speedup results.
+
+%%%%% RASPBERRY PIS %%%%%
+\subsection{Raspberry Pis}
+
+%%%%% TABLE %%%%%
+Table~\ref{PiTable} shows the Pis' NPB results.
+
+Figures~\ref{PiBT} through~\ref{PiSP} graph those speedup results.
+
+\section{Analysis}
+Although it's not always the case, we typically notice a linear improvement of runtime when the number of nodes increases. This indicates that the NAS benchmarks, to some extent, can efficiently divide up their work for execution on separate systems, each with their own memory, and then simply combine the results as needed.
+
+Of course, the higher the speedup, the less relient the nodes are on each other. In some cases, we notice that the number of nodes is almost completely tied to the speedup, with perhaps only a small performance hit due to added overhead.
+
+In other situations, there's a very significant performance hit when the workload is distributed (see Figures~\ref{LabIS} and~\ref{PiIS}) and the speedup can even descrease. This happens when the distributed system has to spend more time per node dealing with the extra overhead of initialization and message passing than it spends on the benchmark processing itself.
+
+Figures~\ref{LabLU} and \ref{LabMG} show this as well, but the correlation isn't as clear-cut: using up to 16 nodes improved performance, but past that, performance worsened. This indicates that we should take into account certain thresholds where workload distribution does more harm than good, and the extra nodes would be better used carrying out other tasks.
+
+Lastly, we can comment on differences between the lab machines and the Raspberry Pis. The similarities between these cluster types shows that speedup is primarily the result of workload distribution, but the actual time taken for a benchmark depends on the node specifications. For example, on four nodes, the EP (Embarrasingly Parallel) benchmark sped up 3.98 times on the Pis and 3.97 times on the lab machines---virtually the same amount---but the Pis took 84.16 seconds to complete the benchmark, and the lab machines took only 5.07 seconds---a speedup of 16.60.
+
+In a way, this benchmarking exercise serves to validate distrbuted computing in our eyes. Especially on the Raspberry Pis, despite being somewhat underwhelming individually, we see that having them work together provides a huge increase in performance and that there's real value in using many (potentially unremarkable) systems to process large amounts of data.
+
+\clearpage
 
 \begin{table*}[tbp]
 \centering
@@ -137,66 +162,6 @@ Table~\ref{LabTable} shows the lab machines' NPB results.
 \end{table*}
 
 
-%%%%% FIGURES %%%%%
-Figures~\ref{LabBT} through~\ref{LabSP} graph those speedup results.
-
-\begin{figure}[tbp]
-  \centering
-  \caption{BT Benchmark on Lab Machines}
-	\label{LabBT}
-  \includegraphics[width=20pc]{Pics-Lab/BT.png}
-\end{figure}
-
-\begin{figure}[tbp]
-  \centering
-  \caption{EP Benchmark on Lab Machines}
-  \label{LabEP}
-  \includegraphics[width=20pc]{Pics-Lab/EP.png}
-\end{figure}
-
-\begin{figure}[tbp]
-  \centering
-  \caption{FT Benchmark on Lab Machines}
-	\label{LabFT}
-  \includegraphics[width=20pc]{Pics-Lab/FT.png}
-\end{figure}
-
-\begin{figure}[tbp]
-  \centering
-  \caption{IS Benchmark on Lab Machines}
-	\label{LabIS}
-  \includegraphics[width=20pc]{Pics-Lab/IS.png}
-\end{figure}
-
-\begin{figure}[tbp]
-  \centering
-  \caption{LU Benchmark on Lab Machines}
-	\label{LabLU}
-  \includegraphics[width=20pc]{Pics-Lab/LU.png}
-\end{figure}
-
-\begin{figure}[tbp]
-  \centering
-  \caption{MG Benchmark on Lab Machines}
-	\label{LabMG}
-  \includegraphics[width=20pc]{Pics-Lab/MG.png}
-\end{figure}
-
-\begin{figure}[tbp]
-  \centering
-  \caption{SP Benchmark on Lab Machines}
-	\label{LabSP}
-  \includegraphics[width=20pc]{Pics-Lab/SP.png}
-\end{figure}
-
-\clearpage
-
-%%%%% RASPBERRY PIS %%%%%
-\subsection{Raspberry Pis}
-
-%%%%% TABLE %%%%%
-Table~\ref{PiTable} shows the Pis' NPB results. The class A benchmarks were used.
-
 \begin{table*}[tbp]
 \centering
 \caption{Raspberry Pi Benchmark Results}
@@ -225,68 +190,116 @@ Table~\ref{PiTable} shows the Pis' NPB results. The class A benchmarks were used
 \end{tabular}
 \end{table*}
 
+\clearpage
+
+
 %%%%% FIGURES %%%%%
-Figures~\ref{PiBT} through~\ref{PiSP} graph those speedup results.
+
+\begin{figure}[tbp]
+  \centering
+  \caption{BT Benchmark on Lab Machines}
+	\label{LabBT}
+  \includegraphics[width=19pc, height=19pc]{Pics-Lab/BT.png}
+\end{figure}
+
+\begin{figure}[tbp]
+  \centering
+  \caption{EP Benchmark on Lab Machines}
+  \label{LabEP}
+  \includegraphics[width=19pc, height=19pc]{Pics-Lab/EP.png}
+\end{figure}
+
+\begin{figure}[tbp]
+  \centering
+  \caption{FT Benchmark on Lab Machines}
+	\label{LabFT}
+  \includegraphics[width=19pc, height=19pc]{Pics-Lab/FT.png}
+\end{figure}
+
+\begin{figure}[tbp]
+  \centering
+  \caption{IS Benchmark on Lab Machines}
+	\label{LabIS}
+  \includegraphics[width=19pc, height=19pc]{Pics-Lab/IS.png}
+\end{figure}
+
+\begin{figure}[tbp]
+  \centering
+  \caption{LU Benchmark on Lab Machines}
+	\label{LabLU}
+  \includegraphics[width=19pc, height=19pc]{Pics-Lab/LU.png}
+\end{figure}
+
+\begin{figure}[tbp]
+  \centering
+  \caption{MG Benchmark on Lab Machines}
+	\label{LabMG}
+  \includegraphics[width=19pc, height=19pc]{Pics-Lab/MG.png}
+\end{figure}
+
+\begin{figure}[tbp]
+  \centering
+  \caption{SP Benchmark on Lab Machines}
+	\label{LabSP}
+  \includegraphics[width=19pc, height=19pc]{Pics-Lab/SP.png}
+\end{figure}
+
+\clearpage
+
+%%%%% FIGURES %%%%%
 
 \begin{figure}[tbp]
   \centering
   \caption{BT Benchmark on Pis}
 	\label{PiBT}
-  \includegraphics[width=20pc]{Pics-Pi/BT.png}
+  \includegraphics[width=19pc, height=19pc]{Pics-Pi/BT.png}
 \end{figure}
 
 \begin{figure}[tbp]
   \centering
   \caption{EP Benchmark on Pis}
 	\label{PiEP}
-  \includegraphics[width=20pc]{Pics-Pi/EP.png}
+  \includegraphics[width=19pc, height=19pc]{Pics-Pi/EP.png}
 \end{figure}
 
 \begin{figure}[tbp]
   \centering
   \caption{FT Benchmark on Pis}
 	\label{PiFT}
-  \includegraphics[width=20pc]{Pics-Pi/FT.png}
+  \includegraphics[width=19pc, height=19pc]{Pics-Pi/FT.png}
 \end{figure}
 
 \begin{figure}[tbp]
   \centering
   \caption{IS Benchmark on Pis}
 	\label{PiIS}
-  \includegraphics[width=20pc]{Pics-Pi/IS.png}
+  \includegraphics[width=19pc, height=19pc]{Pics-Pi/IS.png}
 \end{figure}
 
 \begin{figure}[tbp]
   \centering
   \caption{LU Benchmark on Pis}
 	\label{PiLU}
-  \includegraphics[width=20pc]{Pics-Pi/LU.png}
+  \includegraphics[width=19pc, height=19pc]{Pics-Pi/LU.png}
 \end{figure}
 
 \begin{figure}[tbp]
   \centering
   \caption{MG Benchmark on Pis}
 	\label{PiMG}
-  \includegraphics[width=20pc]{Pics-Pi/MG.png}
+  \includegraphics[width=19pc, height=19pc]{Pics-Pi/MG.png}
 \end{figure}
 
 \begin{figure}[tbp]
   \centering
   \caption{SP Benchmark on Pis}
 	\label{PiSP}
-  \includegraphics[width=20pc]{Pics-Pi/SP.png}
+  \includegraphics[width=19pc, height=19pc]{Pics-Pi/SP.png}
 \end{figure}
 
-\section{Analysis}
-Although it's not always the case, we typically notice a linear improvement of runtime when the number of nodes increases. This indicates that the NAS benchmarks, to some extent, can efficiently divide up their work for execution on separate systems, each with their own memory, and then simply combine the results as needed.
 
-Of course, the higher the speedup, the less relient the nodes are on each other. In some cases, we notice that the number of nodes is almost completely tied to the speedup, with perhaps only a small performance hit due to added overhead.
 
-In other situations, there's a very significant performance hit when the workload is distributed (see Figures~\ref{LabIS} and~\ref{PiIS}) and the speedup can even descrease. This happens when the distributed system has to spend more time per node dealing with the extra overhead of initialization and message passing than it spends on the benchmark processing itself.
 
-Figures~\ref{LabLU} and \ref{LabMG} show this as well, but the correlation isn't as clear-cut: using up to 16 nodes improved performance, but past that, performance worsened. This indicates that we should take into account certain thresholds where workload distribution does more harm than good, and the extra nodes would be better used doing other tasks.
-
-In a way, this benchmarking exercise serves to validate distrbuted computing in our eyes. Especially on the Raspberry Pis, despite being somewhat underwhelming individually, we see that having them work together provides a huge increase in performance and that there's real value in using many (potentially unremarkable) systems to process large amounts of data.
 
 \bibliographystyle{abbrv}
 %\bibliography{sample}

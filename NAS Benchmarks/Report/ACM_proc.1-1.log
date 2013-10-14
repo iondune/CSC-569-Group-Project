@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-2.4-1.40.13 (TeX Live 2012) (format=pdflatex 2012.6.30)  28 SEP 2013 16:48
+This is pdfTeX, Version 3.1415926-2.4-1.40.13 (TeX Live 2012) (format=pdflatex 2012.6.30)  13 OCT 2013 22:33
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -177,34 +177,41 @@ LaTeX Font Info:    Redeclaring font encoding T1 on input line 43.
 LaTeX Font Info:    Try loading font information for T1+aer on input line 100.
 (/usr/local/texlive/2012/texmf-dist/tex/latex/ae/t1aer.fd
 File: t1aer.fd 1997/11/16 Font definitions for T1/aer.
-))) (./ACM_proc.aux)
+))) (/usr/local/texlive/2012/texmf-dist/tex/latex/float/float.sty
+Package: float 2001/11/08 v1.3d Float enhancements (AL)
+\c@float@type=\count109
+\float@exts=\toks36
+\float@box=\box30
+\@float@everytoks=\toks37
+\@floatcapt=\box31
+) (./ACM_proc.aux)
 \openout1 = `ACM_proc.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 31.
-LaTeX Font Info:    ... okay on input line 31.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 31.
-LaTeX Font Info:    ... okay on input line 31.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 31.
-LaTeX Font Info:    ... okay on input line 31.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 31.
-LaTeX Font Info:    ... okay on input line 31.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 31.
-LaTeX Font Info:    ... okay on input line 31.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 31.
-LaTeX Font Info:    ... okay on input line 31.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 32.
+LaTeX Font Info:    ... okay on input line 32.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 32.
+LaTeX Font Info:    ... okay on input line 32.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 32.
+LaTeX Font Info:    ... okay on input line 32.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 32.
+LaTeX Font Info:    ... okay on input line 32.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 32.
+LaTeX Font Info:    ... okay on input line 32.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 32.
+LaTeX Font Info:    ... okay on input line 32.
 (/usr/local/texlive/2012/texmf-dist/tex/context/base/supp-pdf.mkii
 [Loading MPS to PDF converter (version 2006.09.02).]
-\scratchcounter=\count109
+\scratchcounter=\count110
 \scratchdimen=\dimen123
-\scratchbox=\box30
-\nofMPsegments=\count110
-\nofMParguments=\count111
-\everyMPshowfont=\toks36
-\MPscratchCnt=\count112
+\scratchbox=\box32
+\nofMPsegments=\count111
+\nofMParguments=\count112
+\everyMPshowfont=\toks38
+\MPscratchCnt=\count113
 \MPscratchDim=\dimen124
-\MPnumerator=\count113
-\makeMPintoPDFobject=\count114
-\everyMPtoPDFconversion=\toks37
+\MPnumerator=\count114
+\makeMPintoPDFobject=\count115
+\everyMPtoPDFconversion=\toks39
 ) (/usr/local/texlive/2012/texmf-dist/tex/generic/oberdiek/pdftexcmds.sty
 Package: pdftexcmds 2011/11/29 v0.20 Utility functions of pdfTeX for LuaTeX (HO
 )
@@ -244,40 +251,252 @@ G,.JBIG2,.JB2,.eps]
 File: epstopdf-sys.cfg 2010/07/13 v1.3 Configuration of (r)epstopdf for TeX Liv
 e
 ))
-LaTeX Font Info:    Try loading font information for U+msa on input line 74.
+LaTeX Font Info:    Try loading font information for U+msa on input line 70.
 (/usr/local/texlive/2012/texmf-dist/tex/latex/amsfonts/umsa.fd
 File: umsa.fd 2009/06/22 v3.00 AMS symbols A
 )
-LaTeX Font Info:    Try loading font information for U+msb on input line 74.
+LaTeX Font Info:    Try loading font information for U+msb on input line 70.
 (/usr/local/texlive/2012/texmf-dist/tex/latex/amsfonts/umsb.fd
 File: umsb.fd 2009/06/22 v3.00 AMS symbols B
 )
-LaTeX Font Info:    Try loading font information for U+lasy on input line 74.
+LaTeX Font Info:    Try loading font information for U+lasy on input line 70.
 (/usr/local/texlive/2012/texmf-dist/tex/latex/base/ulasy.fd
 File: ulasy.fd 1998/08/17 v2.2e LaTeX symbol font definitions
-) (./ACM_proc.bbl) [1{/usr/local/texlive/2012/texmf-var/fonts/map/pdftex/updmap
-/pdftex.map}
+)
+Overfull \hbox (1.79836pt too wide) in paragraph at lines 78--79
+\T1/aer/m/n/9 The pri-mary met-ric we ex-plore in the bench-marks is speedup,
+ []
 
 
-] (./ACM_proc.aux) ) 
+LaTeX Warning: Reference `PiBT' on page \thepage  undefined on input line 100.
+
+
+LaTeX Warning: Reference `PiSP' on page \thepage  undefined on input line 100.
+
+
+LaTeX Warning: Reference `PiIS' on page \thepage  undefined on input line 107.
+
+[1{/usr/local/texlive/2012/texmf-var/fonts/map/pdftex/updmap/pdftex.map}
+
+
+] [2
+
+] [3] <Pics-Lab/BT.png, id=17, 188.8656pt x 175.857pt>
+File: Pics-Lab/BT.png Graphic file (type png)
+<use Pics-Lab/BT.png>
+Package pdftex.def Info: Pics-Lab/BT.png used on input line 172.
+(pdftex.def)             Requested size: 240.0pt x 223.47543pt.
+<Pics-Lab/EP.png, id=19, 188.8656pt x 175.857pt>
+File: Pics-Lab/EP.png Graphic file (type png)
+<use Pics-Lab/EP.png>
+Package pdftex.def Info: Pics-Lab/EP.png used on input line 179.
+(pdftex.def)             Requested size: 240.0pt x 223.47543pt.
+<Pics-Lab/FT.png, id=20, 189.3474pt x 175.857pt>
+File: Pics-Lab/FT.png Graphic file (type png)
+<use Pics-Lab/FT.png>
+Package pdftex.def Info: Pics-Lab/FT.png used on input line 186.
+(pdftex.def)             Requested size: 240.0pt x 222.90388pt.
+<Pics-Lab/IS.png, id=21, 188.8656pt x 175.857pt>
+File: Pics-Lab/IS.png Graphic file (type png)
+<use Pics-Lab/IS.png>
+Package pdftex.def Info: Pics-Lab/IS.png used on input line 193.
+(pdftex.def)             Requested size: 240.0pt x 223.47543pt.
+<Pics-Lab/LU.png, id=22, 189.3474pt x 175.857pt>
+File: Pics-Lab/LU.png Graphic file (type png)
+<use Pics-Lab/LU.png>
+Package pdftex.def Info: Pics-Lab/LU.png used on input line 200.
+(pdftex.def)             Requested size: 240.0pt x 222.90388pt.
+<Pics-Lab/MG.png, id=23, 188.8656pt x 175.857pt>
+File: Pics-Lab/MG.png Graphic file (type png)
+<use Pics-Lab/MG.png>
+Package pdftex.def Info: Pics-Lab/MG.png used on input line 207.
+(pdftex.def)             Requested size: 240.0pt x 223.47543pt.
+<Pics-Lab/SP.png, id=24, 188.8656pt x 175.857pt>
+File: Pics-Lab/SP.png Graphic file (type png)
+<use Pics-Lab/SP.png>
+Package pdftex.def Info: Pics-Lab/SP.png used on input line 214.
+(pdftex.def)             Requested size: 240.0pt x 223.47543pt.
+[4 <./Pics-Lab/BT.png> <./Pics-Lab/EP.png> <./Pics-Lab/FT.png> <./Pics-Lab/IS.p
+ng>] [5 <./Pics-Lab/LU.png> <./Pics-Lab/MG.png> <./Pics-Lab/SP.png>] [6]
+Runaway argument?
+width=18pc][height=12pc]{Pics-Pi/BT.png} \end {figure} 
+./ACM_proc.tex:257: Paragraph ended before \Gin@iii was complete.
+<to be read again> 
+                   \par 
+l.257 
+      
+I suspect you've forgotten a `}', causing me to apply this
+control sequence to too much text. How can we recover?
+My plan is to forget the whole thing and hope for the best.
+
+
+./ACM_proc.tex:258: LaTeX Error: Not in outer par mode.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.258 \begin{figure}[tbp]
+                         
+You've lost some text.  Try typing  <return>  to proceed.
+If that doesn't work, type  X <return>  to quit.
+
+<Pics-Pi/EP.png, id=41, 188.8656pt x 187.902pt>
+File: Pics-Pi/EP.png Graphic file (type png)
+<use Pics-Pi/EP.png>
+Package pdftex.def Info: Pics-Pi/EP.png used on input line 262.
+(pdftex.def)             Requested size: 216.0pt x 214.90434pt.
+
+./ACM_proc.tex:265: LaTeX Error: Not in outer par mode.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.265 \begin{figure}[tbp]
+                         
+You've lost some text.  Try typing  <return>  to proceed.
+If that doesn't work, type  X <return>  to quit.
+
+<Pics-Pi/FT.png, id=42, 189.3474pt x 175.857pt>
+File: Pics-Pi/FT.png Graphic file (type png)
+<use Pics-Pi/FT.png>
+Package pdftex.def Info: Pics-Pi/FT.png used on input line 269.
+(pdftex.def)             Requested size: 216.0pt x 200.61322pt.
+
+./ACM_proc.tex:272: LaTeX Error: Not in outer par mode.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.272 \begin{figure}[tbp]
+                         
+You've lost some text.  Try typing  <return>  to proceed.
+If that doesn't work, type  X <return>  to quit.
+
+<Pics-Pi/IS.png, id=43, 188.8656pt x 175.857pt>
+File: Pics-Pi/IS.png Graphic file (type png)
+<use Pics-Pi/IS.png>
+Package pdftex.def Info: Pics-Pi/IS.png used on input line 276.
+(pdftex.def)             Requested size: 216.0pt x 201.12843pt.
+
+./ACM_proc.tex:279: LaTeX Error: Not in outer par mode.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.279 \begin{figure}[tbp]
+                         
+You've lost some text.  Try typing  <return>  to proceed.
+If that doesn't work, type  X <return>  to quit.
+
+<Pics-Pi/LU.png, id=44, 189.3474pt x 175.857pt>
+File: Pics-Pi/LU.png Graphic file (type png)
+<use Pics-Pi/LU.png>
+Package pdftex.def Info: Pics-Pi/LU.png used on input line 283.
+(pdftex.def)             Requested size: 216.0pt x 200.61322pt.
+
+./ACM_proc.tex:286: LaTeX Error: Not in outer par mode.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.286 \begin{figure}[tbp]
+                         
+You've lost some text.  Try typing  <return>  to proceed.
+If that doesn't work, type  X <return>  to quit.
+
+<Pics-Pi/MG.png, id=45, 188.8656pt x 175.857pt>
+File: Pics-Pi/MG.png Graphic file (type png)
+<use Pics-Pi/MG.png>
+Package pdftex.def Info: Pics-Pi/MG.png used on input line 290.
+(pdftex.def)             Requested size: 216.0pt x 201.12843pt.
+
+./ACM_proc.tex:293: LaTeX Error: Not in outer par mode.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.293 \begin{figure}[tbp]
+                         
+You've lost some text.  Try typing  <return>  to proceed.
+If that doesn't work, type  X <return>  to quit.
+
+<Pics-Pi/SP.png, id=46, 188.8656pt x 175.857pt>
+File: Pics-Pi/SP.png Graphic file (type png)
+<use Pics-Pi/SP.png>
+Package pdftex.def Info: Pics-Pi/SP.png used on input line 297.
+(pdftex.def)             Requested size: 216.0pt x 201.12843pt.
+
+./ACM_proc.tex:305: LaTeX Error: \begin{figure} on input line 251 ended by \end
+{document}.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.305 \end{document}
+                    
+Your command was ignored.
+Type  I <command> <return>  to replace it with another command,
+or  <return>  to continue without it.
+
+(./ACM_proc.aux)
+
+LaTeX Warning: There were undefined references.
+
+./ACM_proc.tex:305: You can't use `\end' in internal vertical mode.
+\enddocument ... \endgroup \deadcycles \z@ \@@end 
+                                                  
+l.305 \end{document}
+                    
+Sorry, but I'm not programmed to handle this case;
+I'll just pretend that you didn't ask for it.
+If you're in the wrong mode, you might be able to
+return to the right one by typing `I}' or `I$' or `I\par'.
+
+
+./ACM_proc.tex:305: LaTeX Error: \begin{figure} on input line 251 ended by \end
+{document}.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.305 \end{document}
+                    
+Your command was ignored.
+Type  I <command> <return>  to replace it with another command,
+or  <return>  to continue without it.
+
+./ACM_proc.tex:305: Missing } inserted.
+<inserted text> 
+                }
+l.305 \end{document}
+                    
+I've inserted something that you may have forgotten.
+(See the <inserted text> above.)
+With luck, this will get me unwedged. But if you
+really didn't forget anything, try typing `2' now; then
+my insertion and my current dilemma will both disappear.
+
+)
+! Emergency stop.
+<*> ACM_proc.tex
+                
+*** (job aborted, no legal \end found)
+
+ 
 Here is how much of TeX's memory you used:
- 2759 strings out of 493488
- 35074 string characters out of 3141326
- 95253 words of memory out of 3000000
- 6006 multiletter control sequences out of 15000+200000
- 45321 words of font info for 59 fonts, out of 3000000 for 9000
+ 2894 strings out of 493488
+ 37053 string characters out of 3141326
+ 102699 words of memory out of 3000000
+ 6128 multiletter control sequences out of 15000+200000
+ 45986 words of font info for 62 fonts, out of 3000000 for 9000
  957 hyphenation exceptions out of 8191
- 41i,10n,26p,460b,246s stack positions out of 5000i,500n,10000p,200000b,50000s
-{/usr/local/texlive/2012/texmf-dist/fonts/enc/dvips/base/8r
-.enc}</usr/local/texlive/2012/texmf-dist/fonts/type1/public/amsfonts/cm/cmr9.pf
-b></usr/local/texlive/2012/texmf-dist/fonts/type1/public/amsfonts/cm/cmti9.pfb>
-</usr/local/texlive/2012/texmf-dist/fonts/type1/urw/helvetic/uhvb8a.pfb></usr/l
-ocal/texlive/2012/texmf-dist/fonts/type1/urw/helvetic/uhvr8a.pfb></usr/local/te
-xlive/2012/texmf-dist/fonts/type1/urw/times/utmb8a.pfb>
-Output written on ACM_proc.pdf (1 page, 54740 bytes).
-PDF statistics:
- 29 PDF objects out of 1000 (max. 8388607)
- 20 compressed objects within 1 object stream
- 0 named destinations out of 1000 (max. 500000)
- 1 words of extra memory for PDF output out of 10000 (max. 10000000)
-
+ 41i,10n,26p,610b,335s stack positions out of 5000i,500n,10000p,200000b,50000s
+!  ==> Fatal error occurred, no output PDF file produced!

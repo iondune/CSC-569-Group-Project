@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-2.4-1.40.13 (TeX Live 2012) (format=pdflatex 2012.6.30)  13 OCT 2013 13:57
+This is pdfTeX, Version 3.1415926-2.4-1.40.13 (TeX Live 2012) (format=pdflatex 2012.6.30)  13 OCT 2013 22:57
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -267,88 +267,86 @@ Overfull \hbox (1.79836pt too wide) in paragraph at lines 78--79
 \T1/aer/m/n/9 The pri-mary met-ric we ex-plore in the bench-marks is speedup,
  []
 
-<Pics-Lab/BT.png, id=1, 188.8656pt x 175.857pt>
-File: Pics-Lab/BT.png Graphic file (type png)
-<use Pics-Lab/BT.png>
-Package pdftex.def Info: Pics-Lab/BT.png used on input line 147.
-(pdftex.def)             Requested size: 240.0pt x 223.47543pt.
-<Pics-Lab/EP.png, id=3, 188.8656pt x 175.857pt>
-File: Pics-Lab/EP.png Graphic file (type png)
-<use Pics-Lab/EP.png>
-Package pdftex.def Info: Pics-Lab/EP.png used on input line 154.
-(pdftex.def)             Requested size: 240.0pt x 223.47543pt.
-<Pics-Lab/FT.png, id=4, 189.3474pt x 175.857pt>
-File: Pics-Lab/FT.png Graphic file (type png)
-<use Pics-Lab/FT.png>
-Package pdftex.def Info: Pics-Lab/FT.png used on input line 161.
-(pdftex.def)             Requested size: 240.0pt x 222.90388pt.
-<Pics-Lab/IS.png, id=5, 188.8656pt x 175.857pt>
-File: Pics-Lab/IS.png Graphic file (type png)
-<use Pics-Lab/IS.png>
-Package pdftex.def Info: Pics-Lab/IS.png used on input line 168.
-(pdftex.def)             Requested size: 240.0pt x 223.47543pt.
-<Pics-Lab/LU.png, id=6, 189.3474pt x 175.857pt>
-File: Pics-Lab/LU.png Graphic file (type png)
-<use Pics-Lab/LU.png>
-Package pdftex.def Info: Pics-Lab/LU.png used on input line 175.
-(pdftex.def)             Requested size: 240.0pt x 222.90388pt.
-<Pics-Lab/MG.png, id=7, 188.8656pt x 175.857pt>
-File: Pics-Lab/MG.png Graphic file (type png)
-<use Pics-Lab/MG.png>
-Package pdftex.def Info: Pics-Lab/MG.png used on input line 182.
-(pdftex.def)             Requested size: 240.0pt x 223.47543pt.
-<Pics-Lab/SP.png, id=8, 188.8656pt x 175.857pt>
-File: Pics-Lab/SP.png Graphic file (type png)
-<use Pics-Lab/SP.png>
-Package pdftex.def Info: Pics-Lab/SP.png used on input line 189.
-(pdftex.def)             Requested size: 240.0pt x 223.47543pt.
 [1{/usr/local/texlive/2012/texmf-var/fonts/map/pdftex/updmap/pdftex.map}
 
 
- <./Pics-Lab/BT.png>] [2] [3 <./Pics-Lab/EP.png> <./Pics-Lab/FT.png> <./Pics-La
-b/IS.png> <./Pics-Lab/LU.png>] [4
+] [2
 
- <./Pics-Lab/MG.png> <./Pics-Lab/SP.png>] <Pics-Pi/BT.png, id=35, 188.8656pt x 
-187.902pt>
+] [3] <Pics-Lab/BT.png, id=17, 188.8656pt x 175.857pt>
+File: Pics-Lab/BT.png Graphic file (type png)
+<use Pics-Lab/BT.png>
+Package pdftex.def Info: Pics-Lab/BT.png used on input line 202.
+(pdftex.def)             Requested size: 228.00645pt x 228.01567pt.
+<Pics-Lab/EP.png, id=19, 188.8656pt x 175.857pt>
+File: Pics-Lab/EP.png Graphic file (type png)
+<use Pics-Lab/EP.png>
+Package pdftex.def Info: Pics-Lab/EP.png used on input line 209.
+(pdftex.def)             Requested size: 228.00645pt x 228.01567pt.
+<Pics-Lab/FT.png, id=20, 189.3474pt x 175.857pt>
+File: Pics-Lab/FT.png Graphic file (type png)
+<use Pics-Lab/FT.png>
+Package pdftex.def Info: Pics-Lab/FT.png used on input line 216.
+(pdftex.def)             Requested size: 228.00159pt x 228.01567pt.
+<Pics-Lab/IS.png, id=21, 188.8656pt x 175.857pt>
+File: Pics-Lab/IS.png Graphic file (type png)
+<use Pics-Lab/IS.png>
+Package pdftex.def Info: Pics-Lab/IS.png used on input line 223.
+(pdftex.def)             Requested size: 228.00645pt x 228.01567pt.
+<Pics-Lab/LU.png, id=22, 189.3474pt x 175.857pt>
+File: Pics-Lab/LU.png Graphic file (type png)
+<use Pics-Lab/LU.png>
+Package pdftex.def Info: Pics-Lab/LU.png used on input line 230.
+(pdftex.def)             Requested size: 228.00159pt x 228.01567pt.
+<Pics-Lab/MG.png, id=23, 188.8656pt x 175.857pt>
+File: Pics-Lab/MG.png Graphic file (type png)
+<use Pics-Lab/MG.png>
+Package pdftex.def Info: Pics-Lab/MG.png used on input line 237.
+(pdftex.def)             Requested size: 228.00645pt x 228.01567pt.
+<Pics-Lab/SP.png, id=24, 188.8656pt x 175.857pt>
+File: Pics-Lab/SP.png Graphic file (type png)
+<use Pics-Lab/SP.png>
+Package pdftex.def Info: Pics-Lab/SP.png used on input line 244.
+(pdftex.def)             Requested size: 228.00645pt x 228.01567pt.
+[4 <./Pics-Lab/BT.png> <./Pics-Lab/EP.png> <./Pics-Lab/FT.png> <./Pics-Lab/IS.p
+ng>] [5 <./Pics-Lab/LU.png> <./Pics-Lab/MG.png> <./Pics-Lab/SP.png>] <Pics-Pi/B
+T.png, id=38, 188.8656pt x 187.902pt>
 File: Pics-Pi/BT.png Graphic file (type png)
 <use Pics-Pi/BT.png>
-Package pdftex.def Info: Pics-Pi/BT.png used on input line 235.
-(pdftex.def)             Requested size: 240.0pt x 238.78197pt.
-<Pics-Pi/EP.png, id=36, 188.8656pt x 187.902pt>
+Package pdftex.def Info: Pics-Pi/BT.png used on input line 255.
+(pdftex.def)             Requested size: 228.00645pt x 228.01295pt.
+<Pics-Pi/EP.png, id=39, 188.8656pt x 187.902pt>
 File: Pics-Pi/EP.png Graphic file (type png)
 <use Pics-Pi/EP.png>
-Package pdftex.def Info: Pics-Pi/EP.png used on input line 242.
-(pdftex.def)             Requested size: 240.0pt x 238.78197pt.
-<Pics-Pi/FT.png, id=37, 189.3474pt x 175.857pt>
+Package pdftex.def Info: Pics-Pi/EP.png used on input line 262.
+(pdftex.def)             Requested size: 228.00645pt x 228.01295pt.
+<Pics-Pi/FT.png, id=40, 189.3474pt x 175.857pt>
 File: Pics-Pi/FT.png Graphic file (type png)
 <use Pics-Pi/FT.png>
-Package pdftex.def Info: Pics-Pi/FT.png used on input line 249.
-(pdftex.def)             Requested size: 240.0pt x 222.90388pt.
-<Pics-Pi/IS.png, id=38, 188.8656pt x 175.857pt>
+Package pdftex.def Info: Pics-Pi/FT.png used on input line 269.
+(pdftex.def)             Requested size: 228.00159pt x 228.01567pt.
+<Pics-Pi/IS.png, id=41, 188.8656pt x 175.857pt>
 File: Pics-Pi/IS.png Graphic file (type png)
 <use Pics-Pi/IS.png>
-Package pdftex.def Info: Pics-Pi/IS.png used on input line 256.
-(pdftex.def)             Requested size: 240.0pt x 223.47543pt.
-<Pics-Pi/LU.png, id=39, 189.3474pt x 175.857pt>
+Package pdftex.def Info: Pics-Pi/IS.png used on input line 276.
+(pdftex.def)             Requested size: 228.00645pt x 228.01567pt.
+<Pics-Pi/LU.png, id=42, 189.3474pt x 175.857pt>
 File: Pics-Pi/LU.png Graphic file (type png)
 <use Pics-Pi/LU.png>
-Package pdftex.def Info: Pics-Pi/LU.png used on input line 263.
-(pdftex.def)             Requested size: 240.0pt x 222.90388pt.
-<Pics-Pi/MG.png, id=40, 188.8656pt x 175.857pt>
+Package pdftex.def Info: Pics-Pi/LU.png used on input line 283.
+(pdftex.def)             Requested size: 228.00159pt x 228.01567pt.
+<Pics-Pi/MG.png, id=43, 188.8656pt x 175.857pt>
 File: Pics-Pi/MG.png Graphic file (type png)
 <use Pics-Pi/MG.png>
-Package pdftex.def Info: Pics-Pi/MG.png used on input line 270.
-(pdftex.def)             Requested size: 240.0pt x 223.47543pt.
-<Pics-Pi/SP.png, id=41, 188.8656pt x 175.857pt>
+Package pdftex.def Info: Pics-Pi/MG.png used on input line 290.
+(pdftex.def)             Requested size: 228.00645pt x 228.01567pt.
+<Pics-Pi/SP.png, id=44, 188.8656pt x 175.857pt>
 File: Pics-Pi/SP.png Graphic file (type png)
 <use Pics-Pi/SP.png>
-Package pdftex.def Info: Pics-Pi/SP.png used on input line 277.
-(pdftex.def)             Requested size: 240.0pt x 223.47543pt.
-[5
-
- <./Pics-Pi/BT.png> <./Pics-Pi/EP.png> <./Pics-Pi/FT.png>] [6 <./Pics-Pi/IS.png
-> <./Pics-Pi/LU.png>] [7 <./Pics-Pi/MG.png> <./Pics-Pi/SP.png>] (./ACM_proc.aux
-) ) 
+Package pdftex.def Info: Pics-Pi/SP.png used on input line 297.
+(pdftex.def)             Requested size: 228.00645pt x 228.01567pt.
+[6 <./Pics-Pi/BT.png> <./Pics-Pi/EP.png> <./Pics-Pi/FT.png> <./Pics-Pi/IS.png>]
+[7 <./Pics-Pi/LU.png> <./Pics-Pi/MG.png> <./Pics-Pi/SP.png>] (./ACM_proc.aux) )
+ 
 Here is how much of TeX's memory you used:
  2902 strings out of 493488
  37156 string characters out of 3141326
@@ -357,13 +355,13 @@ Here is how much of TeX's memory you used:
  45986 words of font info for 62 fonts, out of 3000000 for 9000
  957 hyphenation exceptions out of 8191
  41i,10n,26p,610b,248s stack positions out of 5000i,500n,10000p,200000b,50000s
-{/usr/local/texlive/2012/texmf-dist/fonts/enc/dvips/base/8r.enc}</usr/local/
-texlive/2012/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx9.pfb></usr/local/te
-xlive/2012/texmf-dist/fonts/type1/public/amsfonts/cm/cmr9.pfb></usr/local/texli
-ve/2012/texmf-dist/fonts/type1/urw/helvetic/uhvb8a.pfb></usr/local/texlive/2012
-/texmf-dist/fonts/type1/urw/helvetic/uhvr8a.pfb></usr/local/texlive/2012/texmf-
-dist/fonts/type1/urw/times/utmb8a.pfb>
-Output written on ACM_proc.pdf (7 pages, 233022 bytes).
+{/usr/local/texlive/2012/texmf-dist/fonts/enc/dvips/base/8r.enc}</usr/local/tex
+live/2012/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx9.pfb></usr/local/texli
+ve/2012/texmf-dist/fonts/type1/public/amsfonts/cm/cmr9.pfb></usr/local/texlive/
+2012/texmf-dist/fonts/type1/urw/helvetic/uhvb8a.pfb></usr/local/texlive/2012/te
+xmf-dist/fonts/type1/urw/helvetic/uhvr8a.pfb></usr/local/texlive/2012/texmf-dis
+t/fonts/type1/urw/times/utmb8a.pfb>
+Output written on ACM_proc.pdf (7 pages, 233048 bytes).
 PDF statistics:
  78 PDF objects out of 1000 (max. 8388607)
  35 compressed objects within 1 object stream
