@@ -1,6 +1,6 @@
 CXX=g++
 RM=rm -f
-CPPFLAGS=
+CPPFLAGS=-g
 LDFLAGS=
 LDLIBS=
 
