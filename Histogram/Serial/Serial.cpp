@@ -1,21 +1,14 @@
 
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <sys/mman.h> /* mmap() is defined in this header */
-#include <fcntl.h>
-
 #include <iostream>
 #include <vector>
 #include <algorithm>
 #include <cstdio>
 #include <cstring>
+#include <cstdlib>
 #include <cmath>
+#include <cerrno>
 using namespace std;
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <errno.h>
-#include <string.h>
 #include <sys/stat.h>
 
 
@@ -29,7 +22,6 @@ unsigned int GetFileSize(char const * const fileName)
     }
     return sb.st_size;
 }
-
 
 static char * ReadWholeFile(const char * fileName)
 {
@@ -67,16 +59,16 @@ static char * ReadWholeFile(const char * fileName)
 }
 
 template <typename T>
- static T const Clamp(T const & v, T const & min, T const & max)
+static T const Clamp(T const & v, T const & min, T const & max)
 {
-        return ((v >= max) ? max-1 : ((v < min) ? min : v));
+    return ((v >= max) ? max-1 : ((v < min) ? min : v));
 }
 
 class DataSet
 {
-    
+
     std::vector<float> Values;
-    
+
 public:
 
     void ReadFromFile(std::string const & fileName)
@@ -93,7 +85,7 @@ public:
             Token = strtok(0, Tokenizer);
         }
     }
-    
+
     void WriteToFile(std::string const & fileName)
     {
         FILE * outFile = fopen(fileName.c_str(), "w");
@@ -107,23 +99,27 @@ public:
         fclose(outFile);
     }
     
+    void CalculateMaximum()
+    {
+        Maximum = * std::max_element(Values.begin(), Values.end());
+    }
+
     std::vector<int> MakeHistogram(float const Min, float const BinWidth)
     {
-        float const Max = * std::max_element(Values.begin(), Values.end());
-        int const BinCount = ceil((Max - Min) / BinWidth);
+        int const BinCount = ceil((Maximum - Min) / BinWidth);
         
         std::vector<int> Histogram;
         Histogram.resize(BinCount);
         for (unsigned int i = 0; i < Values.size(); ++ i)
         {
             int index = (int) ((Values[i] - Min) / BinWidth) % BinCount;
-                //Clamp((int) ((Values[i] - Min) / BinWidth), 0, BinCount);
+            //int index = Clamp((int) ((Values[i] - Min) / BinWidth), 0, BinCount);
             Histogram[Clamp(index, 0, BinCount)] ++;
         }
         
         return Histogram;
     }
-    
+
     void WriteHistogramToFile(float const Min, float const BinWidth, std::string const & fileName)
     {
         std::vector<int> Histogram = MakeHistogram(Min, BinWidth);
@@ -137,7 +133,7 @@ public:
                 fprintf(outFile, "%d, %d\n", i, Histogram[i]);
         fclose(outFile);
     }
-    
+
     void MakeSum(DataSet const & A, DataSet const & B)
     {
         if (A.Size() != B.Size())
@@ -150,16 +146,18 @@ public:
         for (unsigned int i = 0; i < A.Size(); ++ i)
             Values[i] = A[i] + B[i];
     }
-    
+
     unsigned int Size() const
     {
         return Values.size();
     }
-    
+
     float operator[] (unsigned int const i) const
     {
         return Values[i];
     }
+    
+    int Maximum;
 };
 
 
@@ -167,24 +165,28 @@ int main (int argc, char * argv[])
 {
     static float const BinWidth = 0.5f;
     static float const Min = -10.f;
-    
+
     if (argc != 3)
     {
         fprintf(stderr, "usage: Serial <file1> <file2>");
         exit(EXIT_FAILURE);
     }
-    
+
     DataSet A, B, C;
-    
+
     A.ReadFromFile(argv[1]);
     B.ReadFromFile(argv[2]);
-    
+
     C.MakeSum(A, B);
     C.WriteToFile("result.out");
-    
+
+    A.CalculateMaximum();
+    B.CalculateMaximum();
+    C.Maximum = A.Maximum + B.Maximum;
+
     A.WriteHistogramToFile(Min, BinWidth, "hist.a");
     B.WriteHistogramToFile(Min, BinWidth, "hist.b");
     C.WriteHistogramToFile(Min*2, BinWidth, "hist.c");
-    
+
     return 0;
 }

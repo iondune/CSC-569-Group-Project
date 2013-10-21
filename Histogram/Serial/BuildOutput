@@ -1,0 +1,11 @@
+#! /bin/sh
+
+make -s
+
+for test in 100000 1000000 10000000
+do
+    echo "Generating out for test $test"
+    echo "-----------------------------------"
+    Serial ../Tests/$test/$test.a ../Tests/$test/$test.b
+    mv hist.a hist.b hist.c result.out ../Tests/$test/
+done

@@ -14,7 +14,7 @@ Serial: $(OBJS)
 
 depend: .depend
 
-.depend: $(SRCS)
+.depend:
 	rm -f ./.depend
 	$(CXX) $(CPPFLAGS) -MM $^>>./.depend;
 
