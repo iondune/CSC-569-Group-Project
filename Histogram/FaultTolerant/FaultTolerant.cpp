@@ -245,9 +245,6 @@ int main (int argc, char * argv[])
     if (ProcessorId == 0)
     {
         C.WriteToFile("result.out");
-    }
-    else if (ProcessorId == 1)
-    {
         A.WriteHistogramToFile(HistA, "hist.a");
         B.WriteHistogramToFile(HistB, "hist.b");
         C.WriteHistogramToFile(HistC, "hist.c");
