@@ -1,4 +1,5 @@
 
+// Standard Library
 #include <iostream>
 #include <vector>
 #include <algorithm>
@@ -8,19 +9,17 @@
 #include <cmath>
 #include <cerrno>
 #include <limits>
-using namespace std;
 
+// Unix shit
 #include <sys/stat.h>
-#include "hrt.h"
-#include <mpi.h>
 #include <sys/types.h>
 #include <sys/mman.h>
-#include <err.h>
 #include <fcntl.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
 #include <unistd.h>
+
+// MPI and HRT
+#include <mpi.h>
+#include "hrt.h"
 
 
 unsigned int GetFileSize(std::string const & fileName)
@@ -246,6 +245,9 @@ int main (int argc, char * argv[])
     if (ProcessorId == 0)
     {
         C.WriteToFile("result.out");
+    }
+    else if (ProcessorId == 1)
+    {
         A.WriteHistogramToFile(HistA, "hist.a");
         B.WriteHistogramToFile(HistB, "hist.b");
         C.WriteHistogramToFile(HistC, "hist.c");
