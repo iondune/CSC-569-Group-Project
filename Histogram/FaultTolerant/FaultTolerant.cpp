@@ -49,7 +49,7 @@ public:
     void ReadFromFile(std::string const & fileName)
     {
         static char const * const Tokenizer = " ";
-        
+
         int fd = open(fileName.c_str(), O_RDONLY, 0);
         if (fd == -1)
         {
@@ -60,7 +60,7 @@ public:
         char * const FileContents = (char * const) mmap(
             NULL,
             GetFileSize(fileName.c_str()),
-            PROT_READ|PROT_WRITE,
+            PROT_READ | PROT_WRITE,
             MAP_PRIVATE,
             fd,
             0);
@@ -95,7 +95,7 @@ public:
             fprintf(outFile, "%.2f ", Values[i]);
         fclose(outFile);
     }
-    
+
     void CalculateMaximum()
     {
         Maximum = * std::max_element(Values.begin(), Values.end());
@@ -104,7 +104,7 @@ public:
     std::vector<int> MakeHistogram(float const Min, float const BinWidth)
     {
         int const BinCount = ceil((Maximum - Min) / BinWidth);
-        
+
         std::vector<int> Histogram;
         Histogram.resize(BinCount);
         for (unsigned int i = 0; i < Values.size(); ++ i)
@@ -112,7 +112,7 @@ public:
             int index = Clamp((int) ((Values[i] - Min) / BinWidth), 0, BinCount);
             Histogram[Clamp(index, 0, BinCount)] ++;
         }
-        
+
         return Histogram;
     }
 
@@ -125,7 +125,7 @@ public:
             exit(EXIT_FAILURE);
         }
         for (unsigned int i = 0; i < Histogram.size(); ++ i)
-                fprintf(outFile, "%d, %d\n", i, Histogram[i]);
+            fprintf(outFile, "%d, %d\n", i, Histogram[i]);
         fclose(outFile);
     }
 
@@ -136,7 +136,7 @@ public:
             std::cerr << "Vector sizes differ! " << A.Size() << " " << B.Size() << std::endl;
             exit(EXIT_FAILURE);
         }
-        
+
         Values.resize(A.Size());
         for (unsigned int i = 0; i < A.Size(); ++ i)
             Values[i] = A[i] + B[i];
@@ -151,7 +151,7 @@ public:
     {
         return Values[i];
     }
-    
+
     int Maximum;
 };
 
