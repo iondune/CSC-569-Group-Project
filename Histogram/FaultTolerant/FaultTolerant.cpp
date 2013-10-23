@@ -12,6 +12,14 @@ using namespace std;
 #include <sys/stat.h>
 #include "hrt.h"
 // #include <mpi.h>
+#include <sys/types.h>
+#include <sys/mman.h>
+#include <err.h>
+#include <fcntl.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
 
 
 unsigned int GetFileSize(char const * const fileName)
@@ -23,41 +31,6 @@ unsigned int GetFileSize(char const * const fileName)
         exit(EXIT_FAILURE);
     }
     return sb.st_size;
-}
-
-static char * ReadWholeFile(const char * fileName)
-{
-    unsigned int s;
-    char * contents;
-    FILE * f;
-    size_t bytesRead;
-    int status;
-
-    s = GetFileSize(fileName);
-    if (! (contents = (char *) malloc(s + 1)))
-    {
-        fprintf(stderr, "Not enough memory.\n");
-        exit(EXIT_FAILURE);
-    }
-
-    if (! (f = fopen(fileName, "r")))
-    {
-        fprintf(stderr, "Could not open '%s': %s.\n", fileName, strerror(errno));
-        exit(EXIT_FAILURE);
-    }
-
-    if ((bytesRead = fread(contents, sizeof(char), s, f)) != s)
-    {
-        fprintf (stderr, "Short read of '%s': expected %d bytes "
-                 "but got %d: %s.\n", fileName, s, bytesRead, strerror(errno));
-        exit(EXIT_FAILURE);
-    }
-    if ((status = fclose(f)) != 0)
-    {
-        fprintf (stderr, "Error closing '%s': %s.\n", fileName, strerror(errno));
-        exit(EXIT_FAILURE);
-    }
-    return contents;
 }
 
 template <typename T>
@@ -77,7 +50,26 @@ public:
     {
         static char const * const Tokenizer = " ";
         
-        char * const FileContents = ReadWholeFile(fileName.c_str());
+        int fd = open(fileName.c_str(), O_RDONLY, 0);
+        if (fd == -1)
+        {
+            fprintf(stderr, "Failed to open file '%s' for reading: %s\n", fileName.c_str(), strerror(errno));
+            exit(EXIT_FAILURE);
+        }
+
+        char * const FileContents = (char * const) mmap(
+            NULL,
+            GetFileSize(fileName.c_str()),
+            PROT_READ|PROT_WRITE,
+            MAP_PRIVATE,
+            fd,
+            0);
+
+        if (FileContents == MAP_FAILED)
+        {
+            fprintf(stderr, "Failed to map file '%s': %s\n", fileName.c_str(), strerror(errno));
+            exit(EXIT_FAILURE);
+        }
         char * Token = strtok(FileContents, Tokenizer);
         Values.reserve(100000);
         while (Token)
@@ -87,6 +79,8 @@ public:
                 Values.push_back(atof(Token));
             Token = strtok(0, Tokenizer);
         }
+        munmap(FileContents, 4096);
+        close(fd);
     }
 
     void WriteToFile(std::string const & fileName)

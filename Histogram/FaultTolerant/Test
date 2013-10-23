@@ -12,7 +12,7 @@ mv hist.a hist.b hist.c result.out TestOutput/
 
 for file in hist.a hist.b hist.c result.out
 do
-    diff -q ./TestOutput/$file ../Tests/10000/$file > /dev/null
+    diff -q ./TestOutput/$file ../Tests/10000/$file > /dev/null 2>&1
     if [ $? -ne 0 ]
     then
         echo "Diff failure for $file"
