@@ -79,6 +79,7 @@ public:
         
         char * const FileContents = ReadWholeFile(fileName.c_str());
         char * Token = strtok(FileContents, Tokenizer);
+        Values.reserve(100000);
         while (Token)
         {
             float Value;
@@ -121,9 +122,8 @@ public:
         return Histogram;
     }
 
-    void WriteHistogramToFile(float const Min, float const BinWidth, std::string const & fileName)
+    void WriteHistogramToFile(std::vector<int> const & Histogram, std::string const & fileName)
     {
-        std::vector<int> Histogram = MakeHistogram(Min, BinWidth);
         FILE * outFile = fopen(fileName.c_str(), "w");
         if (! outFile)
         {
@@ -182,29 +182,37 @@ int main (int argc, char * argv[])
     A.ReadFromFile(argv[1]);
     B.ReadFromFile(argv[2]);
     hrt_stop();
-    printf("Read took %5s.\n", hrt_stringms());
+    printf("Read  took %7s.\n", hrt_stringms());
 
     hrt_start();
     C.MakeSum(A, B);
-    C.WriteToFile("result.out");
     hrt_stop();
-    printf("Sum  took %5s.\n", hrt_stringms());
+    printf("Sum   took %7s.\n", hrt_stringms());
 
     hrt_start();
     A.CalculateMaximum();
     B.CalculateMaximum();
     C.Maximum = A.Maximum + B.Maximum;
     hrt_stop();
-    printf("Max  took %5s.\n", hrt_stringms());
+    printf("Max   took %7s.\n", hrt_stringms());
 
     hrt_start();
     static float const BinWidth = 0.5f;
     static float const Min = -10.f;
-    A.WriteHistogramToFile(Min, BinWidth, "hist.a");
-    B.WriteHistogramToFile(Min, BinWidth, "hist.b");
-    C.WriteHistogramToFile(Min*2, BinWidth, "hist.c");
+    std::vector<int> const &
+        HistA = A.MakeHistogram(Min, BinWidth),
+        HistB = B.MakeHistogram(Min, BinWidth),
+        HistC = C.MakeHistogram(Min*2, BinWidth);
     hrt_stop();
-    printf("Hist took %5s.\n", hrt_stringms());
+    printf("Hist  took %7s.\n", hrt_stringms());
+
+    hrt_start();
+    C.WriteToFile("result.out");
+    A.WriteHistogramToFile(HistA, "hist.a");
+    B.WriteHistogramToFile(HistB, "hist.b");
+    C.WriteHistogramToFile(HistC, "hist.c");
+    hrt_stop();
+    printf("Write took %7s.\n", hrt_stringms());
 
     return 0;
 }
