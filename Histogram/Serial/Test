@@ -23,6 +23,8 @@ do
     fi
 done
 
+rm -r TestOutput/
+
 if [ $failed ]
 then
     echo "Tests failed."
