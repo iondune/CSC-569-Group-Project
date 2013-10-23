@@ -23,12 +23,12 @@ using namespace std;
 #include <unistd.h>
 
 
-unsigned int GetFileSize(char const * const fileName)
+unsigned int GetFileSize(std::string const & fileName)
 {
     struct stat sb;
-    if (stat(fileName, & sb) != 0)
+    if (stat(fileName.c_str(), & sb) != 0)
     {
-        fprintf(stderr, "'stat' failed for '%s': %s.\n", fileName, strerror(errno));
+        fprintf(stderr, "'stat' failed for '%s': %s.\n", fileName.c_str(), strerror(errno));
         exit(EXIT_FAILURE);
     }
     return sb.st_size;
@@ -40,35 +40,56 @@ static T const Clamp(T const & v, T const & min, T const & max)
     return ((v >= max) ? max-1 : ((v < min) ? min : v));
 }
 
-class DataSet
+class MappedFile
 {
+
+    int FileDescriptor;
 
 public:
 
-    void ReadFromFile(std::string const & fileName)
+    MappedFile(std::string const & fileName)
     {
-        static char const * const Tokenizer = " ";
-
-        int fd = open(fileName.c_str(), O_RDONLY, 0);
-        if (fd == -1)
+        Size = GetFileSize(fileName);
+        FileDescriptor = open(fileName.c_str(), O_RDONLY, 0);
+        if (FileDescriptor == -1)
         {
             fprintf(stderr, "Failed to open file '%s' for reading: %s\n", fileName.c_str(), strerror(errno));
             exit(EXIT_FAILURE);
         }
 
-        char * const FileContents = (char * const) mmap(
+        Contents = (char *) mmap(
             NULL,
-            GetFileSize(fileName.c_str()),
+            Size,
             PROT_READ | PROT_WRITE,
             MAP_PRIVATE,
-            fd,
+            FileDescriptor,
             0);
 
-        if (FileContents == MAP_FAILED)
+        if (Contents == MAP_FAILED)
         {
             fprintf(stderr, "Failed to map file '%s': %s\n", fileName.c_str(), strerror(errno));
             exit(EXIT_FAILURE);
         }
+    }
+
+    ~MappedFile()
+    {
+        munmap(Contents, Size);
+        close(FileDescriptor);
+    }
+
+    char * Contents;
+    unsigned int Size;
+};
+
+class DataSet
+{
+
+public:
+
+    void ParseFromString(char * const FileContents)
+    {
+        static char const * const Tokenizer = " ";
         char * Token = strtok(FileContents, Tokenizer);
         Values.reserve(10000);
         Maximum = -std::numeric_limits<float>::max();
@@ -82,8 +103,6 @@ public:
             }
             Token = strtok(0, Tokenizer);
         }
-        munmap(FileContents, 4096);
-        close(fd);
     }
 
     void WriteToFile(std::string const & fileName)
@@ -169,16 +188,20 @@ int main (int argc, char * argv[])
         exit(EXIT_FAILURE);
     }
 
-    DataSet A, B, C;
+    hrt_start();
+    MappedFile AFile(argv[1]), BFile(argv[2]);
+    hrt_stop();
+    printf("Map  %d  took %7s.\n", ProcessorId, hrt_stringms());
 
     hrt_start();
-    A.ReadFromFile(argv[1]);
-    B.ReadFromFile(argv[2]);
+    DataSet A, B;
+    A.ParseFromString(AFile.Contents);
+    B.ParseFromString(BFile.Contents);
     hrt_stop();
     printf("Read %d  took %7s.\n", ProcessorId, hrt_stringms());
     
     hrt_start();
-    if (ProcessorId == 0)
+    if (ProcessorId == 0 && ProcessorCount > 1)
     {
         MPI_Status status;
         MPI_Recv(& A.Values.front(), A.Values.size(), MPI_FLOAT, MPI_ANY_SOURCE, 1234, MPI_COMM_WORLD, & status);
@@ -191,6 +214,7 @@ int main (int argc, char * argv[])
     printf("Send %d  took %7s.\n", ProcessorId, hrt_stringms());
 
     hrt_start();
+    DataSet C;
     C.MakeSum(A, B);
     hrt_stop();
     printf("Sum %d   took %7s.\n", ProcessorId, hrt_stringms());
