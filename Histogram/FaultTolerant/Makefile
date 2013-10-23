@@ -1,4 +1,4 @@
-CXX=g++
+CXX=mpic++
 RM=rm -f
 CPPFLAGS=-g
 LDFLAGS=-lrt

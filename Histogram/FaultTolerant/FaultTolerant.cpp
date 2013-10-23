@@ -12,7 +12,7 @@ using namespace std;
 
 #include <sys/stat.h>
 #include "hrt.h"
-// #include <mpi.h>
+#include <mpi.h>
 #include <sys/types.h>
 #include <sys/mman.h>
 #include <err.h>
@@ -42,8 +42,6 @@ static T const Clamp(T const & v, T const & min, T const & max)
 
 class DataSet
 {
-
-    std::vector<float> Values;
 
 public:
 
@@ -152,17 +150,18 @@ public:
         return Values[i];
     }
 
+    std::vector<float> Values;
     float Maximum;
 };
 
 
 int main (int argc, char * argv[])
 {
-    // MPI_Init(& argc, & argv);
+    MPI_Init(& argc, & argv);
 
-    // int ProcessorId, ProcessorCount;
-    // MPI_Comm_size(MPI_COMM_WORLD, & ProcessorCount);
-    // MPI_Comm_rank(MPI_COMM_WORLD, & ProcessorId);
+    int ProcessorId, ProcessorCount;
+    MPI_Comm_size(MPI_COMM_WORLD, & ProcessorCount);
+    MPI_Comm_rank(MPI_COMM_WORLD, & ProcessorId);
 
     if (argc != 3)
     {
@@ -176,12 +175,25 @@ int main (int argc, char * argv[])
     A.ReadFromFile(argv[1]);
     B.ReadFromFile(argv[2]);
     hrt_stop();
-    printf("Read  took %7s.\n", hrt_stringms());
+    printf("Read %d  took %7s.\n", ProcessorId, hrt_stringms());
+    
+    hrt_start();
+    if (ProcessorId == 0)
+    {
+        MPI_Status status;
+        MPI_Recv(& A.Values.front(), A.Values.size(), MPI_FLOAT, MPI_ANY_SOURCE, 1234, MPI_COMM_WORLD, & status);
+    }
+    else if (ProcessorId == 1)
+    {
+        MPI_Send(& A.Values.front(), A.Values.size(), MPI_FLOAT, 0, 1234, MPI_COMM_WORLD);
+    }
+    hrt_stop();
+    printf("Send %d  took %7s.\n", ProcessorId, hrt_stringms());
 
     hrt_start();
     C.MakeSum(A, B);
     hrt_stop();
-    printf("Sum   took %7s.\n", hrt_stringms());
+    printf("Sum %d   took %7s.\n", ProcessorId, hrt_stringms());
 
     C.Maximum = A.Maximum + B.Maximum;
 
@@ -193,15 +205,20 @@ int main (int argc, char * argv[])
         HistB = B.MakeHistogram(Min, BinWidth),
         HistC = C.MakeHistogram(Min*2, BinWidth);
     hrt_stop();
-    printf("Hist  took %7s.\n", hrt_stringms());
+    printf("Hist %d  took %7s.\n", ProcessorId, hrt_stringms());
 
     hrt_start();
-    C.WriteToFile("result.out");
-    A.WriteHistogramToFile(HistA, "hist.a");
-    B.WriteHistogramToFile(HistB, "hist.b");
-    C.WriteHistogramToFile(HistC, "hist.c");
+    if (ProcessorId == 0)
+    {
+        C.WriteToFile("result.out");
+        A.WriteHistogramToFile(HistA, "hist.a");
+        B.WriteHistogramToFile(HistB, "hist.b");
+        C.WriteHistogramToFile(HistC, "hist.c");
+    }
     hrt_stop();
-    printf("Write took %7s.\n", hrt_stringms());
+    printf("Write %d took %7s.\n", ProcessorId, hrt_stringms());
+    
+    MPI_Finalize();
 
     return 0;
 }
