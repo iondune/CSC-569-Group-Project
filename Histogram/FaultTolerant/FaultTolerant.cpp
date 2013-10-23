@@ -103,6 +103,7 @@ public:
             }
             Token = strtok(0, Tokenizer);
         }
+        Values.push_back(Maximum);
     }
 
     void WriteToFile(std::string const & fileName)
@@ -193,31 +194,41 @@ int main (int argc, char * argv[])
     hrt_stop();
     printf("Map  %d  took %7s.\n", ProcessorId, hrt_stringms());
 
-    hrt_start();
-    DataSet A, B;
-    A.ParseFromString(AFile.Contents);
-    B.ParseFromString(BFile.Contents);
-    hrt_stop();
-    printf("Read %d  took %7s.\n", ProcessorId, hrt_stringms());
     
     hrt_start();
-    if (ProcessorId == 0 && ProcessorCount > 1)
+    DataSet A, B;
+    if (ProcessorId == 0)
     {
+        A.ParseFromString(AFile.Contents);
+        B.Values.resize(A.Values.size());
+        
         MPI_Status status;
-        MPI_Recv(& A.Values.front(), A.Values.size(), MPI_FLOAT, MPI_ANY_SOURCE, 1234, MPI_COMM_WORLD, & status);
+        MPI_Recv(& B.Values.front(), B.Values.size(), MPI_FLOAT, 1, 1234, MPI_COMM_WORLD, & status);
+        B.Maximum = B.Values.back();
+
+        MPI_Send(& A.Values.front(), A.Values.size(), MPI_FLOAT, 1, 1234, MPI_COMM_WORLD);
     }
     else if (ProcessorId == 1)
     {
-        MPI_Send(& A.Values.front(), A.Values.size(), MPI_FLOAT, 0, 1234, MPI_COMM_WORLD);
+        B.ParseFromString(BFile.Contents);
+        A.Values.resize(B.Values.size());
+
+        MPI_Send(& B.Values.front(), B.Values.size(), MPI_FLOAT, 0, 1234, MPI_COMM_WORLD);
+
+        MPI_Status status;
+        MPI_Recv(& A.Values.front(), A.Values.size(), MPI_FLOAT, 0, 1234, MPI_COMM_WORLD, & status);
+        A.Maximum = A.Values.back();
     }
+    A.Values.erase(-- A.Values.end());
+    B.Values.erase(-- B.Values.end());
     hrt_stop();
-    printf("Send %d  took %7s.\n", ProcessorId, hrt_stringms());
+    printf("R+S  %d  took %7s.\n", ProcessorId, hrt_stringms());
 
     hrt_start();
     DataSet C;
     C.MakeSum(A, B);
     hrt_stop();
-    printf("Sum %d   took %7s.\n", ProcessorId, hrt_stringms());
+    printf("Sum  %d   took %7s.\n", ProcessorId, hrt_stringms());
 
     C.Maximum = A.Maximum + B.Maximum;
 
