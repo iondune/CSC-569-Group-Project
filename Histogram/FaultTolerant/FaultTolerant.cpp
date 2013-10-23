@@ -10,6 +10,8 @@
 using namespace std;
 
 #include <sys/stat.h>
+#include "hrt.h"
+// #include <mpi.h>
 
 
 unsigned int GetFileSize(char const * const fileName)
@@ -162,8 +164,11 @@ public:
 
 int main (int argc, char * argv[])
 {
-    static float const BinWidth = 0.5f;
-    static float const Min = -10.f;
+    // MPI_Init(& argc, & argv);
+
+    // int ProcessorId, ProcessorCount;
+    // MPI_Comm_size(MPI_COMM_WORLD, & ProcessorCount);
+    // MPI_Comm_rank(MPI_COMM_WORLD, & ProcessorId);
 
     if (argc != 3)
     {
@@ -173,19 +178,33 @@ int main (int argc, char * argv[])
 
     DataSet A, B, C;
 
+    hrt_start();
     A.ReadFromFile(argv[1]);
     B.ReadFromFile(argv[2]);
+    hrt_stop();
+    printf("Read took %5s.\n", hrt_stringms());
 
+    hrt_start();
     C.MakeSum(A, B);
     C.WriteToFile("result.out");
+    hrt_stop();
+    printf("Sum  took %5s.\n", hrt_stringms());
 
+    hrt_start();
     A.CalculateMaximum();
     B.CalculateMaximum();
     C.Maximum = A.Maximum + B.Maximum;
+    hrt_stop();
+    printf("Max  took %5s.\n", hrt_stringms());
 
+    hrt_start();
+    static float const BinWidth = 0.5f;
+    static float const Min = -10.f;
     A.WriteHistogramToFile(Min, BinWidth, "hist.a");
     B.WriteHistogramToFile(Min, BinWidth, "hist.b");
     C.WriteHistogramToFile(Min*2, BinWidth, "hist.c");
+    hrt_stop();
+    printf("Hist took %5s.\n", hrt_stringms());
 
     return 0;
 }

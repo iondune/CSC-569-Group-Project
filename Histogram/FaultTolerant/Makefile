@@ -1,10 +1,10 @@
 CXX=g++
 RM=rm -f
 CPPFLAGS=-g
-LDFLAGS=
+LDFLAGS=-lrt
 LDLIBS=
 
-SRCS=FaultTolerant.cpp
+SRCS=FaultTolerant.cpp hrt.cpp
 OBJS=$(subst .cpp,.o,$(SRCS))
 
 all: FaultTolerant
