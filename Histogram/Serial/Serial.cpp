@@ -112,8 +112,7 @@ public:
         Histogram.resize(BinCount);
         for (unsigned int i = 0; i < Values.size(); ++ i)
         {
-            int index = (int) ((Values[i] - Min) / BinWidth) % BinCount;
-            //int index = Clamp((int) ((Values[i] - Min) / BinWidth), 0, BinCount);
+            int index = Clamp((int) ((Values[i] - Min) / BinWidth), 0, BinCount);
             Histogram[Clamp(index, 0, BinCount)] ++;
         }
         
