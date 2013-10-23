@@ -7,6 +7,7 @@
 #include <cstdlib>
 #include <cmath>
 #include <cerrno>
+#include <limits>
 using namespace std;
 
 #include <sys/stat.h>
@@ -71,12 +72,16 @@ public:
             exit(EXIT_FAILURE);
         }
         char * Token = strtok(FileContents, Tokenizer);
-        Values.reserve(100000);
+        Values.reserve(10000);
+        Maximum = -std::numeric_limits<float>::max();
         while (Token)
         {
             float Value;
             if (sscanf(Token, "%f", & Value) == 1)
+            {
                 Values.push_back(atof(Token));
+                Maximum = std::max(Maximum, Value);
+            }
             Token = strtok(0, Tokenizer);
         }
         munmap(FileContents, 4096);
@@ -94,11 +99,6 @@ public:
         for (int i = 0; i < Values.size(); ++ i)
             fprintf(outFile, "%.2f ", Values[i]);
         fclose(outFile);
-    }
-
-    void CalculateMaximum()
-    {
-        Maximum = * std::max_element(Values.begin(), Values.end());
     }
 
     std::vector<int> MakeHistogram(float const Min, float const BinWidth)
@@ -152,7 +152,7 @@ public:
         return Values[i];
     }
 
-    int Maximum;
+    float Maximum;
 };
 
 
@@ -183,12 +183,7 @@ int main (int argc, char * argv[])
     hrt_stop();
     printf("Sum   took %7s.\n", hrt_stringms());
 
-    hrt_start();
-    A.CalculateMaximum();
-    B.CalculateMaximum();
     C.Maximum = A.Maximum + B.Maximum;
-    hrt_stop();
-    printf("Max   took %7s.\n", hrt_stringms());
 
     hrt_start();
     static float const BinWidth = 0.5f;
