@@ -1,4 +1,4 @@
-#include "strutil.h"
+#include "lib/strutil.h"
 
 #include <stdlib.h>
 
@@ -6,9 +6,10 @@ void withChunks(char* data,
                 const char delim,
                 int chunkSize,
                 void* extra,
-                void (*f)(char*, int, const char, int, void*)) {
+                void (*f)(char*, int, const char, int, int, void*)) {
   char* begin = data;
   char* cur = data;
+  int ordinal = 0;
 
   while (*begin != '\0') {
     int count = 0;
@@ -19,15 +20,16 @@ void withChunks(char* data,
     if (*cur == '\0')
       count++; // Last item.
 
-    f(begin, count, delim, chunkSize, extra);
+    f(begin, ordinal, delim, chunkSize, count, extra);
     begin = cur;
+    ordinal++;
   }
 }
 
 void withChunksSpace(char* data, 
-                     int chunkSize, 
+                     int chunkSize,
                      void* extra, 
-                     void (*f)(char*, int, const char, int, void*)) {
+                     void (*f)(char*, int, const char, int, int, void*)) {
   withChunks(data, ' ', chunkSize, extra, f);
 }
 
