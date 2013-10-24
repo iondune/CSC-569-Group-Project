@@ -3,26 +3,35 @@ CFLAGS=
 LDFLAGS=
 
 # Source
-SRCS=$(wildcard src/*.cpp src/**/*.cpp)
+SRCS=$(wildcard src/*.cpp src/**/*.cpp lib/*.cpp lib/**/*.cpp)
+OBJS=$(patsubst %.cpp,%.o,$(SRCS))
+INC_DIRS=-I.
 
 # Linux source
-OBJS_LINUX=$(wildcard %.cpp,%.o,$(SRCS)) $(wildcard deps/src/obj/linux/*.o)
+OBJS_LINUX=$(OBJS) $(wildcard deps/src/obj/linux/*.o)
 LIBS_LINUX=$(wildcard deps/src/lib/linux/*)
 
 # Pi source
+OBJS_PI=$(OBJS) $(wildcard deps/src/obj/mpicc/*.o)
+LIBS_PI=$(wildcard deps/src/lib/mpicc/*)
+
 
 linux: makeDirectories $(OBJS_LINUX)
 	$(CC) $(LDFLAGS) \
 	      $(INC_DIRS) \
 	      $(OBJS_LINUX) \
 	      $(LIBS_LINUX) \
-	      -o bin/main
+	      -o bin/main-linux
 
-%.o: %.c
-	$(CC) $(CFLAGS) -c $< -o $@
+pi: makeDirectories $(OBJS_PI)
+	$(CC) $(LDFLAGS) \
+	      $(INC_DIRS) \
+	      $(OBJS_PI) \
+	      $(LIBS_PI) \
+	      -o bin/main-pi
 
-foo:
-	mpic++ -I. src/main.cpp lib/vector.cpp lib/strutil.c deps/src/obj/linux/* deps/src/lib/linux/libmrmpi_linux.a
+%.o: %.cpp
+	$(CC) -I. $(CFLAGS) -c $< -o $@
 
 .PHONY: makeDirectories
 makeDirectories:
