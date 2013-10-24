@@ -28,6 +28,14 @@ static void printScan(char *key,
                       int valuebytes, 
                       void *ptr);
 
+static int maxCompare(char* str1, int len1, char* str2, int len2);
+
+static void maxScan(char* keystr, 
+                    int keyLen, 
+                    char* valstr, 
+                    int valLen, 
+                    void* extra);
+
 typedef struct {
   char* data;
   int ordinal;
@@ -99,7 +107,24 @@ void addReduce(char* key,
 }
 
 float Vector::max() {
-  return 10.0; // TODO
+  // Must gather first, because sort_values will only sort each processor's
+  // KeyValue pairs.
+  gather(1);
+  sort_values(&maxCompare);
+
+  float max;
+  scan(&maxScan, &max);
+  return max;
+}
+
+int maxCompare(char* str1, int len1, char* str2, int len2) {
+  float val1 = *((float*) str1);
+  float val2 = *((float*) str2);
+  return val1 - val2;
+}
+
+void maxScan(char* keystr, int keyLen, char* valstr, int valLen, void* extra) {
+  *((float*) extra) = *((float*) valstr);
 }
 
 void Vector::print() {

@@ -20,7 +20,9 @@ class Vector : private MAPREDUCE_NS::MapReduce {
   Vector* add(Vector* other);
 
   /**
-   * Get the maximum value.
+   * Get the maximum value. Has the following side effects:
+   *    The computation is gathered to one processor.
+   *    The values are sorted.
    */
   float max();
 
