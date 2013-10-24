@@ -6,6 +6,8 @@ class KeyValue;
 
 class Vector : private MAPREDUCE_NS::MapReduce {
  public:
+  Vector* copy();
+
   /**
    * Create a Vector* from a pointer to a string of floats. Break the data
    * up into chunks of size |chunkSize|, for parallelization.
@@ -13,9 +15,9 @@ class Vector : private MAPREDUCE_NS::MapReduce {
   static Vector* from(char* data, int chunkSize);
 
   /**
-   * Add two Vectors together.
+   * Add two Vectors together. Returns a new Vector (does not modify this one).
    */
-  static Vector* add(Vector* vecA, Vector* vecB);
+  Vector* add(Vector* other);
 
   /**
    * Get the maximum value.
@@ -28,9 +30,8 @@ class Vector : private MAPREDUCE_NS::MapReduce {
   void print();
 
  private:
-  Vector(MPI_Comm);
-  uint64_t add(Vector* other);
-
+  Vector(MPI_Comm comm);
+  //uint64_t add(Vector* other);
 
   static void handleVectorChunk(char* data,
                                 int ordinal,

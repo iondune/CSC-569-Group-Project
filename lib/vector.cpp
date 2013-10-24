@@ -7,6 +7,7 @@
 #include "deps/src/inc/mapreduce.h"
 #include "deps/src/inc/keyvalue.h"
 
+//using MAPREDUCE_NS::MapReduce;
 using MAPREDUCE_NS::KeyValue;
 
 static void mapChunk(int itask, 
@@ -33,6 +34,14 @@ typedef struct {
   int chunkSize;
   int count;
 } FromExtra;
+
+// Fallthrough.
+Vector::Vector(MPI_Comm comm) : MapReduce(comm) {
+}
+
+Vector* Vector::copy() {
+  return static_cast<Vector*>(MapReduce::copy());
+}
 
 Vector* Vector::from(char* data, int chunkSize) {
   Vector* vec = new Vector(MPI_COMM_WORLD);
@@ -68,13 +77,12 @@ void mapChunk(int itask, KeyValue* keyValue, void* extra) {
   }
 }
 
-Vector* Vector::add(Vector* vecA, Vector* vecB) {
-  Vector* vecC = new Vector(MPI_COMM_WORLD);
-  vecC->add(vecA);
-  vecC->add(vecB);
-  vecC->collate(NULL);
-  vecC->reduce(&addReduce, NULL);
-  return vecC;
+Vector* Vector::add(Vector* other) {
+  MapReduce* sum = MapReduce::copy();
+  sum->add(other);
+  sum->collate(NULL);
+  sum->reduce(&addReduce, NULL);
+  return static_cast<Vector*>(sum);
 }
 
 void addReduce(char* key,

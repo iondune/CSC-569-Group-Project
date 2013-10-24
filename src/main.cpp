@@ -18,8 +18,7 @@ int main(int argc, char** argv) {
 
   Vector* vecA = Vector::from(a, CHUNK_SIZE);
   Vector* vecB = Vector::from(b, CHUNK_SIZE);
-  Vector* vecC = Vector::add(vecA, vecB);
-  vecC->print();
+  Vector* vecC = vecA->add(vecB);
 
   delete vecA;
   delete vecB;
