@@ -27,6 +27,19 @@ class Vector : private MAPREDUCE_NS::MapReduce {
   float max();
 
   /**
+   * Bin fills out-parameter |bins| with the counts of the binned values of this
+   * vector. This Vector is destroyed in the process, and should not be used
+   * any longer.
+   *
+   * @param min   The minimum value in the vector.
+   * @param max   The maximum value in the vector
+   * @param width The width of the bins.
+   * @param bins  The bins to fill.
+   */
+  // KV -> (map variant 5, to bin/NULL pairs) -> KV -> (collate) -> KMV -> (reduce) -> KV -> scan, fill out param
+  void bin(float min, float max, float width, int* bins);
+
+  /**
    * Print key/value pairs to stdout.
    */
   void print();

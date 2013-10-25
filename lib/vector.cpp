@@ -10,9 +10,7 @@
 //using MAPREDUCE_NS::MapReduce;
 using MAPREDUCE_NS::KeyValue;
 
-static void mapChunk(int itask, 
-                           KeyValue* keyValue, 
-                           void* extra);
+static void mapChunk(int itask, KeyValue* keyValue, void* extra);
 
 static void addReduce(char* key,
                       int keybytes,
@@ -22,19 +20,49 @@ static void addReduce(char* key,
                       KeyValue* kv,
                       void* ptr);
 
-static void printScan(char *key, 
-                      int keybytes, 
-                      char *value, 
-                      int valuebytes, 
+static void printScan(char *key,
+                      int keybytes,
+                      char *value,
+                      int valuebytes,
                       void *ptr);
 
 static int maxCompare(char* str1, int len1, char* str2, int len2);
 
-static void maxScan(char* keystr, 
-                    int keyLen, 
-                    char* valstr, 
-                    int valLen, 
+static void maxScan(char* keystr,
+                    int keyLen,
+                    char* valstr,
+                    int valLen,
                     void* extra);
+
+static void binMap(uint64_t itask,
+                   char* keyStr,
+                   int keyLen,
+                   char* valStr,
+                   int valLen,
+                   KeyValue* keyValue,
+                   void* extra);
+
+static int getBinNum(float min, float max, float width, float val);
+
+static void binReduce(char* key,
+                      int keyLen,
+                      char* multiValue,
+                      int numValues,
+                      int* valueBytes,
+                      KeyValue* keyValue,
+                      void* extra);
+
+static void binScan(char* keyStr,
+                    int keyLen,
+                    char* valStr,
+                    int valLen,
+                    void* extra);
+
+typedef struct {
+  float min;
+  float max;
+  float width;
+} BinExtra;
 
 typedef struct {
   char* data;
@@ -57,11 +85,11 @@ Vector* Vector::from(char* data, int chunkSize) {
   return vec;
 }
 
-void Vector::handleVectorChunk(char* data, 
-                               int ordinal, 
-                               const char delim, 
+void Vector::handleVectorChunk(char* data,
+                               int ordinal,
+                               const char delim,
                                int chunkSize,
-                               int count, 
+                               int count,
                                void* extra) {
   Vector* vec = (Vector*) extra;
   FromExtra extraData = { data, ordinal, chunkSize, count };
@@ -125,6 +153,50 @@ int maxCompare(char* str1, int len1, char* str2, int len2) {
 
 void maxScan(char* keystr, int keyLen, char* valstr, int valLen, void* extra) {
   *((float*) extra) = *((float*) valstr);
+}
+
+void Vector::bin(float min, float max, float width, int* bins) {
+  BinExtra extra = { min, max, width };
+  map(this, binMap, &extra);
+  collate(NULL);
+  reduce(binReduce, NULL);
+  scan(binScan, bins);
+}
+
+void binMap(uint64_t itask,
+            char* keyStr,
+            int keyLen,
+            char* valStr,
+            int valLen,
+            KeyValue* keyValue,
+            void* extra) {
+  BinExtra* binExtra = (BinExtra*) extra;
+  float val = *((float*) valStr);
+  int binNum = getBinNum(binExtra->min, binExtra->max, binExtra->width, val);
+  keyValue->add((char*) &binNum, sizeof(binNum), NULL, 0);
+}
+
+int getBinNum(float min, float max, float width, float val) {
+  // TODO
+  return 0;
+}
+
+void binReduce(char* key,
+               int keyLen,
+               char* multiValue,
+               int numValues,
+               int* valueBytes,
+               KeyValue* keyValue,
+               void* extra) {
+  keyValue->add(key, keyLen, (char*) &numValues, sizeof(numValues));
+}
+
+void binScan(char* keyStr, int keyLen, char* valStr, int valLen, void* extra) {
+  int* bins = (int*) extra;
+  int index = *((int*) keyStr);
+  int count = *((int*) valStr);
+
+  bins[index] = count;
 }
 
 void Vector::print() {
