@@ -46,8 +46,9 @@ class Vector : private MAPREDUCE_NS::MapReduce {
 
  private:
   Vector(MPI_Comm comm);
-  //uint64_t add(Vector* other);
 
+  // This callback needs to be a static member function as opposed to a C-style
+  // naked function to access the private inherited MapReduce.
   static void handleVectorChunk(char* data,
                                 int ordinal,
                                 const char delim,
