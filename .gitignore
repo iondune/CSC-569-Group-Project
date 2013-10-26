@@ -1,3 +1,4 @@
+main.o
 src/**/*.o
 lib/**/*.o
 bin

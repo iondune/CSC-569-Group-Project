@@ -1,25 +1,50 @@
 CC=mpic++
-CFLAGS=
-LDFLAGS=
-
-# Source
-SRCS=$(wildcard src/*.cpp src/**/*.cpp)
-OBJS=$(patsubst %.cpp,%.o,$(SRCS))
+CFLAGS=-Wall -O3
+LDFLAGS=-Wall
 INC_DIRS=-I.
 
-# Linux source
+###############################################################################
+# Source                                                                      #
+###############################################################################
+MAIN=main.o
+
+SRCS=$(wildcard src/*.cpp src/**/*.cpp)
+OBJS=$(patsubst %.cpp,%.o,$(SRCS))
+
 OBJS_LINUX=$(OBJS) $(wildcard deps/src/obj/linux/*.o)
 LIBS_LINUX=$(wildcard deps/src/lib/linux/*)
 
-# Pi source
 OBJS_PI=$(OBJS) $(wildcard deps/src/obj/mpicc/*.o)
 LIBS_PI=$(wildcard deps/src/lib/mpicc/*)
 
+###############################################################################
+# Test                                                                        #
+###############################################################################
+TEST_MAIN=test/main.o
 
-linux: makeDirectories $(OBJS_LINUX)
+TEST_SRCS=$(SRCS) $(wildcard test/*.cpp test/**/*.cpp)
+TEST_OBJS=$(patsubst %.cpp,%.o,$(TEST_SRCS))
+
+TEST_OBJS_LINUX=$(TEST_OBJS) $(wildcard deps/src/obj/linux/*.o)
+TEST_LIBS_LINUX=$(wildcard deps/src/lib/linux/*) -lgtest
+
+TEST_OBJS_PI=$(TEST_OBJS) $(wildcard deps/src/obj/mpicc/*.o)
+TEST_LIBS_PI=$(wildcard deps/src/lib/mpicc/*)
+
+###############################################################################
+
+test-linux: $(TEST_OBJS)
+	$(CC) $(LDFLAGS) \
+	      $(INC_DIRS) \
+	      $(TEST_OBJS) \
+	      $(TEST_LIBS_LINUX) \
+	      -o bin/test-linux
+
+linux: makeDirectories $(OBJS_LINUX) $(MAIN)
 	$(CC) $(LDFLAGS) \
 	      $(INC_DIRS) \
 	      $(OBJS_LINUX) \
+	      $(MAIN) \
 	      $(LIBS_LINUX) \
 	      -o bin/main-linux
 
