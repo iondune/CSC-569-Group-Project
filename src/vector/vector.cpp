@@ -1,11 +1,11 @@
-#include "lib/vector.h"
+#include "src/vector/vector.h"
 
 #include <cstdlib> // atof
 #include <cstring>
 
-#include "lib/strutil.h"
 #include "deps/src/inc/mapreduce.h"
 #include "deps/src/inc/keyvalue.h"
+#include "src/string/util.h"
 
 //using MAPREDUCE_NS::MapReduce;
 using MAPREDUCE_NS::KeyValue;

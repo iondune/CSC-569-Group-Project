@@ -1,4 +1,4 @@
-#include "lib/strutil.h"
+#include "src/string/util.h"
 
 #include <stdlib.h>
 
@@ -26,9 +26,9 @@ void withChunks(char* data,
   }
 }
 
-void withChunksSpace(char* data, 
+void withChunksSpace(char* data,
                      int chunkSize,
-                     void* extra, 
+                     void* extra,
                      void (*f)(char*, int, const char, int, int, void*)) {
   withChunks(data, ' ', chunkSize, extra, f);
 }

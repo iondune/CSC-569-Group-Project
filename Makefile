@@ -3,7 +3,7 @@ CFLAGS=
 LDFLAGS=
 
 # Source
-SRCS=$(wildcard src/*.cpp src/**/*.cpp lib/*.cpp lib/**/*.cpp)
+SRCS=$(wildcard src/*.cpp src/**/*.cpp)
 OBJS=$(patsubst %.cpp,%.o,$(SRCS))
 INC_DIRS=-I.
 

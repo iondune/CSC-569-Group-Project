@@ -3,8 +3,8 @@
 #include <cstdio>
 #include <cstdlib>
 
-#include "lib/vector.h"
-#include "lib/strutil.h"
+#include "src/vector/vector.h"
+#include "src/string/util.h"
 
 #define CHUNK_SIZE 1
 
