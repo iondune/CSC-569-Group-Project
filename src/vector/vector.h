@@ -18,6 +18,7 @@ class Vector : private MAPREDUCE_NS::MapReduce {
 
   /**
    * Add two Vectors together. Returns a new Vector (does not modify this one).
+   * Returns NULL if the vectors are of unequal length.
    */
   Vector* add(Vector* other);
 

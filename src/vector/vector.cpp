@@ -121,7 +121,14 @@ Vector* Vector::add(Vector* other) {
   MapReduce* sum = MapReduce::copy();
   sum->add(other);
   sum->collate(NULL);
-  sum->reduce(&addReduce, NULL);
+
+  // Gets set to true if, in addReduce, it is discovered that the vectors were
+  // of unequal length.
+  bool unequalLength = false; 
+  sum->reduce(&addReduce, &unequalLength);
+  if (unequalLength)
+    return NULL;
+
   return static_cast<Vector*>(sum);
 }
 
@@ -130,12 +137,17 @@ void addReduce(char* key,
                char* values,
                int numValues,
                int lengths[],
-               KeyValue* kv,
-               void* ptr) {
+               KeyValue* keyValue,
+               void* extra) {
+  if (numValues != 2) {
+    *((bool*) extra) = true;
+    return;
+  }
+
   float floatA = *((float*) values);
   float floatB = *((float*) (values + sizeof(float)));
   float sum = floatA + floatB;
-  kv->add(key, keybytes, (char*) &sum, sizeof(float));
+  keyValue->add(key, keybytes, (char*) &sum, sizeof(float));
 }
 
 float Vector::max() {
