@@ -120,11 +120,12 @@ void mapChunk(int itask, KeyValue* keyValue, void* extra) {
   }
 }
 
-Vector* Vector::add(Vector* other) {
+Vector* Vector::add(Vector* other, int sums[]) {
   MapReduce* sum = MapReduce::copy();
   sum->add(other);
   sum->collate(NULL);
   sum->reduce(&addReduce, NULL);
+  sum->scan(binScan, sums);
   return static_cast<Vector*>(sum);
 }
 
