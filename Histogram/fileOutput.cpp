@@ -9,19 +9,21 @@
 
 using namespace std;
 
-int writeSumsToFile(string fileName, vector<float> sums);
-int writeHistToFile(string fileName, vector<int> hist);
-int writeAllOutputFiles(vector<float> sums,
-                        vector<int> histA,
-                        vector<int> histB,
-                        vector<int> histC);
+int writeSumsToFile(string fileName, float sums[]);
+int writeHistToFile(string fileName, int hist[]);
+int writeAllOutputFiles(float sums[],
+                        int histA[],
+                        int histB[],
+                        int histC[]);
 
-int writeSumsToFile(string fileName, vector<float> sums) {
+int writeSumsToFile(string fileName, float sums[]) {
     ofstream outFile;
 
     outFile.open(fileName, ios::trunc);
 
-    for (int i = 0; i < sums.size(); i++) {
+    int listSize = sizeof(sums) / sizeof(float);
+
+    for (int i = 0; i < listSize; i++) {
         if (i > 0) {
             // elements separated by single space
             outFile << " ";
@@ -35,12 +37,14 @@ int writeSumsToFile(string fileName, vector<float> sums) {
     return 0;
 }
 
-int writeHistToFile(string fileName, vector<int> hist) {
+int writeHistToFile(string fileName, int hist[]) {
     ofstream outFile;
 
     outFile.open(fileName, ios::trunc);
 
-    for (int i = 0; i < sums.size(); i++) {
+    int listSize = sizeof(hist) / sizeof(int);
+
+    for (int i = 0; i < listSize; i++) {
         // write bucket num and value
         outFile << i << ", ";
         outFile << hist[i] << endl;
@@ -50,10 +54,10 @@ int writeHistToFile(string fileName, vector<int> hist) {
     return 0;
 }
 
-int writeAllOutputFiles(vector<float> sums,
-                        vector<int> histA,
-                        vector<int> histB,
-                        vector<int> histC) {
+int writeAllOutputFiles(float sums[],
+                        int histA[],
+                        int histB[],
+                        int histC[]) {
     int errorCode = 0;
 
     if (errorCode = writeSumsToFile(SUM_FILE, sums) < 0) {
