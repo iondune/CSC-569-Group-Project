@@ -15,6 +15,12 @@ static Vector* vec(const string& data) {
   return Vector::from(const_cast<char*>(copy.c_str()), CHUNK_SIZE, NUM_PROCS);
 }
 
+// from with no data doesn't crash
+TEST(VectorTest, TestFromNoData) {
+  vec("");
+}
+
+// from works as expected
 TEST(VectorTest, TestFrom) {
   Vector* v = vec("1.0 2.0 3.0 4.0 5.0");
   vector<float> values = v->values();

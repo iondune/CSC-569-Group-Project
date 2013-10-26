@@ -26,6 +26,7 @@ class Vector : private MAPREDUCE_NS::MapReduce {
    * Get the maximum value. Has the following side effects:
    *    The computation is gathered to one processor.
    *    The values are sorted.
+   * Calling max with an empty vector throws an MPI error.
    */
   float max();
 
