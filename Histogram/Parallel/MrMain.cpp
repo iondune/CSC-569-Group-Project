@@ -56,7 +56,7 @@ int main(int narg, char **args)
    Vector* b = new Vector(MPI_COMM_WORLD);
    b->from(data2,200000);
 
-   int *sumsArray;
+   float *sumsArray;
    Vector* c = a->add(b, sumsArray);
 
    MPI_Barrier(MPI_COMM_WORLD);
