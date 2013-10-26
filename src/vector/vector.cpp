@@ -65,7 +65,6 @@ static void printScan(char *key,
                       int valuebytes,
                       void *ptr);
 
-
 typedef struct {
   float min;
   float max;
