@@ -2,19 +2,22 @@
 
 #include <gtest/gtest.h>
 
-#include <boost/scoped_ptr.hpp>
 #include <vector>
 
 #define CHUNK_SIZE 1
 #define NUM_PROCS 1
 
-using boost::scoped_ptr;
+using std::string;
 using std::vector;
 
+static Vector* vec(const string& data) {
+  string copy = string(data);
+  return Vector::from(const_cast<char*>(copy.c_str()), CHUNK_SIZE, NUM_PROCS);
+}
+
 TEST(VectorTest, TestFrom) {
-  char data[] = "1.0 2.0 3.0 4.0 5.0";
-  scoped_ptr<Vector> vec(Vector::from(data, CHUNK_SIZE, NUM_PROCS));
-  vector<float> values = vec->values();
+  Vector* v = vec("1.0 2.0 3.0 4.0 5.0");
+  vector<float> values = v->values();
 
   ASSERT_EQ(values.size(), 5);
   ASSERT_EQ(values[0], 1.0);
@@ -26,13 +29,11 @@ TEST(VectorTest, TestFrom) {
 
 // add does not modify either argument's values.
 TEST(VectorTest, TestAddDoesntModifyArgs) {
-  char data1[] = "1.0 2.0 3.0";
-  char data2[] = "4.0 5.0 6.0";
-  scoped_ptr<Vector> vec1(Vector::from(data1, CHUNK_SIZE, NUM_PROCS));
-  scoped_ptr<Vector> vec2(Vector::from(data2, CHUNK_SIZE, NUM_PROCS));
-  scoped_ptr<Vector> vecSum(vec1->add(vec2.get()));
-  vector<float> values1 = vec1->values();
-  vector<float> values2 = vec2->values();
+  Vector* v1 = vec("1.0 2.0 3.0");
+  Vector* v2 = vec("4.0 5.0 6.0");
+  v1->add(v2);
+  vector<float> values1 = v1->values();
+  vector<float> values2 = v2->values();
 
   ASSERT_EQ(values1.size(), 3);
   ASSERT_EQ(values1[0], 1.0);
@@ -47,24 +48,26 @@ TEST(VectorTest, TestAddDoesntModifyArgs) {
 
 // adding two vectors of unequal lengths results in NULL
 TEST(VectorTest, TestAddUnequalLength) {
-  char data1[] = "1.0 2.0 3.0";
-  char data2[] = "4.0 5.0";
-  scoped_ptr<Vector> vec1(Vector::from(data1, CHUNK_SIZE, NUM_PROCS));
-  scoped_ptr<Vector> vec2(Vector::from(data2, CHUNK_SIZE, NUM_PROCS));
-  scoped_ptr<Vector> vecSum(vec1->add(vec2.get()));
-  ASSERT_FALSE(vecSum);
+  Vector* v1 = vec("1.0 2.0 3.0");
+  Vector* v2 = vec("4.0 5.0");
+  Vector* sum = v1->add(v2);
+  ASSERT_FALSE(sum);
 }
 
 // adding two vectors of equal lengths works as expected
 TEST(VectorTest, TestAddSameLength) {
-  char data1[] = "1.0 2.0 3.0";
-  char data2[] = "4.0 5.0 6.0";
-  scoped_ptr<Vector> vec1(Vector::from(data1, CHUNK_SIZE, NUM_PROCS));
-  scoped_ptr<Vector> vec2(Vector::from(data2, CHUNK_SIZE, NUM_PROCS));
-  scoped_ptr<Vector> vecSum(vec1->add(vec2.get()));
-  vector<float> values = vecSum->values();
+  Vector* v1 = vec("1.0 2.0 3.0");
+  Vector* v2 = vec("4.0 5.0 6.0");
+  Vector* sum = v1->add(v2);
+  vector<float> values = sum->values();
 
   ASSERT_EQ(values.size(), 3);
   ASSERT_EQ(values[0], 5.0);
   ASSERT_EQ(values[1], 7.0); ASSERT_EQ(values[2], 9.0);
+}
+
+// max works as expected
+TEST(VectorTest, TestMax) {
+  Vector* v = vec("1.0 5.0 2.0");
+  ASSERT_EQ(v->max(), 5.0);
 }
