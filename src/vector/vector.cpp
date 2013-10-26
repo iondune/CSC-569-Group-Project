@@ -2,13 +2,14 @@
 
 #include <cstdlib> // atof
 #include <cstring>
+#include <vector>
 
 #include "deps/src/inc/mapreduce.h"
 #include "deps/src/inc/keyvalue.h"
 #include "src/string/util.h"
 
-//using MAPREDUCE_NS::MapReduce;
 using MAPREDUCE_NS::KeyValue;
+using std::vector;
 
 static void mapChunk(int itask, KeyValue* keyValue, void* extra);
 
@@ -19,12 +20,6 @@ static void addReduce(char* key,
                       int lengths[],
                       KeyValue* kv,
                       void* ptr);
-
-static void printScan(char *key,
-                      int keybytes,
-                      char *value,
-                      int valuebytes,
-                      void *ptr);
 
 static int maxCompare(char* str1, int len1, char* str2, int len2);
 
@@ -58,6 +53,19 @@ static void binScan(char* keyStr,
                     int valLen,
                     void* extra);
 
+static void valuesScan(char* keyStr,
+                       int keyLen,
+                       char* valueStr,
+                       int valueLen,
+                       void* extra);
+
+static void printScan(char *key,
+                      int keybytes,
+                      char *value,
+                      int valuebytes,
+                      void *ptr);
+
+
 typedef struct {
   float min;
   float max;
@@ -75,13 +83,9 @@ typedef struct {
 Vector::Vector(MPI_Comm comm) : MapReduce(comm) {
 }
 
-Vector* Vector::copy() {
-  return static_cast<Vector*>(MapReduce::copy());
-}
-
-Vector* Vector::from(char* data, int chunkSize) {
+Vector* Vector::from(char* data, int chunkSize, int numProcs) {
   Vector* vec = new Vector(MPI_COMM_WORLD);
-  withChunksSpace(data, chunkSize, vec, &handleVectorChunk);
+  withChunksSpace(data, chunkSize, numProcs, vec, &handleVectorChunk);
   return vec;
 }
 
@@ -90,10 +94,11 @@ void Vector::handleVectorChunk(char* data,
                                const char delim,
                                int chunkSize,
                                int count,
+                               int numProcs,
                                void* extra) {
   Vector* vec = (Vector*) extra;
   FromExtra extraData = { data, ordinal, chunkSize, count };
-  vec->map(1, &mapChunk, &extraData, 1);
+  vec->map(numProcs, &mapChunk, &extraData, 1);
 }
 
 void mapChunk(int itask, KeyValue* keyValue, void* extra) {
@@ -199,10 +204,23 @@ void binScan(char* keyStr, int keyLen, char* valStr, int valLen, void* extra) {
   bins[index] = count;
 }
 
+vector<float> Vector::values() {
+  sort_keys(3); // 3 means compare two floats
+  vector<float> values;
+  scan(&valuesScan, &values);
+  return values;
+}
+
+void valuesScan(char* keyStr, int keyLen, char* valueStr, int valueLen, void* extra) {
+  vector<float>* values = (vector<float>*) extra;
+  float val = *((float*) valueStr);
+  values->push_back(val);
+}
+
 void Vector::print() {
   scan(&printScan, NULL);
 }
 
-void printScan(char *key, int keybytes, char *value, int valuebytes, void *ptr) {
+void printScan(char* key, int keyLen, char* value, int valueLen, void* extra) {
   printf("Key: %d, Val: %f\n", *((int*) key), *((float*) value));
 }

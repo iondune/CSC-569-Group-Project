@@ -7,6 +7,7 @@
 #include "src/string/util.h"
 
 #define CHUNK_SIZE 1
+#define NUM_PROCS 1
 
 using MAPREDUCE_NS::KeyValue;
 
@@ -16,8 +17,8 @@ int main(int argc, char** argv) {
 
   MPI_Init(&argc, &argv);
 
-  Vector* vecA = Vector::from(a, CHUNK_SIZE);
-  Vector* vecB = Vector::from(b, CHUNK_SIZE);
+  Vector* vecA = Vector::from(a, CHUNK_SIZE, NUM_PROCS);
+  Vector* vecB = Vector::from(b, CHUNK_SIZE, NUM_PROCS);
   Vector* vecC = vecA->add(vecB);
 
   delete vecA;

@@ -1,18 +1,20 @@
 #include "deps/src/inc/mapreduce.h"
 
+#include <vector>
+
+using std::vector;
+
 namespace MAPREDUCE_NS {
 class KeyValue;
 }  // namespace MAPREDUCE_NS
 
 class Vector : private MAPREDUCE_NS::MapReduce {
  public:
-  Vector* copy();
-
   /**
    * Create a Vector* from a pointer to a string of floats. Break the data
    * up into chunks of size |chunkSize|, for parallelization.
    */
-  static Vector* from(char* data, int chunkSize);
+  static Vector* from(char* data, int chunkSize, int numProcs);
 
   /**
    * Add two Vectors together. Returns a new Vector (does not modify this one).
@@ -36,8 +38,12 @@ class Vector : private MAPREDUCE_NS::MapReduce {
    * @param width The width of the bins.
    * @param bins  The bins to fill.
    */
-  // KV -> (map variant 5, to bin/NULL pairs) -> KV -> (collate) -> KMV -> (reduce) -> KV -> scan, fill out param
   void bin(float min, float max, float width, int* bins);
+
+  /**
+   * The values contained in this vector. Sorts the vector internally, by index.
+   */
+  vector<float> values();
 
   /**
    * Print key/value pairs to stdout.
@@ -54,5 +60,6 @@ class Vector : private MAPREDUCE_NS::MapReduce {
                                 const char delim,
                                 int chunkSize,
                                 int count,
+                                int numProcs,
                                 void* extra);
 };

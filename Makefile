@@ -33,13 +33,6 @@ TEST_LIBS_PI=$(wildcard deps/src/lib/mpicc/*)
 
 ###############################################################################
 
-test-linux: $(TEST_OBJS)
-	$(CC) $(LDFLAGS) \
-	      $(INC_DIRS) \
-	      $(TEST_OBJS) \
-	      $(TEST_LIBS_LINUX) \
-	      -o bin/test-linux
-
 linux: makeDirectories $(OBJS_LINUX) $(MAIN)
 	$(CC) $(LDFLAGS) \
 	      $(INC_DIRS) \
@@ -47,6 +40,13 @@ linux: makeDirectories $(OBJS_LINUX) $(MAIN)
 	      $(MAIN) \
 	      $(LIBS_LINUX) \
 	      -o bin/main-linux
+
+test-linux: $(TEST_OBJS)
+	$(CC) $(LDFLAGS) \
+	      $(INC_DIRS) \
+	      $(TEST_OBJS) \
+	      $(TEST_LIBS_LINUX) \
+	      -o bin/test-linux
 
 pi: makeDirectories $(OBJS_PI)
 	$(CC) $(LDFLAGS) \
