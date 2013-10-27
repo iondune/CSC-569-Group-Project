@@ -20,8 +20,7 @@ int main(int argc, char * argv[])
     MPI_Comm_size(MPI_COMM_WORLD, & ProcessorCount);
     MPI_Comm_rank(MPI_COMM_WORLD, & ProcessorId);
     
-    static char const * const ProcessorPrefix = 
-        (ProcessorId ? "                            " : "");
+    timer.SetProcessorId(ProcessorId);
 
     if (argc != 3)
     {
@@ -37,24 +36,22 @@ int main(int argc, char * argv[])
     int Size = 0;
     if (ProcessorId == 0)
     {
-        timer.start();
+        timer.Start("Map");
         MappedFile AFile(argv[1]), BFile(argv[2]);
-        timer.end();
-        printf("%sMap  %d  took ", ProcessorPrefix, ProcessorId); timer.print();
+        timer.End();
         
-        timer.start();
+        timer.Start("Read");
         A.ParseFromString(AFile.Contents);
         B.ParseFromString(BFile.Contents);
         Size = A.Values.size();
-        timer.end();
-        printf("%sRead %d  took ", ProcessorPrefix, ProcessorId); timer.print();
+        timer.End();
     }
 
 
     ////////////////////////////////
     // Share Vectors Over Network //
     ////////////////////////////////
-    timer.start();
+    timer.Start("S+R");
     MPI_Bcast(& Size, 1, MPI_INT, 0, MPI_COMM_WORLD);
     if (ProcessorId != 0)
     {
@@ -70,18 +67,16 @@ int main(int argc, char * argv[])
     }
     A.Values.erase(-- A.Values.end());
     B.Values.erase(-- B.Values.end());
-    timer.end();
-    printf("%s%s %d  took ", ProcessorPrefix, (ProcessorId ? "Recv" : "Send"), ProcessorId); timer.print();
+    timer.End();
 
 
     ///////////////////
     // Calculate Sum //
     ///////////////////
-    timer.start();
+    timer.Start("Sum");
     DataSet C;
     C.MakeSum(A, B);
-    timer.end();
-    printf("%sSum  %d  took ", ProcessorPrefix, ProcessorId); timer.print();
+    timer.End();
 
     C.Maximum = A.Maximum + B.Maximum;
 
@@ -89,20 +84,20 @@ int main(int argc, char * argv[])
     ////////////////////
     // Make Histogram //
     ////////////////////
-    timer.start();
+    timer.Start("Hist");
     static float const BinWidth = 0.5f;
     static float const Min = -10.f;
     std::vector<int> const &
         HistA = A.MakeHistogram(Min, BinWidth),
         HistB = B.MakeHistogram(Min, BinWidth),
         HistC = C.MakeHistogram(Min*2, BinWidth);
-    timer.end();
-    printf("%sHist %d  took ", ProcessorPrefix, ProcessorId); timer.print();
+    timer.End();
+
 
     //////////////////
     // Write Output //
     //////////////////
-    timer.start();
+    timer.Start("Write");
     if (ProcessorId == 0)
     {
         C.WriteToFile("result.out");
@@ -110,10 +105,10 @@ int main(int argc, char * argv[])
         B.WriteHistogramToFile(HistB, "hist.b");
         C.WriteHistogramToFile(HistC, "hist.c");
     }
-    timer.end();
-    printf("%sWrit %d  took ", ProcessorPrefix, ProcessorId); timer.print();
+    timer.End();
 
 
     MPI_Finalize();
     return 0;
 }
+
