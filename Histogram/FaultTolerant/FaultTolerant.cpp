@@ -13,6 +13,7 @@
 // Unix shit
 #include <sys/stat.h>
 #include <sys/types.h>
+#include <sys/time.h>
 #include <sys/mman.h>
 #include <fcntl.h>
 #include <unistd.h>
@@ -199,7 +200,7 @@ void printTimer()
     printf("%ld.%06ld\n", tvDiff.tv_sec, tvDiff.tv_usec);
 }
 
-int main (int argc, char * argv[])
+int main(int argc, char * argv[])
 {
     MPI_Init(& argc, & argv);
 
@@ -245,13 +246,13 @@ int main (int argc, char * argv[])
     A.Values.erase(-- A.Values.end());
     B.Values.erase(-- B.Values.end());
     endTimer();
-    printf("R+S  %d  took \n", ProcessorId); printTimer();
+    printf("R+S  %d  took ", ProcessorId); printTimer();
 
     startTimer();
     DataSet C;
     C.MakeSum(A, B);
     endTimer();
-    printf("Sum  %d   took %14s.\n", ProcessorId); printTimer();
+    printf("Sum  %d   took ", ProcessorId); printTimer();
 
     C.Maximum = A.Maximum + B.Maximum;
 
@@ -263,7 +264,7 @@ int main (int argc, char * argv[])
         HistB = B.MakeHistogram(Min, BinWidth),
         HistC = C.MakeHistogram(Min*2, BinWidth);
     endTimer();
-    printf("Hist %d  took \n", ProcessorId); printTimer();
+    printf("Hist %d  took ", ProcessorId); printTimer();
 
     startTimer();
     if (ProcessorId == 0)
@@ -274,7 +275,7 @@ int main (int argc, char * argv[])
         C.WriteHistogramToFile(HistC, "hist.c");
     }
     endTimer();
-    printf("Write %d took \n", ProcessorId); printTimer();
+    printf("Write %d took ", ProcessorId); printTimer();
     
     MPI_Finalize();
 
