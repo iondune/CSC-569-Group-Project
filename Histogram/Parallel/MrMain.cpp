@@ -19,7 +19,7 @@ int main(int narg, char **args)
    static float const Min3 = -20.0f;
    MPI_Init(&narg,&args);
 
-   int me,nprocs;
+   int me,nprocs,i;
    MPI_Comm_rank(MPI_COMM_WORLD,&me);
    MPI_Comm_size(MPI_COMM_WORLD,&nprocs);
 
@@ -50,13 +50,13 @@ int main(int narg, char **args)
 
    //MPI_Barrier(MPI_COMM_WORLD);
 
+   //Vector v;
    //create a + b -> c
-   Vector* a = new Vector(MPI_COMM_WORLD);
-   a->from(data1,200000);
-   Vector* b = new Vector(MPI_COMM_WORLD);
-   b->from(data2,200000);
+   Vector* a = Vector::from(data1,2);
+   Vector* b = Vector::from(data2,2);
+   
 
-   float *sumsArray;
+   float *sumsArray = (float *)malloc(1000000*sizeof(float));
    Vector* c = a->add(b, sumsArray);
 
    MPI_Barrier(MPI_COMM_WORLD);
@@ -71,6 +71,15 @@ int main(int narg, char **args)
    int* bins1 = (int *)malloc(binCount1 * sizeof(int));
    int* bins2 = (int *)malloc(binCount2 * sizeof(int));
    int* bins3 = (int *)malloc(binCount3 * sizeof(int));
+   for (i=0;i<binCount1;i++) {
+      *(bins1+i)=0;
+   }
+   for (i=0;i<binCount2;i++) {
+      *(bins2+i)=0;
+   }
+   for (i=0;i<binCount3;i++) {
+      *(bins3+i)=0;
+   }
 
    MPI_Barrier(MPI_COMM_WORLD);
 
@@ -80,24 +89,27 @@ int main(int narg, char **args)
 
    MPI_Barrier(MPI_COMM_WORLD);
 
-   // old file output for debugging
-   // print(bins1, binCount1, "hist.a", Min, max1, BinWidth);
-   // print(bins2, binCount2, "hist.b", Min, max2, BinWidth);
-   // print(bins3, binCount3, "hist.c", Min3, max3, BinWidth);
 
    MPI_Barrier(MPI_COMM_WORLD);
    double tstop = MPI_Wtime();
 
    //delete mr1, mr2;
+   char fname1[] = "histA.txt";
+   char fname2[] = "histB.txt";
+   char fname3[] = "histC.txt";
 
    if (me == 0) {
-      // printf("%d total words, %d unique words\n",nwords,nunique);
-      // printf("Time to process %d files on %d procs = %g (secs)\n",
-	  // nfiles,nprocs,tstop-tstart);
+      //printf("%d total words, %d unique words\n",nwords,nunique);
+      printf("Time to process %d files on %d procs = %g (secs)\n",
+	  2,1,tstop-tstart);
 
    	  // write results to files
       // should this be in here?
-      writeAllOutputFiles(sumsArray, bins1, bins2, bins3);
+      //writeAllOutputFiles(sumsArray, bins1, bins2, bins3);
+      // old file output for debugging
+      print(bins1, binCount1, fname1, Min, max1, BinWidth);
+      print(bins2, binCount2, fname2, Min, max2, BinWidth);
+      print(bins3, binCount3, fname3, Min3, max3, BinWidth);
    }
 
    MPI_Finalize();
@@ -116,11 +128,12 @@ char* serialReadfile(char *fname) {
    int nchar = fread(text,1,filesize,fp);
    text[nchar] = '\0';
    fclose(fp);
+   printf("data = %s",text);
    return text;   
 }
 
 void print(int* bins, int size, char *filename, float min, float max, float width) {
-   FILE *f = fopen("file.txt", "w");
+   FILE *f = fopen(filename, "w");
    float low, up;
    int i;
    if (f == NULL)

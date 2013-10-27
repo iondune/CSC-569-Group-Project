@@ -10,7 +10,6 @@ class KeyValue;
 
 class Vector : private MAPREDUCE_NS::MapReduce {
  public:
-  Vector(MPI_Comm comm);
 
   Vector* copy();
 
@@ -23,7 +22,7 @@ class Vector : private MAPREDUCE_NS::MapReduce {
   /**
    * Add two Vectors together. Returns a new Vector (does not modify this one).
    */
-  Vector* add(Vector* other, int *);
+  Vector* add(Vector* other, float *);
 
   /**
    * Get the maximum value. Has the following side effects:
@@ -51,7 +50,7 @@ class Vector : private MAPREDUCE_NS::MapReduce {
   void print();
 
  private:
-  //Vector(MPI_Comm comm);
+  Vector(MPI_Comm comm);
   //uint64_t add(Vector* other);
 
   static void handleVectorChunk(char* data,
