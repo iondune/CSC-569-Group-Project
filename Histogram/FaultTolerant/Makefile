@@ -21,7 +21,11 @@ depend:
 clean:
 	$(RM) $(OBJS)
 
+remake: clean all
+
 # Dependencies
 
-FaultTolerant.o: hrt.h
+DataSet.o: DataSet.h
+FaultTolerant.o: hrt.h DataSet.h MappedFile.h
 hrt.o: hrt.h
+MappedFile.o: MappedFile.h

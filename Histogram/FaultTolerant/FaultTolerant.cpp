@@ -3,24 +3,21 @@
 #include <iostream>
 #include <vector>
 #include <algorithm>
-#include <cstdio>
-#include <cstring>
-#include <cstdlib>
-#include <cmath>
 #include <cerrno>
-#include <limits>
 
 // Unix shit
-#include <sys/stat.h>
 #include <sys/types.h>
 #include <sys/time.h>
 #include <sys/mman.h>
 #include <fcntl.h>
 #include <unistd.h>
 
-// MPI and HRT
+// MPI and Local
 #include <mpi.h>
 #include "hrt.h"
+#include "DataSet.h"
+#include "MappedFile.h"
+
 
 /* Return 1 if the difference is negative, otherwise 0. */
 int timeval_subtract(struct timeval *result, struct timeval *t2, struct timeval *t1)
@@ -31,158 +28,6 @@ int timeval_subtract(struct timeval *result, struct timeval *t2, struct timeval 
 
     return (diff<0);
 }
-
-
-unsigned int GetFileSize(std::string const & fileName)
-{
-    struct stat sb;
-    if (stat(fileName.c_str(), & sb) != 0)
-    {
-        fprintf(stderr, "'stat' failed for '%s': %s.\n", fileName.c_str(), strerror(errno));
-        exit(EXIT_FAILURE);
-    }
-    return sb.st_size;
-}
-
-template <typename T>
-static T const Clamp(T const & v, T const & min, T const & max)
-{
-    return ((v >= max) ? max-1 : ((v < min) ? min : v));
-}
-
-class MappedFile
-{
-
-    int FileDescriptor;
-
-public:
-
-    MappedFile(std::string const & fileName)
-    {
-        Size = GetFileSize(fileName);
-        FileDescriptor = open(fileName.c_str(), O_RDONLY, 0);
-        if (FileDescriptor == -1)
-        {
-            fprintf(stderr, "Failed to open file '%s' for reading: %s\n", fileName.c_str(), strerror(errno));
-            exit(EXIT_FAILURE);
-        }
-
-        Contents = (char *) mmap(
-            NULL,
-            Size,
-            PROT_READ | PROT_WRITE,
-            MAP_PRIVATE,
-            FileDescriptor,
-            0);
-
-        if (Contents == MAP_FAILED)
-        {
-            fprintf(stderr, "Failed to map file '%s': %s\n", fileName.c_str(), strerror(errno));
-            exit(EXIT_FAILURE);
-        }
-    }
-
-    ~MappedFile()
-    {
-        munmap(Contents, Size);
-        close(FileDescriptor);
-    }
-
-    char * Contents;
-    unsigned int Size;
-};
-
-class DataSet
-{
-
-public:
-
-    void ParseFromString(char * const FileContents)
-    {
-        static char const * const Tokenizer = " ";
-        char * Token = strtok(FileContents, Tokenizer);
-        Values.reserve(10000);
-        Maximum = -std::numeric_limits<float>::max();
-        while (Token)
-        {
-            float Value;
-            if (sscanf(Token, "%f", & Value) == 1)
-            {
-                Values.push_back(atof(Token));
-                Maximum = std::max(Maximum, Value);
-            }
-            Token = strtok(0, Tokenizer);
-        }
-        Values.push_back(Maximum);
-    }
-
-    void WriteToFile(std::string const & fileName)
-    {
-        FILE * outFile = fopen(fileName.c_str(), "w");
-        if (! outFile)
-        {
-            fprintf(stderr, "Failed to open file '%s' for writing: %s\n", fileName.c_str(), strerror(errno));
-            exit(EXIT_FAILURE);
-        }
-        for (int i = 0; i < Values.size(); ++ i)
-            fprintf(outFile, "%.2f ", Values[i]);
-        fclose(outFile);
-    }
-
-    std::vector<int> MakeHistogram(float const Min, float const BinWidth)
-    {
-        int const BinCount = ceil((Maximum - Min) / BinWidth);
-
-        std::vector<int> Histogram;
-        Histogram.resize(BinCount);
-        for (unsigned int i = 0; i < Values.size(); ++ i)
-        {
-            int index = Clamp((int) ((Values[i] - Min) / BinWidth), 0, BinCount);
-            Histogram[Clamp(index, 0, BinCount)] ++;
-        }
-
-        return Histogram;
-    }
-
-    void WriteHistogramToFile(std::vector<int> const & Histogram, std::string const & fileName)
-    {
-        FILE * outFile = fopen(fileName.c_str(), "w");
-        if (! outFile)
-        {
-            fprintf(stderr, "Failed to open file '%s' for writing: %s\n", fileName.c_str(), strerror(errno));
-            exit(EXIT_FAILURE);
-        }
-        for (unsigned int i = 0; i < Histogram.size(); ++ i)
-            fprintf(outFile, "%d, %d\n", i, Histogram[i]);
-        fclose(outFile);
-    }
-
-    void MakeSum(DataSet const & A, DataSet const & B)
-    {
-        if (A.Size() != B.Size())
-        {
-            std::cerr << "Vector sizes differ! " << A.Size() << " " << B.Size() << std::endl;
-            exit(EXIT_FAILURE);
-        }
-
-        Values.resize(A.Size());
-        for (unsigned int i = 0; i < A.Size(); ++ i)
-            Values[i] = A[i] + B[i];
-    }
-
-    unsigned int Size() const
-    {
-        return Values.size();
-    }
-
-    float operator[] (unsigned int const i) const
-    {
-        return Values[i];
-    }
-
-    std::vector<float> Values;
-    float Maximum;
-};
 
 struct timeval tvBegin, tvEnd, tvDiff;
 
