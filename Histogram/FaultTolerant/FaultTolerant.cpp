@@ -21,6 +21,16 @@
 #include <mpi.h>
 #include "hrt.h"
 
+/* Return 1 if the difference is negative, otherwise 0.  */
+int timeval_subtract(struct timeval *result, struct timeval *t2, struct timeval *t1)
+{
+    long int diff = (t2->tv_usec + 1000000 * t2->tv_sec) - (t1->tv_usec + 1000000 * t1->tv_sec);
+    result->tv_sec = diff / 1000000;
+    result->tv_usec = diff % 1000000;
+
+    return (diff<0);
+}
+
 
 unsigned int GetFileSize(std::string const & fileName)
 {
@@ -173,6 +183,21 @@ public:
     float Maximum;
 };
 
+struct timeval tvBegin, tvEnd, tvDiff;
+
+void startTimer()
+{
+    gettimeofday(&tvBegin, NULL);
+}
+void endTimer()
+{
+    gettimeofday(&tvEnd, NULL);
+}
+void printTimer()
+{
+    timeval_subtract(&tvDiff, &tvEnd, &tvBegin);
+    printf("%ld.%06ld\n", tvDiff.tv_sec, tvDiff.tv_usec);
+}
 
 int main (int argc, char * argv[])
 {
@@ -188,13 +213,12 @@ int main (int argc, char * argv[])
         exit(EXIT_FAILURE);
     }
 
-    hrt_start();
+    startTimer();
     MappedFile AFile(argv[1]), BFile(argv[2]);
-    hrt_stop();
-    printf("Map  %d  took %7s.\n", ProcessorId, hrt_string());
+    endTimer();
+    printf("Map  %d  took ", ProcessorId); printTimer();
 
-    
-    hrt_start();
+    startTimer();
     DataSet A, B;
     if (ProcessorId == 0)
     {
@@ -220,14 +244,14 @@ int main (int argc, char * argv[])
     }
     A.Values.erase(-- A.Values.end());
     B.Values.erase(-- B.Values.end());
-    hrt_stop();
-    printf("R+S  %d  took %7s.\n", ProcessorId, hrt_string());
+    endTimer();
+    printf("R+S  %d  took \n", ProcessorId); printTimer();
 
-    hrt_start();
+    startTimer();
     DataSet C;
     C.MakeSum(A, B);
-    hrt_stop();
-    printf("Sum  %d   took %7s.\n", ProcessorId, hrt_string());
+    endTimer();
+    printf("Sum  %d   took %14s.\n", ProcessorId); printTimer();
 
     C.Maximum = A.Maximum + B.Maximum;
 
@@ -238,10 +262,10 @@ int main (int argc, char * argv[])
         HistA = A.MakeHistogram(Min, BinWidth),
         HistB = B.MakeHistogram(Min, BinWidth),
         HistC = C.MakeHistogram(Min*2, BinWidth);
-    hrt_stop();
-    printf("Hist %d  took %7s.\n", ProcessorId, hrt_string());
+    endTimer();
+    printf("Hist %d  took \n", ProcessorId); printTimer();
 
-    hrt_start();
+    startTimer();
     if (ProcessorId == 0)
     {
         C.WriteToFile("result.out");
@@ -249,8 +273,8 @@ int main (int argc, char * argv[])
         B.WriteHistogramToFile(HistB, "hist.b");
         C.WriteHistogramToFile(HistC, "hist.c");
     }
-    hrt_stop();
-    printf("Write %d took %7s.\n", ProcessorId, hrt_string());
+    endTimer();
+    printf("Write %d took \n", ProcessorId); printTimer();
     
     MPI_Finalize();
 
