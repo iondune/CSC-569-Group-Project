@@ -64,6 +64,12 @@ static void binScan(char* keyStr,
                     int valLen,
                     void* extra);
 
+static void binScanFloat(char* keyStr,
+                  int keyLen,
+                  char* valStr,
+                  int valLen,
+                  void* extra)
+
 typedef struct {
   float min;
   float max;
@@ -120,12 +126,12 @@ void mapChunk(int itask, KeyValue* keyValue, void* extra) {
   }
 }
 
-Vector* Vector::add(Vector* other, int sums[]) {
+Vector* Vector::add(Vector* other, float *sums) {
   MapReduce* sum = MapReduce::copy();
   sum->add(other);
   sum->collate(NULL);
   sum->reduce(&addReduce, NULL);
-  sum->scan(binScan, sums);
+  sum->scan(binScanFloat, sums);
   return static_cast<Vector*>(sum);
 }
 
@@ -205,6 +211,14 @@ void binScan(char* keyStr, int keyLen, char* valStr, int valLen, void* extra) {
   int* bins = (int*) extra;
   int index = *((int*) keyStr);
   int count = *((int*) valStr);
+
+  bins[index] = count;
+}
+
+void binScanFloat(char* keyStr, int keyLen, char* valStr, int valLen, void* extra) {
+  float* bins = (float*) extra;
+  int index = *((int*) keyStr);
+  float count = *((float*) valStr);
 
   bins[index] = count;
 }
