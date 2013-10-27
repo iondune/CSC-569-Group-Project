@@ -22,4 +22,3 @@ public:
     std::vector<float> Values;
     float Maximum;
 };
-

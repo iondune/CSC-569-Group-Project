@@ -32,7 +32,6 @@ void DataSet::ParseFromString(char * const FileContents)
         }
         Token = strtok(0, Tokenizer);
     }
-    Values.push_back(Maximum);
 }
 
 void DataSet::WriteToFile(std::string const & fileName)
@@ -98,4 +97,3 @@ float DataSet::operator[] (unsigned int const i) const
 {
     return Values[i];
 }
-
