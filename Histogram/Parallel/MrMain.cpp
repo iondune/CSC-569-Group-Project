@@ -10,7 +10,7 @@
 
 char* serialReadfile(char *filename);
 int getBinCount(float min, float max, float width);
-void print(int* bins, int size, char *filename, float min, float max, float width);
+void print(int* bins, int size, char *filename, float min, float max, float width, float *vec);
 
 int main(int narg, char **args)
 {
@@ -22,6 +22,7 @@ int main(int narg, char **args)
    int me,nprocs,i;
    MPI_Comm_rank(MPI_COMM_WORLD,&me);
    MPI_Comm_size(MPI_COMM_WORLD,&nprocs);
+   printf("Let's start! My Rank is %d\n", me);
 
    if (narg <= 1) {
      if (me == 0) printf("Syntax: wordfreq file1 file2 ...\n");
@@ -107,9 +108,9 @@ int main(int narg, char **args)
       // should this be in here?
       //writeAllOutputFiles(sumsArray, bins1, bins2, bins3);
       // old file output for debugging
-      print(bins1, binCount1, fname1, Min, max1, BinWidth);
-      print(bins2, binCount2, fname2, Min, max2, BinWidth);
-      print(bins3, binCount3, fname3, Min3, max3, BinWidth);
+      print(bins1, binCount1, fname1, Min, max1, BinWidth, NULL);
+      print(bins2, binCount2, fname2, Min, max2, BinWidth, NULL);
+      print(bins3, binCount3, fname3, Min3, max3, BinWidth, sumsArray);
    }
 
    MPI_Finalize();
@@ -132,7 +133,7 @@ char* serialReadfile(char *fname) {
    return text;   
 }
 
-void print(int* bins, int size, char *filename, float min, float max, float width) {
+void print(int* bins, int size, char *filename, float min, float max, float width, float* vec) {
    FILE *f = fopen(filename, "w");
    float low, up;
    int i;
@@ -146,6 +147,12 @@ void print(int* bins, int size, char *filename, float min, float max, float widt
       low = min + width*i;
       up = low + width;
       fprintf(f, "[<=%f<%f]: %d\n", low, up, bins[i]);
+   }
+
+   if (vec != NULL) {
+      for(i = 0; i < 10000;i++){
+         fprintf(f, "%.2f ",*(vec+i));
+      }
    }
    fclose(f);
 }
