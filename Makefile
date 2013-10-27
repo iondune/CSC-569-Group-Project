@@ -14,7 +14,7 @@ OBJS=$(patsubst %.cpp,%.o,$(SRCS))
 OBJS_LINUX=$(OBJS) $(wildcard deps/src/obj/linux/*.o)
 LIBS_LINUX=$(wildcard deps/src/lib/linux/*)
 
-OBJS_PI=$(OBJS) $(wildcard deps/src/obj/mpicc/*.o)
+OBJS_PI=$(OBJS) $(wildcard ../mrmpi-23Oct13/src/Obj_mpicc/*.o)
 LIBS_PI=$(wildcard deps/src/lib/mpicc/*)
 
 ###############################################################################
