@@ -209,7 +209,7 @@ int main(int argc, char * argv[])
     MPI_Comm_size(MPI_COMM_WORLD, & ProcessorCount);
     MPI_Comm_rank(MPI_COMM_WORLD, & ProcessorId);
     
-    char const * const ProcessorPrefix = 
+    static char const * const ProcessorPrefix = 
         (ProcessorId ? "                            " : "");
 
     if (argc != 3)
@@ -218,28 +218,31 @@ int main(int argc, char * argv[])
         exit(EXIT_FAILURE);
     }
 
-    startTimer();
-    MappedFile AFile(argv[1]), BFile(argv[2]);
-    endTimer();
-    printf("%sMap  %d  took ", ProcessorPrefix, ProcessorId); printTimer();
 
-    startTimer();
+    ///////////////////
+    // Read In Files //
+    ///////////////////
     DataSet A, B;
     int Size = 0;
     if (ProcessorId == 0)
     {
+        startTimer();
+        MappedFile AFile(argv[1]), BFile(argv[2]);
+        endTimer();
+        printf("%sMap  %d  took ", ProcessorPrefix, ProcessorId); printTimer();
+        
+        startTimer();
         A.ParseFromString(AFile.Contents);
         B.ParseFromString(BFile.Contents);
         Size = A.Values.size();
+        endTimer();
+        printf("%sRead %d  took ", ProcessorPrefix, ProcessorId); printTimer();
     }
-    endTimer();
-    printf("%sRead %d  took ", ProcessorPrefix, ProcessorId); printTimer();
 
-    //startTimer();
-    //MPI_Barrier(MPI_COMM_WORLD);
-    //endTimer();
-    //printf("Wait %d  took ", ProcessorId); printTimer();
 
+    ////////////////////////////////
+    // Share Vectors Over Network //
+    ////////////////////////////////
     startTimer();
     MPI_Bcast(& Size, 1, MPI_INT, 0, MPI_COMM_WORLD);
     if (ProcessorId != 0)
@@ -259,6 +262,10 @@ int main(int argc, char * argv[])
     endTimer();
     printf("%s%s %d  took ", ProcessorPrefix, (ProcessorId ? "Recv" : "Send"), ProcessorId); printTimer();
 
+
+    ///////////////////
+    // Calculate Sum //
+    ///////////////////
     startTimer();
     DataSet C;
     C.MakeSum(A, B);
@@ -267,6 +274,10 @@ int main(int argc, char * argv[])
 
     C.Maximum = A.Maximum + B.Maximum;
 
+
+    ////////////////////
+    // Make Histogram //
+    ////////////////////
     hrt_start();
     static float const BinWidth = 0.5f;
     static float const Min = -10.f;
@@ -277,6 +288,9 @@ int main(int argc, char * argv[])
     endTimer();
     printf("%sHist %d  took ", ProcessorPrefix, ProcessorId); printTimer();
 
+    //////////////////
+    // Write Output //
+    //////////////////
     startTimer();
     if (ProcessorId == 0)
     {
@@ -287,8 +301,8 @@ int main(int argc, char * argv[])
     }
     endTimer();
     printf("%sWrit %d  took ", ProcessorPrefix, ProcessorId); printTimer();
-    
-    MPI_Finalize();
 
+
+    MPI_Finalize();
     return 0;
 }
