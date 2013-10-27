@@ -8,4 +8,5 @@ do
     echo "-----------------------------------"
     time mpirun -mca btl_tcp_if_include eth0 --hostfile hosts2 FaultTolerant ../Tests/$test/$test.a ../Tests/$test/$test.b
     rm hist.a hist.b hist.c result.out
+    echo
 done

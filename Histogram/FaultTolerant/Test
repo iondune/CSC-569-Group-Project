@@ -25,6 +25,7 @@ done
 
 rm -r TestOutput/
 
+echo
 if [ $failed ]
 then
     echo "Tests failed."

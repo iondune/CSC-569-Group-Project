@@ -26,6 +26,13 @@ remake: clean all
 # Dependencies
 
 DataSet.o: DataSet.h
-FaultTolerant.o: DataSet.h MappedFile.h Timer.h
+FaultTolerant.o: Application.h DataSet.h Timer.h MasterApplication.h
+FaultTolerant.o: SlaveApplication.h
 MappedFile.o: MappedFile.h
+MasterApplication.o: MasterApplication.h Application.h DataSet.h Timer.h
+MasterApplication.o: MappedFile.h
+SlaveApplication.o: SlaveApplication.h Application.h DataSet.h Timer.h
 Timer.o: Timer.h
+Application.o: DataSet.h Timer.h
+MasterApplication.o: Application.h DataSet.h Timer.h
+SlaveApplication.o: Application.h DataSet.h Timer.h
