@@ -4,7 +4,8 @@ CPPFLAGS=-g
 LDFLAGS=-lrt
 LDLIBS=
 
-SRCS=FaultTolerant.cpp hrt.cpp
+SRCS=$(wildcard *.cpp)
+HDRS=$(wildcard *.h)
 OBJS=$(subst .cpp,.o,$(SRCS))
 
 all: FaultTolerant
@@ -12,16 +13,15 @@ all: FaultTolerant
 FaultTolerant: $(OBJS)
 	$(CXX) $(LDFLAGS) -o $@ $^ $(LDLIBS) 
 
-depend: .depend
-
-.depend:
-	rm -f ./.depend
-	$(CXX) $(CPPFLAGS) -MM $^>>./.depend;
+depend:
+	@echo Regenerating local dependencies.
+	@makedepend -Y $(SRCS) $(HDRS) -s "# Dependencies" > /dev/null 2>&1
+	@rm Makefile.bak
 
 clean:
 	$(RM) $(OBJS)
 
-dist-clean: clean
-	$(RM) *~ .
+# Dependencies
 
-include .depend
+FaultTolerant.o: hrt.h
+hrt.o: hrt.h
