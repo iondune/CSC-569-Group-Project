@@ -68,7 +68,7 @@ static void binScanFloat(char* keyStr,
                   int keyLen,
                   char* valStr,
                   int valLen,
-                  void* extra)
+                  void* extra);
 
 typedef struct {
   float min;
