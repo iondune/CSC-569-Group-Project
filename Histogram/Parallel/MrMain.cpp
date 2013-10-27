@@ -95,9 +95,9 @@ int main(int narg, char **args)
    double tstop = MPI_Wtime();
 
    //delete mr1, mr2;
-   char fname1[] = "histA.txt";
-   char fname2[] = "histB.txt";
-   char fname3[] = "histC.txt";
+   char fname1[] = "hist.a";
+   char fname2[] = "hist.b";
+   char fname3[] = "hist.c";
 
    if (me == 0) {
       //printf("%d total words, %d unique words\n",nwords,nunique);
@@ -129,7 +129,7 @@ char* serialReadfile(char *fname) {
    int nchar = fread(text,1,filesize,fp);
    text[nchar] = '\0';
    fclose(fp);
-   printf("data = %s",text);
+   //printf("data = %s",text);
    return text;   
 }
 
@@ -146,7 +146,7 @@ void print(int* bins, int size, char *filename, float min, float max, float widt
    for(i = 0; i < size;i++){
       low = min + width*i;
       up = low + width;
-      fprintf(f, "[<=%f<%f]: %d\n", low, up, bins[i]);
+      fprintf(f, "%d, %d\n", i, bins[i]);
    }
 
    if (vec != NULL) {

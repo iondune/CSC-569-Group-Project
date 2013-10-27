@@ -8,7 +8,7 @@ using namespace std;
 int writeSumsToFile(string fileName, float sums[]) {
     ofstream outFile;
 
-    outFile.open(fileName, ios::trunc);
+    outFile.open(fileName.c_str(), ios::trunc);
 
     int listSize = sizeof(sums) / sizeof(float);
 
@@ -29,7 +29,7 @@ int writeSumsToFile(string fileName, float sums[]) {
 int writeHistToFile(string fileName, int hist[]) {
     ofstream outFile;
 
-    outFile.open(fileName, ios::trunc);
+    outFile.open(fileName.c_str(), ios::trunc);
 
     int listSize = sizeof(hist) / sizeof(int);
 
@@ -49,19 +49,19 @@ int writeAllOutputFiles(float sums[],
                         int histC[]) {
     int errorCode = 0;
 
-    if (errorCode = writeSumsToFile(SUM_FILE, sums) < 0) {
+    if ((errorCode = writeSumsToFile(SUM_FILE, sums)) < 0) {
         return errorCode;
     }
 
-    if (errorCode = writeHistToFile(HIST_A_FILE, histA) < 0) {
+    if ((errorCode = writeHistToFile(HIST_A_FILE, histA)) < 0) {
         return errorCode;
     }
 
-    if (errorCode = writeHistToFile(HIST_B_FILE, histB) < 0) {
+    if ((errorCode = writeHistToFile(HIST_B_FILE, histB)) < 0) {
         return errorCode;
     }
 
-    if (errorCode = writeHistToFile(HIST_C_FILE, histC) < 0) {
+    if ((errorCode = writeHistToFile(HIST_C_FILE, histC)) < 0) {
         return errorCode;
     }
 
