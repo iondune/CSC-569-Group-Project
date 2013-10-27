@@ -208,6 +208,9 @@ int main(int argc, char * argv[])
     int ProcessorId, ProcessorCount;
     MPI_Comm_size(MPI_COMM_WORLD, & ProcessorCount);
     MPI_Comm_rank(MPI_COMM_WORLD, & ProcessorId);
+    
+    char const * const ProcessorPrefix = 
+        (ProcessorId ? "                            " : "");
 
     if (argc != 3)
     {
@@ -218,7 +221,7 @@ int main(int argc, char * argv[])
     startTimer();
     MappedFile AFile(argv[1]), BFile(argv[2]);
     endTimer();
-    printf("Map  %d  took ", ProcessorId); printTimer();
+    printf("%sMap  %d  took ", ProcessorPrefix, ProcessorId); printTimer();
 
     startTimer();
     DataSet A, B;
@@ -230,12 +233,12 @@ int main(int argc, char * argv[])
         Size = A.Values.size();
     }
     endTimer();
-    printf("Read %d  took ", ProcessorId); printTimer();
+    printf("%sRead %d  took ", ProcessorPrefix, ProcessorId); printTimer();
 
-    startTimer();
-    MPI_Barrier(MPI_COMM_WORLD);
-    endTimer();
-    printf("Wait %d  took ", ProcessorId); printTimer();
+    //startTimer();
+    //MPI_Barrier(MPI_COMM_WORLD);
+    //endTimer();
+    //printf("Wait %d  took ", ProcessorId); printTimer();
 
     startTimer();
     MPI_Bcast(& Size, 1, MPI_INT, 0, MPI_COMM_WORLD);
@@ -254,13 +257,13 @@ int main(int argc, char * argv[])
     A.Values.erase(-- A.Values.end());
     B.Values.erase(-- B.Values.end());
     endTimer();
-    printf("Send %d  took ", ProcessorId); printTimer();
+    printf("%s%s %d  took ", ProcessorPrefix, (ProcessorId ? "Recv" : "Send"), ProcessorId); printTimer();
 
     startTimer();
     DataSet C;
     C.MakeSum(A, B);
     endTimer();
-    printf("Sum  %d   took ", ProcessorId); printTimer();
+    printf("%sSum  %d  took ", ProcessorPrefix, ProcessorId); printTimer();
 
     C.Maximum = A.Maximum + B.Maximum;
 
@@ -272,7 +275,7 @@ int main(int argc, char * argv[])
         HistB = B.MakeHistogram(Min, BinWidth),
         HistC = C.MakeHistogram(Min*2, BinWidth);
     endTimer();
-    printf("Hist %d  took ", ProcessorId); printTimer();
+    printf("%sHist %d  took ", ProcessorPrefix, ProcessorId); printTimer();
 
     startTimer();
     if (ProcessorId == 0)
@@ -283,7 +286,7 @@ int main(int argc, char * argv[])
         C.WriteHistogramToFile(HistC, "hist.c");
     }
     endTimer();
-    printf("Writ %d took ", ProcessorId); printTimer();
+    printf("%sWrit %d  took ", ProcessorPrefix, ProcessorId); printTimer();
     
     MPI_Finalize();
 
