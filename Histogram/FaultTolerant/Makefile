@@ -26,6 +26,6 @@ remake: clean all
 # Dependencies
 
 DataSet.o: DataSet.h
-FaultTolerant.o: hrt.h DataSet.h MappedFile.h
-hrt.o: hrt.h
+FaultTolerant.o: DataSet.h MappedFile.h Timer.h
 MappedFile.o: MappedFile.h
+Timer.o: Timer.h
