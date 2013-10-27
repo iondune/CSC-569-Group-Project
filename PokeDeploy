@@ -1,13 +1,13 @@
 #! /bin/bash
 
-subnet="192.168.2."
+subnet="192.168.1.6"
 function pkdeploy {
    echo Deploying to $1
    rsync -avzc --delete . root@$subnet$1:~/Umm/
    # ssh root@$subnet$1 "cd ~/Umm/Histogram/FaultTolerant/; make; make;"
 }
 
-for i in $(seq 114 117)
+for i in $(seq 0 4)
 do
    pkdeploy $i
 done
