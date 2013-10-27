@@ -191,7 +191,7 @@ int main (int argc, char * argv[])
     hrt_start();
     MappedFile AFile(argv[1]), BFile(argv[2]);
     hrt_stop();
-    printf("Map  %d  took %7s.\n", ProcessorId, hrt_stringms());
+    printf("Map  %d  took %7s.\n", ProcessorId, hrt_string());
 
     
     hrt_start();
@@ -221,13 +221,13 @@ int main (int argc, char * argv[])
     A.Values.erase(-- A.Values.end());
     B.Values.erase(-- B.Values.end());
     hrt_stop();
-    printf("R+S  %d  took %7s.\n", ProcessorId, hrt_stringms());
+    printf("R+S  %d  took %7s.\n", ProcessorId, hrt_string());
 
     hrt_start();
     DataSet C;
     C.MakeSum(A, B);
     hrt_stop();
-    printf("Sum  %d   took %7s.\n", ProcessorId, hrt_stringms());
+    printf("Sum  %d   took %7s.\n", ProcessorId, hrt_string());
 
     C.Maximum = A.Maximum + B.Maximum;
 
@@ -239,7 +239,7 @@ int main (int argc, char * argv[])
         HistB = B.MakeHistogram(Min, BinWidth),
         HistC = C.MakeHistogram(Min*2, BinWidth);
     hrt_stop();
-    printf("Hist %d  took %7s.\n", ProcessorId, hrt_stringms());
+    printf("Hist %d  took %7s.\n", ProcessorId, hrt_string());
 
     hrt_start();
     if (ProcessorId == 0)
@@ -250,7 +250,7 @@ int main (int argc, char * argv[])
         C.WriteHistogramToFile(HistC, "hist.c");
     }
     hrt_stop();
-    printf("Write %d took %7s.\n", ProcessorId, hrt_stringms());
+    printf("Write %d took %7s.\n", ProcessorId, hrt_string());
     
     MPI_Finalize();
 
