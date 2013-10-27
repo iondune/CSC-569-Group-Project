@@ -1,12 +1,12 @@
 CC=mpic++
 CFLAGS=-Wall -O3
 LDFLAGS=-Wall
-INC_DIRS=-I.
+INC_DIRS=-I. -I./deps/src/inc
 
 ###############################################################################
 # Source                                                                      #
 ###############################################################################
-MAIN=main.o
+MAIN=./Histogram/Parallel/MrMain.o ./Histogram/Parallel/vector.o
 
 SRCS=$(wildcard src/*.cpp src/**/*.cpp)
 OBJS=$(patsubst %.cpp,%.o,$(SRCS))
@@ -56,7 +56,7 @@ pi: makeDirectories $(OBJS_PI)
 	      -o bin/main-pi
 
 %.o: %.cpp
-	$(CC) -I. $(CFLAGS) -c $< -o $@
+	$(CC) $(INC_DIRS) $(CFLAGS) -c $< -o $@
 
 .PHONY: makeDirectories
 makeDirectories:
