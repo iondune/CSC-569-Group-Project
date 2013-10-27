@@ -1,6 +1,6 @@
 #! /bin/sh
 
-make -s
+# make -s
 
 for test in 10000 100000 1000000 10000000
 do
