@@ -6,6 +6,6 @@ for test in 1000000 #10000 100000 1000000 10000000
 do
     echo "Checking time for test $test"
     echo "-----------------------------------"
-    time /usr/local/bin/mpirun --hostfile Hostfiles/pkhosts4 FaultTolerant ../Tests/$test/$test.a ../Tests/$test/$test.b
+    time /usr/local/bin/mpirun --hostfile Hostfiles/pkhosts4 FaultTolerant --quiet -q ../Tests/$test/$test.a ../Tests/$test/$test.b 2>/dev/null
     rm hist.a hist.b hist.c result.out
 done

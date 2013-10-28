@@ -7,7 +7,7 @@ then
     mkdir TestOutput
 fi
 
-mpirun -mca btl_tcp_if_include eth0 --hostfile Hostfiles/hosts2 --quiet -q FaultTolerant ../Tests/10000/10000.a ../Tests/10000/10000.b 2>/dev/null
+mpirun -mca btl_tcp_if_include eth0 --hostfile Hostfiles/hosts4 --quiet -q FaultTolerant ../Tests/10000/10000.a ../Tests/10000/10000.b 2>/dev/null
 mv hist.a hist.b hist.c result.out TestOutput/
 
 for file in hist.a hist.b hist.c result.out
