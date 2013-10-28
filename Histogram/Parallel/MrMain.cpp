@@ -66,6 +66,7 @@ int main(int narg, char **args)
    Vector* c = a->add(b);
 
    MPI_Barrier(MPI_COMM_WORLD);
+   printVector(c->values(), "result.out");
 
    int binCountA, binCountB, binCountC;
    int* binsA = initializeBins(a, MIN_VAL,           &binCountA);
@@ -82,14 +83,16 @@ int main(int narg, char **args)
       printHistogram(binsA, binCountA, "hist.a");
       printHistogram(binsB, binCountB, "hist.b");
       printHistogram(binsC, binCountC, "hist.c");
-      printVector(c->values(), "result.out");
+      // printVector(c->values(), "result.out");
    }
 
    MPI_Finalize();
 }
 
 int* initializeBins(Vector* vec, float min, int* binCount) {
-  float max = vec->max();
+  // float max = vec->max();
+  float max = 10.0;
+
   (*binCount) = getBinCount(min, max, BIN_WIDTH);
 
   int binBytes = (*binCount) * sizeof(int);

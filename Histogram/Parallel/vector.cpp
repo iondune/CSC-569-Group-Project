@@ -131,6 +131,7 @@ Vector* Vector::add(Vector* other) {
   // of unequal length.
   bool unequalLength = false; 
   sum->reduce(&addReduce, &unequalLength);
+  sum->gather(1);
   if (unequalLength)
     return NULL;
 
@@ -159,7 +160,7 @@ float Vector::max() {
   // Must gather first, because sort_values will only sort each processor's
   // KeyValue pairs.
   gather(1);
-  sort_values(&maxCompare);
+  //sort_values(&maxCompare);
 
   float max;
   scan(&maxScan, &max);
@@ -174,6 +175,10 @@ int maxCompare(char* str1, int len1, char* str2, int len2) {
 
 void maxScan(char* keystr, int keyLen, char* valstr, int valLen, void* extra) {
   *((float*) extra) = *((float*) valstr);
+}
+
+void fooScan(char *key, int keybytes, char * multivalue,
+             int nvalues, int *valuebytes, void *ptr) {
 }
 
 void Vector::bin(float min, float max, float width, int* bins) {
@@ -223,9 +228,9 @@ void binScan(char* keyStr, int keyLen, char* valStr, int valLen, void* extra) {
 }
 
 vector<float> Vector::values() {
+  gather(1);
   sort_keys(3); // 3 means compare two floats
   vector<float> values;
-  gather(1);
   scan(&valuesScan, &values);
   return values;
 }
