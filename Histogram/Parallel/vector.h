@@ -22,7 +22,7 @@ class Vector : private MAPREDUCE_NS::MapReduce {
   /**
    * Add two Vectors together. Returns a new Vector (does not modify this one).
    */
-  Vector* add(Vector* other, float* sums);
+  Vector* add(Vector* other, float* sums, int *elemCount);
 
   /**
    * Get the maximum value. Has the following side effects:
