@@ -1,17 +1,17 @@
 CXX=mpic++
 RM=rm -f
-CPPFLAGS=-g -I./Application -I./Utilities
+CPPFLAGS=-g -I./Utilities
 LDFLAGS=-lrt
 LDLIBS=
 
-SRCS=$(wildcard *.cpp) $(wildcard Utilities/*.cpp) $(wildcard Application/*.cpp)
-HDRS=$(wildcard *.h) $(wildcard Utilities/*.h) $(wildcard Application/*.h)
+SRCS=$(wildcard *.cpp) $(wildcard */*.cpp)
+HDRS=$(wildcard *.h) $(wildcard */*.h)
 OBJS=$(subst .cpp,.o,$(SRCS))
 
 all: FaultTolerant
 
 FaultTolerant: $(OBJS)
-	$(CXX) $(LDFLAGS) -o $@ $^ $(LDLIBS) 
+	$(CXX) $(LDFLAGS) -o $@ $^ $(LDLIBS)
 
 depend:
 	@echo Regenerating local dependencies.
@@ -25,18 +25,14 @@ remake: clean all
 
 # Dependencies
 
+FaultTolerant.o: Application/Application.h
+FaultTolerant.o: Application/NetworkBenchmarkMasterApplication.h
+FaultTolerant.o: Application/Application.h
+FaultTolerant.o: Application/NetworkBenchmarkSlaveApplication.h
 Utilities/DataSet.o: Utilities/DataSet.h
 Utilities/MappedFile.o: Utilities/MappedFile.h
 Utilities/Timer.o: Utilities/Timer.h
-Application/MasterApplication.o: Application/MasterApplication.h
-Application/MasterApplication.o: Application/Application.h
-Application/MasterApplication.o: Utilities/DataSet.h Utilities/Timer.h
-Application/MasterApplication.o: Utilities/MappedFile.h
-Application/SlaveApplication.o: Application/SlaveApplication.h
-Application/SlaveApplication.o: Application/Application.h Utilities/DataSet.h
-Application/SlaveApplication.o: Utilities/Timer.h
 Application/Application.o: Utilities/DataSet.h Utilities/Timer.h
-Application/MasterApplication.o: Application/Application.h
-Application/MasterApplication.o: Utilities/DataSet.h Utilities/Timer.h
-Application/SlaveApplication.o: Application/Application.h Utilities/DataSet.h
-Application/SlaveApplication.o: Utilities/Timer.h
+Application/NetworkBenchmarkMasterApplication.o: Application/Application.h
+Application/NetworkBenchmarkMasterApplication.o: Utilities/MappedFile.h
+Application/NetworkBenchmarkSlaveApplication.o: Application/Application.h
