@@ -6,6 +6,8 @@
 #include "sys/stat.h"
 #include "keyvalue.h"
 #include "fileWriter.h"
+#include "MappedFile.h"
+#include "DataSet.h"
 #include <cmath>
 
 char* serialReadfile(char *filename);
@@ -32,6 +34,19 @@ int main(int narg, char **args)
    if (narg <= 1) {
      if (me == 0) printf("Syntax: wordfreq file1 file2 ...\n");
      MPI_Abort(MPI_COMM_WORLD,1);
+   }
+
+   if (me == 0) {
+   	DataSet aVector;
+   	DataSet bVector;
+
+      MappedFile FileA(args[1]), FileB(args[2]);
+      aVector.ParseFromString(FileA.Contents);
+      bVector.ParseFromString(FileB.Contents);
+
+      // aVector and bVector have Vectors of floats (member variable Value)
+      // size of Vector found in .Size()
+      // elements accessible with [] operator
    }
 
    char* data1 = serialReadfile(args[1]);
