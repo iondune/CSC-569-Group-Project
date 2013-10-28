@@ -49,8 +49,11 @@ void DataSet::WriteToFile(std::string const & fileName)
 
 std::vector<int> DataSet::MakeHistogram(float const Min, float const BinWidth)
 {
-    int const BinCount = ceil((Maximum - Min) / BinWidth);
+    return MakeHistogram(Min, BinWidth, ceil((Maximum - Min) / BinWidth));
+}
 
+std::vector<int> DataSet::MakeHistogram(float const Min, float const BinWidth, int const BinCount)
+{
     std::vector<int> Histogram;
     Histogram.resize(BinCount);
     for (unsigned int i = 0; i < Values.size(); ++ i)
@@ -77,14 +80,24 @@ void DataSet::WriteHistogramToFile(std::vector<int> const & Histogram, std::stri
 
 void DataSet::MakeSum(DataSet const & A, DataSet const & B)
 {
+    MakeSum(A, B, 0, A.Size());
+}
+
+void DataSet::MakeSum(DataSet const & A, DataSet const & B, unsigned int const i0, unisnged int const i1)
+{
     if (A.Size() != B.Size())
     {
         std::cerr << "Vector sizes differ! " << A.Size() << " " << B.Size() << std::endl;
         exit(EXIT_FAILURE);
     }
+    if (i1 >= A.Size())
+    {
+        std::cerr << "Vector index out of range! " << i1 << " " << A.Size() << std::endl;
+        exit(EXIT_FAILURE);
+    }
 
     Values.resize(A.Size());
-    for (unsigned int i = 0; i < A.Size(); ++ i)
+    for (unsigned int i = i0; i < i1; ++ i)
         Values[i] = A[i] + B[i];
 }
 

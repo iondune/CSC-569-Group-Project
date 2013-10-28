@@ -13,8 +13,10 @@ public:
     void ParseFromString(char * const FileContents);
     void WriteToFile(std::string const & fileName);
     std::vector<int> MakeHistogram(float const Min, float const BinWidth);
+    std::vector<int> MakeHistogram(float const Min, float const BinWidth, int const BinCount);
     void WriteHistogramToFile(std::vector<int> const & Histogram, std::string const & fileName);
     void MakeSum(DataSet const & A, DataSet const & B);
+    void MakeSum(DataSet const & A, DataSet const & B, unsigned int const i0, unsigned int const i1);
 
     unsigned int Size() const;
     float operator[] (unsigned int const i) const;
