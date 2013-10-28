@@ -2,30 +2,46 @@
 
 make -s
 
-if [ ! -d TestOutput ]
-then
-    mkdir TestOutput
-fi
-
-/usr/local/bin/ --hostfile Hostfiles/pkhosts4 FaultTolerant ../Tests/10000/10000.a ../Tests/10000/10000.b Parallel
-mv hist.a hist.b hist.c result.out TestOutput/
-
-for file in hist.a hist.b hist.c result.out
+for test in 10000 100000 1000000 10000000
 do
-    diff -q ./TestOutput/$file ../Tests/10000/$file > /dev/null 2>&1
-    if [ $? -ne 0 ]
+
+    if [ ! -d TestOutput ]
     then
-        echo "Diff failure for $file"
-        echo "---------------------------"
-        diff ./TestOutput/$file ../Tests/10000/$file
-        echo
-        failed="yes"
+        mkdir TestOutput
     fi
+
+    testdir="../Tests/$test"
+
+    if [ ! -f "$testdir/result.out" ]
+    then
+        continue
+    fi
+
+    echo "Checking output for test $test"
+    echo "-----------------------------------"
+
+    /usr/local/bin/ --hostfile Hostfiles/pkhosts4 FaultTolerant $testdir/$test.a $testdir/$test.b Parallel
+    mv hist.a hist.b hist.c result.out TestOutput/
+
+    for file in hist.a hist.b hist.c result.out
+    do
+        diff -q ./TestOutput/$file $testdir/$file > /dev/null 2>&1
+        if [ $? -ne 0 ]
+        then
+            echo "Diff failure for $file"
+            echo "---------------------------"
+            diff ./TestOutput/$file $testdir/$file
+            echo
+            failed="yes"
+        fi
+    done
+
+    rm -r TestOutput/
+    echo
+
 done
 
-rm -r TestOutput/
 
-echo
 if [ $failed ]
 then
     echo "Tests failed."
