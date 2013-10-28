@@ -40,7 +40,7 @@ class Vector : private MAPREDUCE_NS::MapReduce {
    * @param width The width of the bins.
    * @param bins  The bins to fill.
    */
-  void bin(float min, float max, float width, int binCount, int* bins);
+  void bin(float min, float max, float width, int* bins);
 
   /**
    * The values contained in this vector. Sorts the vector internally, by index.

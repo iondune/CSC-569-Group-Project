@@ -43,7 +43,7 @@ static void binMap(uint64_t itask,
                    KeyValue* keyValue,
                    void* extra);
 
-static int getBinNum(float min, float max, float width, int binCout, float val);
+static int getBinNum(float min, float max, float width, float val);
 
 static void binReduce(char* key,
                       int keyLen,
@@ -75,7 +75,6 @@ typedef struct {
   float min;
   float max;
   float width;
-  int binCount;
 } BinExtra;
 
 typedef struct {
@@ -178,11 +177,12 @@ void maxScan(char* keystr, int keyLen, char* valstr, int valLen, void* extra) {
   *((float*) extra) = *((float*) valstr);
 }
 
-void Vector::bin(float min, float max, float width, int binCount, int* bins) {
-  BinExtra extra = { min, max, width, binCount };
+void Vector::bin(float min, float max, float width, int* bins) {
+  BinExtra extra = { min, max, width };
   map(this, binMap, &extra);
   collate(NULL);
   reduce(binReduce, NULL);
+  gather(1);
   scan(binScan, bins);
 }
 
@@ -195,12 +195,12 @@ void binMap(uint64_t itask,
             void* extra) {
   BinExtra* binExtra = (BinExtra*) extra;
   float val = *((float*) valStr);
-  int binNum = getBinNum(binExtra->min, binExtra->max,
-                         binExtra->width, binExtra->binCount, val);
+  int binNum = getBinNum(binExtra->min, binExtra->max, binExtra->width, val);
   keyValue->add((char*) &binNum, sizeof(binNum), NULL, 0);
 }
 
-int getBinNum(float min, float max, float width, int binCount, float val) {
+int getBinNum(float min, float max, float width, float val) {
+  int binCount = ceil((max - min) / width);
   int index = Clamp((int) ((val - min) / width), 0, binCount);
   return Clamp(index, 0, binCount);
 }
@@ -226,6 +226,7 @@ void binScan(char* keyStr, int keyLen, char* valStr, int valLen, void* extra) {
 vector<float> Vector::values() {
   sort_keys(3); // 3 means compare two floats
   vector<float> values;
+  gather(1);
   scan(&valuesScan, &values);
   return values;
 }
@@ -237,6 +238,7 @@ void valuesScan(char* keyStr, int keyLen, char* valueStr, int valueLen, void* ex
 }
 
 void Vector::print() {
+  gather(1);
   scan(&printScan, NULL);
 }
 
