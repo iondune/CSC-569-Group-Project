@@ -3,18 +3,23 @@
 #include <cstdlib>
 #include <mpi.h>
 
-#include "Application.h"
-#include "MasterApplication.h"
-#include "SlaveApplication.h"
+#include "Application/Application.h"
+#include "Application/NetworkBenchmarkMasterApplication.h"
+#include "Application/NetworkBenchmarkSlaveApplication.h"
+#include "Application/FaultTolerantMasterApplication.h"
+#include "Application/FaultTolerantSlaveApplication.h"
 
 
 int main(int argc, char * argv[])
 {
-    if (argc != 3)
+    if (argc < 3 || argc > 4)
     {
-        fprintf(stderr, "usage: Serial <file1> <file2>");
+        fprintf(stderr, "usage: Serial <file1> <file2> [mode]");
         exit(EXIT_FAILURE);
     }
+
+    std::string const DefaultMode = "FaultTolerant";
+    std::string const Mode = (argc == 4 ? argv[3] : DefaultMode);
 
     MPI_Init(& argc, & argv);
     MPI_Errhandler_set(MPI_COMM_WORLD, MPI_ERRORS_RETURN);
@@ -23,14 +28,25 @@ int main(int argc, char * argv[])
     MPI_Comm_size(MPI_COMM_WORLD, & ProcessorCount);
     MPI_Comm_rank(MPI_COMM_WORLD, & ProcessorId);
 
-    Application * App;
+    Application * App = 0;
 
-    if (ProcessorId == 0)
-        App = new MasterApplication(argv[1], argv[2]);
-    else
-        App = new SlaveApplication(ProcessorId);
+    if (Mode == "NetworkBenchmark")
+    {
+        if (ProcessorId == 0)
+            App = new NetworkBenchmarkMasterApplication(argv[1], argv[2]);
+        else
+            App = new NetworkBenchmarkSlaveApplication(ProcessorId);
+    }
+    else if (Mode == "FaultTolerant")
+    {
+        if (ProcessorId == 0)
+            App = new FaultTolerantMasterApplication(argv[1], argv[2], ProcessorCount);
+        else
+            App = new FaultTolerantSlaveApplication(ProcessorId);
+    }
 
-    App->Run();
+    if (App)
+        App->Run();
 
 
     MPI_Finalize();

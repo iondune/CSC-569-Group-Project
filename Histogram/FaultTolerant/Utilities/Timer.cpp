@@ -37,3 +37,9 @@ void Timer::SetProcessorId(int const processorId)
     ProcessorId = processorId;
     SetPrefix(ProcessorId ? "                            " : "");
 }
+
+void Timer::Say(std::string const & message)
+{
+    printf("%s[%d]  %s\n", Prefix.c_str(), 
+        ProcessorId, message.c_str());
+}
