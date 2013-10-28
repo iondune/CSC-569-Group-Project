@@ -8,6 +8,9 @@
 class ParallelSlaveApplication : public Application
 {
 
+    static float const BinWidth = 0.5f;
+    static float const Min = -10.f;
+
     int N;
     bool DoHistSend;
     int BinCountA, BinCountB, BinCountC;
@@ -29,7 +32,7 @@ public:
     {
         Profiler.Start("Recv");
 
-        MPI_BCast(& N, 1, MPI_INT, 0, MPI_COMM_WORLD);
+        MPI_Bcast(& N, 1, MPI_INT, 0, MPI_COMM_WORLD);
         A.Values.resize(N);
         B.Values.resize(N);
 
@@ -39,7 +42,7 @@ public:
         Profiler.Say("Received work!");
         C.MakeSum(A, B);
         Profiler.Say("Did work!");
-        MPI_Send(& C.Values.front(), B, MPI_FLOAT, 0, 345, MPI_COMM_WORLD);
+        MPI_Send(& C.Values.front(), N, MPI_FLOAT, 0, 345, MPI_COMM_WORLD);
         Profiler.End();
     }
 
@@ -51,16 +54,13 @@ public:
             MPI_Bcast(& BinCountB, 1, MPI_INT, 0, MPI_COMM_WORLD);
             MPI_Bcast(& BinCountC, 1, MPI_INT, 0, MPI_COMM_WORLD);
 
-            static float const BinWidth = 0.5f;
-            static float const Min = -10.f;
-
             HistA = A.MakeHistogram(Min, BinWidth, BinCountA);
             HistB = B.MakeHistogram(Min, BinWidth, BinCountB);
             HistC = C.MakeHistogram(Min*2, BinWidth, BinCountC);
 
-            MPI_Send(& HistAWork.front(), BinCountA, MPI_FLOAT, i, 456, MPI_COMM_WORLD);
-            MPI_Send(& HistBWork.front(), BinCountB, MPI_FLOAT, i, 457, MPI_COMM_WORLD);
-            MPI_Send(& HistCWork.front(), BinCountC, MPI_FLOAT, i, 458, MPI_COMM_WORLD);
+            MPI_Send(& HistA.front(), BinCountA, MPI_FLOAT, 0, 456, MPI_COMM_WORLD);
+            MPI_Send(& HistB.front(), BinCountB, MPI_FLOAT, 0, 457, MPI_COMM_WORLD);
+            MPI_Send(& HistC.front(), BinCountC, MPI_FLOAT, 0, 458, MPI_COMM_WORLD);
         }
     }
 

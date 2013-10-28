@@ -14,9 +14,9 @@
 
 int main(int argc, char * argv[])
 {
-    if (argc < 3 || argc > 4)
+    if (argc < 3)
     {
-        fprintf(stderr, "usage: Serial <file1> <file2> [mode]");
+        fprintf(stderr, "usage: Serial <file1> <file2> [mode] [options ...]");
         exit(EXIT_FAILURE);
     }
 
@@ -49,9 +49,9 @@ int main(int argc, char * argv[])
     else if (Mode == "Parallel")
     {
         if (ProcessorId == 0)
-            App = new ParallelMasterApplication(argv[1], argv[2], ProcessorCount);
+            App = new ParallelMasterApplication(argv[1], argv[2], ProcessorCount, 1, false);
         else
-            App = new ParallelSlaveApplication(ProcessorId);
+            App = new ParallelSlaveApplication(ProcessorId, false);
     }
 
     if (App)

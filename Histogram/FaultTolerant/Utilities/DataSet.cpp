@@ -54,7 +54,7 @@ int DataSet::GetBinCount(float const Min, float const BinWidth)
 
 std::vector<int> DataSet::MakeHistogram(float const Min, float const BinWidth)
 {
-    return MakeHistogram(Min, BinWidth, GetBinCount());
+    return MakeHistogram(Min, BinWidth, GetBinCount(Min, BinWidth));
 }
 
 std::vector<int> DataSet::MakeHistogram(float const Min, float const BinWidth, int const BinCount)
