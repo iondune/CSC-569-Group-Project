@@ -32,8 +32,25 @@ int main(int narg, char **args)
 
    int fileSize1;
    int fileSize2;
-   char* data1 = serialReadfile(args[1], &fileSize1);
-   char* data2 = serialReadfile(args[2], &fileSize2);
+   char *data1, *data2;
+   if (me == 0)
+   {
+      data1 = serialReadfile(args[1], &fileSize1);
+      data2 = serialReadfile(args[2], &fileSize2);
+      int StringSize = strlen(data1);
+      MPI_Bcast(& StringSize, 1, MPI_INT, 0, MPI_COMM_WORLD);
+      MPI_Bcast(data1, StringSize, MPI_CHAR, 0, MPI_COMM_WORLD);
+      MPI_Bcast(data2, StringSize, MPI_CHAR, 0, MPI_COMM_WORLD);
+   }
+   else
+   {
+      int StringSize = 0;
+      MPI_Bcast(& StringSize, 1, MPI_INT, 0, MPI_COMM_WORLD);
+      data1 = new char[StringSize];
+      data2 = new char[StringSize];
+      MPI_Bcast(data1, StringSize, MPI_CHAR, 0, MPI_COMM_WORLD);
+      MPI_Bcast(data2, StringSize, MPI_CHAR, 0, MPI_COMM_WORLD);
+   }
 
    //MapReduce *mr1 = new MapReduce(MPI_COMM_WORLD);
    //MapReduce *mr2 = new MapReduce(MPI_COMM_WORLD);
