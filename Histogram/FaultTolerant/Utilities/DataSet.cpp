@@ -83,7 +83,7 @@ void DataSet::MakeSum(DataSet const & A, DataSet const & B)
     MakeSum(A, B, 0, A.Size());
 }
 
-void DataSet::MakeSum(DataSet const & A, DataSet const & B, unsigned int const i0, unisnged int const i1)
+void DataSet::MakeSum(DataSet const & A, DataSet const & B, unsigned int const i0, unsigned int const i1)
 {
     if (A.Size() != B.Size())
     {
