@@ -9,21 +9,21 @@
 #include <cmath>
 
 #define CHUNK_SIZE 1024
+#define BIN_WIDTH 0.5f
+#define MIN_VAL -10.0f
+#define MIN_VAL_TIMES_TWO -20.0f
 
 char* serialReadfile(char *fname, int *sizeofFile);
 int getBinCount(float min, float max, float width);
-void printHistogram(int* bins, int size, const char *filename, float min, float max, float width);
+void printHistogram(int* bins, int size, const char *filename);
 void printVector(const vector<float>& vec, const char* filename);
-
+int* initializeBins(Vector* vec, float min, int* binCount);
 
 int main(int narg, char **args)
 {
-   static float const BinWidth = 0.5f;
-   static float const Min = -10.0f;
-   static float const Min3 = -20.0f;
    MPI_Init(&narg,&args);
 
-   int me,nprocs,i;
+   int me,nprocs;
    MPI_Comm_rank(MPI_COMM_WORLD,&me);
    MPI_Comm_size(MPI_COMM_WORLD,&nprocs);
    // printf("Let's start! My Rank is %d\n", me);
@@ -66,33 +66,12 @@ int main(int narg, char **args)
    Vector* c = a->add(b);
 
    MPI_Barrier(MPI_COMM_WORLD);
+   printVector(c->values(), "result.out");
 
-   float max1 = a->max();
-   float max2 = b->max();
-   float max3 = c->max();
-
-   int binCount1 = getBinCount(Min, max1, BinWidth);
-   int binCount2 = getBinCount(Min, max2, BinWidth);
-   int binCount3 = getBinCount(Min3, max3, BinWidth);
-   int* bins1 = (int *)malloc(binCount1 * sizeof(int));
-   int* bins2 = (int *)malloc(binCount2 * sizeof(int));
-   int* bins3 = (int *)malloc(binCount3 * sizeof(int));
-
-   for (i=0;i<binCount1;i++) {
-      *(bins1+i)=0;
-   }
-   for (i=0;i<binCount2;i++) {
-      *(bins2+i)=0;
-   }
-   for (i=0;i<binCount3;i++) {
-      *(bins3+i)=0;
-   }
-
-   MPI_Barrier(MPI_COMM_WORLD);
-
-   a->bin(Min, max1, BinWidth, bins1);
-   b->bin(Min, max2, BinWidth, bins2);
-   c->bin(Min3, max3, BinWidth, bins3);
+   int binCountA, binCountB, binCountC;
+   int* binsA = initializeBins(a, MIN_VAL,           &binCountA);
+   int* binsB = initializeBins(b, MIN_VAL,           &binCountB);
+   int* binsC = initializeBins(c, MIN_VAL_TIMES_TWO, &binCountC);
 
    MPI_Barrier(MPI_COMM_WORLD);
 
@@ -101,15 +80,27 @@ int main(int narg, char **args)
    if (me == 0) {
       printf("Time to process files: %g secs\n", tstop-tstart);
 
-      // write results to files
-      // old file output for debugging
-      printHistogram(bins1, binCount1, "hist.a", Min, max1, BinWidth);
-      printHistogram(bins2, binCount2, "hist.b", Min, max2, BinWidth);
-      printHistogram(bins3, binCount3, "hist.c", Min3, max3, BinWidth);
-      printVector(c->values(), "result.out");
+      printHistogram(binsA, binCountA, "hist.a");
+      printHistogram(binsB, binCountB, "hist.b");
+      printHistogram(binsC, binCountC, "hist.c");
+      // printVector(c->values(), "result.out");
    }
 
    MPI_Finalize();
+}
+
+int* initializeBins(Vector* vec, float min, int* binCount) {
+  // float max = vec->max();
+  float max = 10.0;
+
+  (*binCount) = getBinCount(min, max, BIN_WIDTH);
+
+  int binBytes = (*binCount) * sizeof(int);
+  int* bins = (int*) malloc(binBytes);
+  memset(bins, '\0', binBytes);
+
+  vec->bin(min, max, BIN_WIDTH, bins);
+  return bins;
 }
 
 char* serialReadfile(char *fname, int *sizeofFile) {
@@ -126,18 +117,15 @@ char* serialReadfile(char *fname, int *sizeofFile) {
    int nchar = fread(text,1,filesize,fp);
    text[nchar] = '\0';
    fclose(fp);
-   //printf("data = %s",text);
    return text;
 }
 
-void printHistogram(int* bins, int size, const char* filename, float min,
-                    float max, float width) {
+void printHistogram(int* bins, int size, const char* filename) {
    FILE* file = fopen(filename, "w");
    if (file == NULL) {
        fprintf(stderr, "Error opening file!\n");
        exit(1);
    }
-
    for (int i = 0; i < size; i++) {
       fprintf(file, "%d, %d\n", i, bins[i]);
    }
