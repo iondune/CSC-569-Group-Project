@@ -5,9 +5,8 @@
 void withChunks(char* data,
                 const char delim,
                 int chunkSize,
-                int numProcs,
                 void* extra,
-                void (*f)(char*, int, const char, int, int, int, void*)) {
+                void (*f)(char*, int, const char, int, int, void*)) {
   char* begin = data;
   char* cur = data;
   int ordinal = 0;
@@ -21,18 +20,17 @@ void withChunks(char* data,
     if (*cur == '\0')
       count++; // Last item.
 
-    f(begin, ordinal, delim, chunkSize, count, numProcs, extra);
+    f(begin, ordinal, delim, chunkSize, count, extra);
     begin = cur;
     ordinal++;
   }
 }
 
-void withChunksSpace(char* data,
+void withChunksSpace(char* data, 
                      int chunkSize,
-                     int numProcs,
-                     void* extra,
-                     void (*f)(char*, int, const char, int, int, int, void*)) {
-  withChunks(data, ' ', chunkSize, numProcs, extra, f);
+                     void* extra, 
+                     void (*f)(char*, int, const char, int, int, void*)) {
+  withChunks(data, ' ', chunkSize, extra, f);
 }
 
 char* itoa(int n, int* len) {

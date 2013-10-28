@@ -1,8 +1,8 @@
-#include "deps/src/inc/mapreduce.h"
+#include "mapreduce.h"
 
-#include <vector>
+template <typename T>
+static T const Clamp(T const & v, T const & min, T const & max);
 
-using std::vector;
 
 namespace MAPREDUCE_NS {
 class KeyValue;
@@ -10,23 +10,24 @@ class KeyValue;
 
 class Vector : private MAPREDUCE_NS::MapReduce {
  public:
+
+  Vector* copy();
+
   /**
    * Create a Vector* from a pointer to a string of floats. Break the data
    * up into chunks of size |chunkSize|, for parallelization.
    */
-  static Vector* from(char* data, int chunkSize, int numProcs);
+  static Vector* from(char* data, int chunkSize);
 
   /**
    * Add two Vectors together. Returns a new Vector (does not modify this one).
-   * Returns NULL if the vectors are of unequal length.
    */
-  Vector* add(Vector* other);
+  Vector* add(Vector* other, float* sums);
 
   /**
    * Get the maximum value. Has the following side effects:
    *    The computation is gathered to one processor.
    *    The values are sorted.
-   * Calling max with an empty vector throws an MPI error.
    */
   float max();
 
@@ -40,12 +41,12 @@ class Vector : private MAPREDUCE_NS::MapReduce {
    * @param width The width of the bins.
    * @param bins  The bins to fill.
    */
+  // KV -> (map variant 5, to bin/NULL pairs) -> KV -> (collate) -> KMV -> (reduce) -> KV -> scan, fill out param
   void bin(float min, float max, float width, int binCount, int* bins);
 
-  /**
-   * The values contained in this vector. Sorts the vector internally, by index.
-   */
-  vector<float> values();
+  void getBins(int* bins);
+
+  void getSummedArray(float* array);
 
   /**
    * Print key/value pairs to stdout.
@@ -54,17 +55,12 @@ class Vector : private MAPREDUCE_NS::MapReduce {
 
  private:
   Vector(MPI_Comm comm);
+  //uint64_t add(Vector* other);
 
-  // This callback needs to be a static member function as opposed to a C-style
-  // naked function to access the private inherited MapReduce.
   static void handleVectorChunk(char* data,
                                 int ordinal,
                                 const char delim,
                                 int chunkSize,
                                 int count,
-                                int numProcs,
                                 void* extra);
 };
-
-
-

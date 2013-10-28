@@ -6,8 +6,6 @@
 #include "sys/stat.h"
 #include "keyvalue.h"
 #include "fileWriter.h"
-#include "MappedFile.h"
-#include "DataSet.h"
 #include <cmath>
 
 char* serialReadfile(char *filename);
@@ -19,12 +17,8 @@ int main(int narg, char **args)
    static float const BinWidth = 0.5f;
    static float const Min = -10.0f;
    static float const Min3 = -20.0f;
-
-   static float const numProcs = 5;
-   static float const chunkSize = 512;
-
-
    MPI_Init(&narg,&args);
+   printf("MPI_Init Success\n");
 
    int me,nprocs,i;
    MPI_Comm_rank(MPI_COMM_WORLD,&me);
@@ -34,19 +28,6 @@ int main(int narg, char **args)
    if (narg <= 1) {
      if (me == 0) printf("Syntax: wordfreq file1 file2 ...\n");
      MPI_Abort(MPI_COMM_WORLD,1);
-   }
-
-   if (me == 0) {
-   	DataSet aVector;
-   	DataSet bVector;
-
-      MappedFile FileA(args[1]), FileB(args[2]);
-      aVector.ParseFromString(FileA.Contents);
-      bVector.ParseFromString(FileB.Contents);
-
-      // aVector and bVector have Vectors of floats (member variable Value)
-      // size of Vector found in .Size()
-      // elements accessible with [] operator
    }
 
    char* data1 = serialReadfile(args[1]);
@@ -73,13 +54,13 @@ int main(int narg, char **args)
 
    //Vector v;
    //create a + b -> c
-   Vector* a = Vector::from(data1, chunkSize, numProcs);
-   Vector* b = Vector::from(data2, chunkSize, numProcs);
+   Vector* a = Vector::from(data1,2);
+   Vector* b = Vector::from(data2,2);
    
+   MPI_Barrier(MPI_COMM_WORLD);
 
-   float *sumsArray = (float *)malloc(1000000*sizeof(float));
-   // Vector* c = a->add(b, sumsArray);
-   Vector* c = a->add(b);
+   float *sumsArray = (float *)malloc(10000*sizeof(float));
+   Vector* c = a->add(b, sumsArray);
 
    MPI_Barrier(MPI_COMM_WORLD);
 
@@ -111,6 +92,9 @@ int main(int narg, char **args)
 
    MPI_Barrier(MPI_COMM_WORLD);
 
+   //a->scan(binScan, bins1);
+   //b->scan(binScan, bins2);
+   //c->scan(binScan, bins3);
 
    MPI_Barrier(MPI_COMM_WORLD);
    double tstop = MPI_Wtime();
@@ -140,7 +124,6 @@ int main(int narg, char **args)
 char* serialReadfile(char *fname) {
    struct stat stbuf;
    int flag = stat(fname,&stbuf);
-
    if (flag < 0) {
     printf("ERROR: Could not query file size\n");
     MPI_Abort(MPI_COMM_WORLD,1);
@@ -182,4 +165,5 @@ void print(int* bins, int size, char *filename, float min, float max, float widt
 int getBinCount(float min, float max, float width) {
   return ceil((max - min) / width);
 }
+
 
