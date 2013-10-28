@@ -6,6 +6,8 @@
 #include "Application/Application.h"
 #include "Application/NetworkBenchmarkMasterApplication.h"
 #include "Application/NetworkBenchmarkSlaveApplication.h"
+#include "Application/FaultTolerantMasterApplication.h"
+#include "Application/FaultTolerantSlaveApplication.h"
 
 
 int main(int argc, char * argv[])
@@ -16,7 +18,7 @@ int main(int argc, char * argv[])
         exit(EXIT_FAILURE);
     }
 
-    std::string const DefaultMode = "NetworkBenchmark";
+    std::string const DefaultMode = "FaultTolerant";
     std::string const Mode = (argc == 4 ? argv[3] : DefaultMode);
 
     MPI_Init(& argc, & argv);
@@ -34,6 +36,13 @@ int main(int argc, char * argv[])
             App = new NetworkBenchmarkMasterApplication(argv[1], argv[2]);
         else
             App = new NetworkBenchmarkSlaveApplication(ProcessorId);
+    }
+    else if (Mode == "FaultTolerant")
+    {
+        if (ProcessorId == 0)
+            App = new FaultTolerantMasterApplication(argv[1], argv[2], ProcessorCount);
+        else
+            App = new FaultTolerantSlaveApplication(ProcessorId);
     }
 
     if (App)

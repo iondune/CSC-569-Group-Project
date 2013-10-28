@@ -21,5 +21,6 @@ public:
 
     void SetPrefix(std::string const & prefix);
     void SetProcessorId(int const processorId);
+    void Say(std::string const & message);
 
 };
