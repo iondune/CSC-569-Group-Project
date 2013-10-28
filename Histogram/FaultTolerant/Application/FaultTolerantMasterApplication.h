@@ -102,7 +102,7 @@ public:
             for (int i = 0; i < 10000000; ++ i)
                 x ++;
         for (int i = 0; i < Children.size(); ++ i)
-            kill(Children[i], SIGTERM);
+            kill(Children[i], SIGKILL);
         Profiler.End();
     }
 
