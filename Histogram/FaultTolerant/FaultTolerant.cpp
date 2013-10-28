@@ -8,6 +8,8 @@
 #include "Application/NetworkBenchmarkSlaveApplication.h"
 #include "Application/FaultTolerantMasterApplication.h"
 #include "Application/FaultTolerantSlaveApplication.h"
+#include "Application/ParallelMasterApplication.h"
+#include "Application/ParallelSlaveApplication.h"
 
 
 int main(int argc, char * argv[])
@@ -25,10 +27,8 @@ int main(int argc, char * argv[])
     MPI_Errhandler_set(MPI_COMM_WORLD, MPI_ERRORS_RETURN);
 
     int ProcessorId, ProcessorCount;
-    MPI_Errhandler_set(MPI_COMM_WORLD, MPI_ERRORS_RETURN);
     MPI_Comm_size(MPI_COMM_WORLD, & ProcessorCount);
     MPI_Comm_rank(MPI_COMM_WORLD, & ProcessorId);
-    MPI_Errhandler_set(MPI_COMM_WORLD, MPI_ERRORS_RETURN);
 
     Application * App = 0;
 
@@ -45,6 +45,13 @@ int main(int argc, char * argv[])
             App = new FaultTolerantMasterApplication(argv[1], argv[2], ProcessorCount);
         else
             App = new FaultTolerantSlaveApplication(ProcessorId);
+    }
+    else if (Mode == "Parallel")
+    {
+        if (ProcessorId == 0)
+            App = new ParallelMasterApplication(argv[1], argv[2], ProcessorCount);
+        else
+            App = new ParallelSlaveApplication(ProcessorId);
     }
 
     if (App)
