@@ -25,8 +25,10 @@ int main(int argc, char * argv[])
     MPI_Errhandler_set(MPI_COMM_WORLD, MPI_ERRORS_RETURN);
 
     int ProcessorId, ProcessorCount;
+    MPI_Errhandler_set(MPI_COMM_WORLD, MPI_ERRORS_RETURN);
     MPI_Comm_size(MPI_COMM_WORLD, & ProcessorCount);
     MPI_Comm_rank(MPI_COMM_WORLD, & ProcessorId);
+    MPI_Errhandler_set(MPI_COMM_WORLD, MPI_ERRORS_RETURN);
 
     Application * App = 0;
 

@@ -2,6 +2,7 @@
 #pragma once
 
 #include "Application.h"
+#include <unistd.h>
 
 
 class FaultTolerantSlaveApplication : public Application
@@ -17,7 +18,7 @@ public:
     void Run()
     {
         DoWorkForMaster();
-        //GetTheFuckOutOfHere();
+        GetTheFuckOutOfHere();
     }
 
     void DoWorkForMaster()
@@ -36,6 +37,7 @@ public:
 
     void GetTheFuckOutOfHere()
     {
+        sleep(315360000);
         exit(0);
     }
 
