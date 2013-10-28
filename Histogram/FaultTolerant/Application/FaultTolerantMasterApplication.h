@@ -30,7 +30,7 @@ public:
         ReceiveWorkFromSlaves();
         MakeHistograms();
         WriteOutputFiles();
-        //GetTheFuckOutOfHere();
+        GetTheFuckOutOfHere();
     }
 
     void ReadInFiles()
