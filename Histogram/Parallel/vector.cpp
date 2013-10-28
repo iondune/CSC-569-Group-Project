@@ -91,13 +91,12 @@ Vector::Vector(MPI_Comm comm) : MapReduce(comm) {
 
 Vector* Vector::from(char* data, int chunkSize) {
   Vector* vec = new Vector(MPI_COMM_WORLD);
-  withChunksSpace(data, chunkSize, vec, &handleVectorChunk);
+  withChunks(data, chunkSize, vec, &handleVectorChunk);
   return vec;
 }
 
 void Vector::handleVectorChunk(char* data,
                                int ordinal,
-                               const char delim,
                                int chunkSize,
                                int count,
                                void* extra) {

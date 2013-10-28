@@ -3,10 +3,9 @@
 #include <stdlib.h>
 
 void withChunks(char* data,
-                const char delim,
                 int chunkSize,
                 void* extra,
-                void (*f)(char*, int, const char, int, int, void*)) {
+                void (*f)(char*, int, int, int, void*)) {
   char* begin = data;
   char* cur = data;
   int ordinal = 0;
@@ -14,23 +13,16 @@ void withChunks(char* data,
   while (*begin != '\0') {
     int count = 0;
     for (cur = begin; *cur != '\0' && count < chunkSize; ++cur) {
-      if (*cur == delim)
+      if (*cur == ' ')
         count++;
     }
     if (*cur == '\0')
       count++; // Last item.
 
-    f(begin, ordinal, delim, chunkSize, count, extra);
+    f(begin, ordinal, chunkSize, count, extra);
     begin = cur;
     ordinal++;
   }
-}
-
-void withChunksSpace(char* data,
-                     int chunkSize,
-                     void* extra,
-                     void (*f)(char*, int, const char, int, int, void*)) {
-  withChunks(data, ' ', chunkSize, extra, f);
 }
 
 char* itoa(int n, int* len) {

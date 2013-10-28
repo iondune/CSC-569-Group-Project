@@ -59,7 +59,6 @@ class Vector : private MAPREDUCE_NS::MapReduce {
   // naked function to access the private inherited MapReduce.
   static void handleVectorChunk(char* data,
                                 int ordinal,
-                                const char delim,
                                 int chunkSize,
                                 int count,
                                 void* extra);
