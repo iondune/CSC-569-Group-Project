@@ -20,7 +20,7 @@ do
     echo "Checking output for test $test"
     echo "-----------------------------------"
 
-    /usr/local/bin/ --hostfile Hostfiles/pkhosts4 FaultTolerant $testdir/$test.a $testdir/$test.b Parallel
+    mpirun -mca btl_tcp_if_include eth0 --hostfile Hostfiles/hosts4 FaultTolerant $testdir/$test.a $testdir/$test.b Parallel
     mv hist.a hist.b hist.c result.out TestOutput/
 
     for file in hist.a hist.b hist.c result.out

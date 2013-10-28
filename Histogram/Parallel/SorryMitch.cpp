@@ -37,18 +37,23 @@ int main(int narg, char **args)
    {
       data1 = serialReadfile(args[1], &fileSize1);
       data2 = serialReadfile(args[2], &fileSize2);
-      int StringSize = strlen(data1);
+      int StringSize = strlen(data1) + 1;
       MPI_Bcast(& StringSize, 1, MPI_INT, 0, MPI_COMM_WORLD);
+   MPI_Barrier(MPI_COMM_WORLD);
       MPI_Bcast(data1, StringSize, MPI_CHAR, 0, MPI_COMM_WORLD);
+   MPI_Barrier(MPI_COMM_WORLD);
       MPI_Bcast(data2, StringSize, MPI_CHAR, 0, MPI_COMM_WORLD);
    }
    else
    {
       int StringSize = 0;
       MPI_Bcast(& StringSize, 1, MPI_INT, 0, MPI_COMM_WORLD);
+   MPI_Barrier(MPI_COMM_WORLD);
       data1 = new char[StringSize];
       data2 = new char[StringSize];
+      data1[StringSize-1] = data2[StringSize-1] = 0;
       MPI_Bcast(data1, StringSize, MPI_CHAR, 0, MPI_COMM_WORLD);
+   MPI_Barrier(MPI_COMM_WORLD);
       MPI_Bcast(data2, StringSize, MPI_CHAR, 0, MPI_COMM_WORLD);
    }
 
@@ -59,8 +64,10 @@ int main(int narg, char **args)
    //mr->memsize = 1;
    //mr->outofcore = 1;
 
+   printf("Here -1 %d\n", me);
    MPI_Barrier(MPI_COMM_WORLD);
    double tstart = MPI_Wtime();
+   printf("            Here 0 %d\n", me);
 
    //read file for a
    //int nwords1 = mr1->map(1,&args[1],1,0,0,fileread,NULL);
@@ -76,8 +83,10 @@ int main(int narg, char **args)
    //create a + b -> c
    Vector* a = Vector::from(data1,2);
    Vector* b = Vector::from(data2,2);
+   printf("                    Here 1 %d\n", me);
    
    MPI_Barrier(MPI_COMM_WORLD);
+   printf("                          Here 2 %d\n", me);
 
    int arraySize = fileSize1 / 5;
 

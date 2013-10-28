@@ -2,13 +2,10 @@
 
 make -s
 
-for file in pkhosts2 pkhosts3 pkhosts4
+for test in 10000 100000 1000000 10000000
 do
-    for test in 1000000 #10000 100000 1000000 10000000
-    do
-        echo "Checking time for test $test for hosts $file"
-        echo "-----------------------------------"
-        time /usr/local/bin/mpirun --hostfile Hostfiles/$file FaultTolerant ../Tests/$test/$test.a ../Tests/$test/$test.b
-        rm hist.a hist.b hist.c result.out
-    done
+    echo "Checking time for test $test"
+    echo "-----------------------------------"
+    time /usr/local/bin/mpirun --hostfile Hostfiles/pkhosts4 FaultTolerant ../Tests/$test/$test.a ../Tests/$test/$test.b Parallel
+    rm hist.a hist.b hist.c result.out
 done

@@ -127,11 +127,21 @@ void mapChunk(int itask, KeyValue* keyValue, void* extra) {
   }
 }
 
-Vector* Vector::add(Vector* other, float* sums) {
+Vector* Vector::add(Vector* other, float* sums, int *elemCount) {
   MapReduce* sum = MapReduce::copy();
   sum->add(other);
   int count = sum->collate(NULL);
-  printf("number of sum is %d\n", count);
+
+  // super hacky; make sure we're passing back a count divisble by 10
+  // not sure why, but sometimes we get one number too many
+  if(!(count % 10)) {
+    *elemCount = count;
+  }
+  else {
+    *elemCount = count - 1;
+  }
+
+  //printf("number of sum is %d\n", count);
   sum->reduce(&addReduce, sums);
   sum->gather(1);
   sum->scan(binScanFloat, sums);
@@ -152,7 +162,7 @@ void addReduce(char* key,
   kv->add(key, keybytes, (char*) &sum, sizeof(float));
   int idx = *((int *)key);
   *(sums+idx) = sum;
-  printf("idx=%d, val=%.2f\n",idx,sum);
+  //printf("idx=%d, val=%.2f\n",idx,sum);
 }
 
 float Vector::max() {

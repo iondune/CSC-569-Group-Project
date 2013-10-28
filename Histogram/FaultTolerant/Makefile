@@ -31,6 +31,8 @@ FaultTolerant.o: Application/Application.h
 FaultTolerant.o: Application/NetworkBenchmarkSlaveApplication.h
 FaultTolerant.o: Application/FaultTolerantMasterApplication.h
 FaultTolerant.o: Application/FaultTolerantSlaveApplication.h
+FaultTolerant.o: Application/ParallelMasterApplication.h
+FaultTolerant.o: Application/ParallelSlaveApplication.h
 Utilities/DataSet.o: Utilities/DataSet.h
 Utilities/MappedFile.o: Utilities/MappedFile.h
 Utilities/Timer.o: Utilities/Timer.h
@@ -41,3 +43,6 @@ Application/FaultTolerantSlaveApplication.o: Application/Application.h
 Application/NetworkBenchmarkMasterApplication.o: Application/Application.h
 Application/NetworkBenchmarkMasterApplication.o: Utilities/MappedFile.h
 Application/NetworkBenchmarkSlaveApplication.o: Application/Application.h
+Application/ParallelMasterApplication.o: Application/Application.h
+Application/ParallelMasterApplication.o: Utilities/MappedFile.h
+Application/ParallelSlaveApplication.o: Application/Application.h

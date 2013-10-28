@@ -8,7 +8,7 @@
 #include "MappedFile.h"
 
 
-class FaultTolerantMasterApplication : public Application
+class ParallelMasterApplication : public Application
 {
 
     std::string FileNameA, FileNameB;
@@ -17,7 +17,7 @@ class FaultTolerantMasterApplication : public Application
 
 public:
 
-    FaultTolerantMasterApplication(std::string const & fileNameA, std::string const & fileNameB, int processorCount)
+    ParallelMasterApplication(std::string const & fileNameA, std::string const & fileNameB, int processorCount)
     {
         FileNameA = fileNameA;
         FileNameB = fileNameB;
@@ -33,7 +33,6 @@ public:
         ReceiveWorkFromSlaves();
         MakeHistograms();
         WriteOutputFiles();
-        GetTheFuckOutOfHere();
     }
 
     void ReadInFiles()
@@ -54,42 +53,8 @@ public:
         Profiler.Start("Send");
         for (int i = 1; i < ProcessorCount; ++ i)
         {
-            int forkId = fork();
-            if (forkId == 0)
-            {
-                MPI_Bsend(& A.Values[i-1], 1, MPI_FLOAT, i, 1234, MPI_COMM_WORLD);//, 0);
-                MPI_Bsend(& B.Values[i-1], 1, MPI_FLOAT, i, 4321, MPI_COMM_WORLD);//, 0);
-                //MPI_Isend(& A.Values[i-1], 1, MPI_FLOAT, i, 1234, MPI_COMM_WORLD, 0);
-                //MPI_Isend(& B.Values[i-1], 1, MPI_FLOAT, i, 4321, MPI_COMM_WORLD, 0);
-
-                MPI_Request Request;
-                float Result = 0;
-                MPI_Irecv(& Result, 1, MPI_FLOAT, i, 9876, MPI_COMM_WORLD, & Request);
-
-                for (int t = 0; t < 10; ++ t)
-                {
-                    int Flag;
-                    MPI_Test(& Request, & Flag, 0);
-                    if (Flag)
-                    {
-                        printf("Received result from %d\n", i);
-                        break;
-                    }
-                    usleep(10000);
-                }
-                if (C.Values[i-1] != Result)
-                {
-                    if (Result == 0)
-                        printf("Worker was not fast enough, haha!\n");
-                    else
-                        printf("ERROR! Worker results incorrect!\n");
-                }
-                else
-                    C.Values[i-1] = Result;
-
-                exit(0);
-            }
-            Children.push_back(forkId);
+            MPI_Send(& A.Values[i-1], 1, MPI_FLOAT, i, 1234, MPI_COMM_WORLD);
+            MPI_Send(& B.Values[i-1], 1, MPI_FLOAT, i, 4321, MPI_COMM_WORLD);
         }
         Profiler.End();
     }
@@ -97,12 +62,17 @@ public:
     void ReceiveWorkFromSlaves()
     {
         Profiler.Start("Recv");
-        int x = 0;
-        for (int j = 0; j < 100; ++ j)
-            for (int i = 0; i < 10000000; ++ i)
-                x ++;
-        for (int i = 0; i < Children.size(); ++ i)
-            kill(Children[i], SIGKILL);
+        for (int i = 1; i < ProcessorCount; ++ i)
+        {
+            MPI_Status Status;
+            float Result = 0;
+            MPI_Recv(& Result, 1, MPI_FLOAT, i, 9876, MPI_COMM_WORLD, & Status);
+
+            if (C.Values[i-1] != Result)
+                printf("ERROR! Worker results incorrect!\n");
+            else
+                C.Values[i-1] = Result;
+        }
         Profiler.End();
     }
 
@@ -133,12 +103,6 @@ public:
         B.WriteHistogramToFile(HistB, "hist.b");
         C.WriteHistogramToFile(HistC, "hist.c");
         Profiler.End();
-    }
-
-    void GetTheFuckOutOfHere()
-    {
-        printf("See you later, assholes!\n");
-        exit(0);
     }
 
 };
