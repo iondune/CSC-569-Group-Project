@@ -1,6 +1,6 @@
 CXX=mpic++
 RM=rm -f
-CPPFLAGS=-g -I./Utilities
+CPPFLAGS=-O3 -I./Utilities
 LDFLAGS=-lrt
 LDLIBS=
 
