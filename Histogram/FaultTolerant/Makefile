@@ -1,11 +1,11 @@
 CXX=mpic++
 RM=rm -f
-CPPFLAGS=-g
+CPPFLAGS=-g -I./Application -I./Utilities
 LDFLAGS=-lrt
 LDLIBS=
 
-SRCS=$(wildcard *.cpp)
-HDRS=$(wildcard *.h)
+SRCS=$(wildcard *.cpp) $(wildcard Utilities/*.cpp) $(wildcard Application/*.cpp)
+HDRS=$(wildcard *.h) $(wildcard Utilities/*.h) $(wildcard Application/*.h)
 OBJS=$(subst .cpp,.o,$(SRCS))
 
 all: FaultTolerant
@@ -25,14 +25,18 @@ remake: clean all
 
 # Dependencies
 
-DataSet.o: DataSet.h
-FaultTolerant.o: Application.h DataSet.h Timer.h MasterApplication.h
-FaultTolerant.o: SlaveApplication.h
-MappedFile.o: MappedFile.h
-MasterApplication.o: MasterApplication.h Application.h DataSet.h Timer.h
-MasterApplication.o: MappedFile.h
-SlaveApplication.o: SlaveApplication.h Application.h DataSet.h Timer.h
-Timer.o: Timer.h
-Application.o: DataSet.h Timer.h
-MasterApplication.o: Application.h DataSet.h Timer.h
-SlaveApplication.o: Application.h DataSet.h Timer.h
+Utilities/DataSet.o: Utilities/DataSet.h
+Utilities/MappedFile.o: Utilities/MappedFile.h
+Utilities/Timer.o: Utilities/Timer.h
+Application/MasterApplication.o: Application/MasterApplication.h
+Application/MasterApplication.o: Application/Application.h
+Application/MasterApplication.o: Utilities/DataSet.h Utilities/Timer.h
+Application/MasterApplication.o: Utilities/MappedFile.h
+Application/SlaveApplication.o: Application/SlaveApplication.h
+Application/SlaveApplication.o: Application/Application.h Utilities/DataSet.h
+Application/SlaveApplication.o: Utilities/Timer.h
+Application/Application.o: Utilities/DataSet.h Utilities/Timer.h
+Application/MasterApplication.o: Application/Application.h
+Application/MasterApplication.o: Utilities/DataSet.h Utilities/Timer.h
+Application/SlaveApplication.o: Application/Application.h Utilities/DataSet.h
+Application/SlaveApplication.o: Utilities/Timer.h

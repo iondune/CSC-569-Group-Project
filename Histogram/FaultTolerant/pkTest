@@ -7,7 +7,7 @@ then
     mkdir TestOutput
 fi
 
-/usr/local/bin/ --hostfile pkhosts2 FaultTolerant ../Tests/10000/10000.a ../Tests/10000/10000.b
+/usr/local/bin/ --hostfile Hostfiles/pkhosts2 FaultTolerant ../Tests/10000/10000.a ../Tests/10000/10000.b
 mv hist.a hist.b hist.c result.out TestOutput/
 
 for file in hist.a hist.b hist.c result.out
