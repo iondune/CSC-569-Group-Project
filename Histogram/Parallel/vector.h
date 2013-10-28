@@ -14,7 +14,7 @@ class Vector : private MAPREDUCE_NS::MapReduce {
    * Create a Vector* from a pointer to a string of floats. Break the data
    * up into chunks of size |chunkSize|, for parallelization.
    */
-  static Vector* from(char* data, int chunkSize, int numProcs);
+  static Vector* from(char* data, int chunkSize);
 
   /**
    * Add two Vectors together. Returns a new Vector (does not modify this one).
@@ -62,7 +62,6 @@ class Vector : private MAPREDUCE_NS::MapReduce {
                                 const char delim,
                                 int chunkSize,
                                 int count,
-                                int numProcs,
                                 void* extra);
 };
 

@@ -8,9 +8,12 @@
 #include "fileWriter.h"
 #include <cmath>
 
+#define CHUNK_SIZE 1024
+
 char* serialReadfile(char *fname, int *sizeofFile);
 int getBinCount(float min, float max, float width);
-void print(int* bins, int size, char *filename, float min, float max, float width, float *vec);
+void printHistogram(int* bins, int size, const char *filename, float min, float max, float width);
+void printVector(const vector<float>& vec, const char* filename);
 
 
 int main(int narg, char **args)
@@ -52,41 +55,15 @@ int main(int narg, char **args)
       MPI_Bcast(data2, StringSize, MPI_CHAR, 0, MPI_COMM_WORLD);
    }
 
-   //MapReduce *mr1 = new MapReduce(MPI_COMM_WORLD);
-   //MapReduce *mr2 = new MapReduce(MPI_COMM_WORLD);
-   //mr->verbosity = 2;
-   //mr->timer = 1;
-   //mr->memsize = 1;
-   //mr->outofcore = 1;
-
    MPI_Barrier(MPI_COMM_WORLD);
    double tstart = MPI_Wtime();
 
-   //read file for a
-   //int nwords1 = mr1->map(1,&args[1],1,0,0,fileread,NULL);
-   //int nfiles1 = mr1->mapfilecount;
+   Vector* a = Vector::from(data1, CHUNK_SIZE);
+   Vector* b = Vector::from(data2, CHUNK_SIZE);
 
-   //read file for b
-   //int nwords2 = mr2->map(1,&args[2],1,0,0,fileread,NULL);
-   //int nfiles2 = mr2->mapfilecount;
-
-   //MPI_Barrier(MPI_COMM_WORLD);
-
-   //Vector v;
-   //create a + b -> c
-   Vector* a = Vector::from(data1,2);
-   Vector* b = Vector::from(data2,2);
-   
    MPI_Barrier(MPI_COMM_WORLD);
 
-   int arraySize = fileSize1 / 5;
-
-   arraySize = arraySize < 100 ? 100 : arraySize;
-
-   float *sumsArray = (float *)malloc(arraySize*sizeof(float));
-
-   int elemCount;
-   Vector* c = a->add(b, sumsArray, &elemCount);
+   Vector* c = a->add(b);
 
    MPI_Barrier(MPI_COMM_WORLD);
 
@@ -113,40 +90,23 @@ int main(int narg, char **args)
 
    MPI_Barrier(MPI_COMM_WORLD);
 
-   a->bin(Min, max1, BinWidth, binCount1, bins1);
-   b->bin(Min, max2, BinWidth, binCount2, bins2);
-   c->bin(Min3, max3, BinWidth, binCount3, bins3);
+   a->bin(Min, max1, BinWidth, bins1);
+   b->bin(Min, max2, BinWidth, bins2);
+   c->bin(Min3, max3, BinWidth, bins3);
 
    MPI_Barrier(MPI_COMM_WORLD);
 
-   //a->scan(binScan, bins1);
-   //b->scan(binScan, bins2);
-   //c->scan(binScan, bins3);
-
-   MPI_Barrier(MPI_COMM_WORLD);
    double tstop = MPI_Wtime();
 
-   //delete mr1, mr2;
-   char fname1[] = "hist.a";
-   char fname2[] = "hist.b";
-   char fname3[] = "hist.c";
-   char fname4[] = "result.out";
-
    if (me == 0) {
-      //printf("%d total words, %d unique words\n",nwords,nunique);
-      // printf("Time to process %d files on %d procs = %g (secs)\n",
-	  // 2,1,tstop-tstart);
+      printf("Time to process files: %g secs\n", tstop-tstart);
 
-            printf("Time to process files: %g secs\n", tstop-tstart);
-
-   	  // write results to files
-      // should this be in here?
-      //writeAllOutputFiles(sumsArray, bins1, bins2, bins3);
+      // write results to files
       // old file output for debugging
-      print(bins1, binCount1, fname1, Min, max1, BinWidth, NULL);
-      print(bins2, binCount2, fname2, Min, max2, BinWidth, NULL);
-      print(bins3, binCount3, fname3, Min3, max3, BinWidth, NULL);
-      print(bins3, elemCount, fname4, Min3, max3, BinWidth, sumsArray);
+      printHistogram(bins1, binCount1, "hist.a", Min, max1, BinWidth);
+      printHistogram(bins2, binCount2, "hist.b", Min, max2, BinWidth);
+      printHistogram(bins3, binCount3, "hist.c", Min3, max3, BinWidth);
+      printVector(c->values(), "result.out");
    }
 
    MPI_Finalize();
@@ -167,39 +127,38 @@ char* serialReadfile(char *fname, int *sizeofFile) {
    text[nchar] = '\0';
    fclose(fp);
    //printf("data = %s",text);
-   return text;   
+   return text;
 }
 
-void print(int* bins, int size, char *filename, float min,
-           float max, float width, float* vec) {
+void printHistogram(int* bins, int size, const char* filename, float min,
+                    float max, float width) {
+   FILE* file = fopen(filename, "w");
+   if (file == NULL) {
+       fprintf(stderr, "Error opening file!\n");
+       exit(1);
+   }
+
+   for (int i = 0; i < size; i++) {
+      fprintf(file, "%d, %d\n", i, bins[i]);
+   }
+   fclose(file);
+}
+
+void printVector(const vector<float>& vec, const char *filename) {
    FILE *f = fopen(filename, "w");
-   float low, up;
-   int i;
-   if (f == NULL)
-   {
+   if (f == NULL) {
       printf("Error opening file!\n");
       exit(1);
    }
 
-   if (vec == NULL) {
-      for(i = 0; i < size;i++){
-         low = min + width*i;
-         up = low + width;
-         fprintf(f, "%d, %d\n", i, bins[i]);
-      }
+   int size = vec.size();
+   for (int i = 0; i < size; i++){
+      fprintf(f, "%.2f ", vec[i]);
    }
-
-   if (vec != NULL) {
-      for(i = 0; i < size; i++){
-         fprintf(f, "%.2f ",*(vec+i));
-      }
-      fprintf(f, "\n");
-   }
+   fprintf(f, "\n");
    fclose(f);
 }
 
 int getBinCount(float min, float max, float width) {
   return ceil((max - min) / width);
 }
-
-

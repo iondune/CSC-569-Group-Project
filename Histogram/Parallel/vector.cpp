@@ -1,5 +1,6 @@
 #include "vector.h"
 
+#include <cmath>   // ceil
 #include <cstdlib> // atof
 #include <cstring>
 #include <vector>
@@ -88,9 +89,9 @@ typedef struct {
 Vector::Vector(MPI_Comm comm) : MapReduce(comm) {
 }
 
-Vector* Vector::from(char* data, int chunkSize, int numProcs) {
+Vector* Vector::from(char* data, int chunkSize) {
   Vector* vec = new Vector(MPI_COMM_WORLD);
-  withChunksSpace(data, chunkSize, numProcs, vec, &handleVectorChunk);
+  withChunksSpace(data, chunkSize, vec, &handleVectorChunk);
   return vec;
 }
 
@@ -99,11 +100,10 @@ void Vector::handleVectorChunk(char* data,
                                const char delim,
                                int chunkSize,
                                int count,
-                               int numProcs,
                                void* extra) {
   Vector* vec = (Vector*) extra;
   FromExtra extraData = { data, ordinal, chunkSize, count };
-  vec->map(numProcs, &mapChunk, &extraData, 1);
+  vec->map(1, &mapChunk, &extraData, 1);
 }
 
 void mapChunk(int itask, KeyValue* keyValue, void* extra) {

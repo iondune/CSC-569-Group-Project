@@ -24,17 +24,15 @@
 void withChunks(char* data, 
                 const char delim, 
                 int chunkSize,
-                int numProcs,
                 void* extra, 
-                void (*f)(char*, int, const char, int, int, int, void*)); 
+                void (*f)(char*, int, const char, int, int, void*)); 
 /**
  * Like withChunks, but uses ' ' as a delimiter.
  */
 void withChunksSpace(char* data, 
                      int chunkSize,
-                     int numProcs,
                      void* extra, 
-                     void (*f)(char*, int, const char, int, int, int, void*));
+                     void (*f)(char*, int, const char, int, int, void*));
 
 inline char* firstToken(char* data) {
   return strtok(data, " ");
