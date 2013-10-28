@@ -12,6 +12,7 @@ public:
 
     void ParseFromString(char * const FileContents);
     void WriteToFile(std::string const & fileName);
+    int GetBinCount(float const Min, float const BinWidth);
     std::vector<int> MakeHistogram(float const Min, float const BinWidth);
     std::vector<int> MakeHistogram(float const Min, float const BinWidth, int const BinCount);
     void WriteHistogramToFile(std::vector<int> const & Histogram, std::string const & fileName);

@@ -47,9 +47,14 @@ void DataSet::WriteToFile(std::string const & fileName)
     fclose(outFile);
 }
 
+int DataSet::GetBinCount(float const Min, float const BinWidth)
+{
+    return ceil((Maximum - Min) / BinWidth);
+}
+
 std::vector<int> DataSet::MakeHistogram(float const Min, float const BinWidth)
 {
-    return MakeHistogram(Min, BinWidth, ceil((Maximum - Min) / BinWidth));
+    return MakeHistogram(Min, BinWidth, GetBinCount());
 }
 
 std::vector<int> DataSet::MakeHistogram(float const Min, float const BinWidth, int const BinCount)
