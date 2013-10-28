@@ -17,6 +17,11 @@ int main(int narg, char **args)
    static float const BinWidth = 0.5f;
    static float const Min = -10.0f;
    static float const Min3 = -20.0f;
+
+   static float const numProcs = 5;
+   static float const chunkSize = 512;
+
+
    MPI_Init(&narg,&args);
 
    int me,nprocs,i;
@@ -53,12 +58,13 @@ int main(int narg, char **args)
 
    //Vector v;
    //create a + b -> c
-   Vector* a = Vector::from(data1,2);
-   Vector* b = Vector::from(data2,2);
+   Vector* a = Vector::from(data1, chunkSize, numProcs);
+   Vector* b = Vector::from(data2, chunkSize, numProcs);
    
 
    float *sumsArray = (float *)malloc(1000000*sizeof(float));
-   Vector* c = a->add(b, sumsArray);
+   // Vector* c = a->add(b, sumsArray);
+   Vector* c = a->add(b);
 
    MPI_Barrier(MPI_COMM_WORLD);
 
@@ -119,6 +125,7 @@ int main(int narg, char **args)
 char* serialReadfile(char *fname) {
    struct stat stbuf;
    int flag = stat(fname,&stbuf);
+
    if (flag < 0) {
     printf("ERROR: Could not query file size\n");
     MPI_Abort(MPI_COMM_WORLD,1);
