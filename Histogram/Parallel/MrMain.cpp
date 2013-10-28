@@ -8,9 +8,10 @@
 #include "fileWriter.h"
 #include <cmath>
 
-char* serialReadfile(char *filename);
+char* serialReadfile(char *fname, int *sizeofFile);
 int getBinCount(float min, float max, float width);
 void print(int* bins, int size, char *filename, float min, float max, float width, float *vec);
+
 
 int main(int narg, char **args)
 {
@@ -18,20 +19,22 @@ int main(int narg, char **args)
    static float const Min = -10.0f;
    static float const Min3 = -20.0f;
    MPI_Init(&narg,&args);
-   printf("MPI_Init Success\n");
 
    int me,nprocs,i;
    MPI_Comm_rank(MPI_COMM_WORLD,&me);
    MPI_Comm_size(MPI_COMM_WORLD,&nprocs);
-   printf("Let's start! My Rank is %d\n", me);
+   // printf("Let's start! My Rank is %d\n", me);
 
    if (narg <= 1) {
      if (me == 0) printf("Syntax: wordfreq file1 file2 ...\n");
      MPI_Abort(MPI_COMM_WORLD,1);
    }
 
-   char* data1 = serialReadfile(args[1]);
-   char* data2 = serialReadfile(args[2]);
+   int fileSize1;
+   int fileSize2;
+   char* data1 = serialReadfile(args[1], &fileSize1);
+   char* data2 = serialReadfile(args[2], &fileSize2);
+
    //MapReduce *mr1 = new MapReduce(MPI_COMM_WORLD);
    //MapReduce *mr2 = new MapReduce(MPI_COMM_WORLD);
    //mr->verbosity = 2;
@@ -59,8 +62,14 @@ int main(int narg, char **args)
    
    MPI_Barrier(MPI_COMM_WORLD);
 
-   float *sumsArray = (float *)malloc(10000*sizeof(float));
-   Vector* c = a->add(b, sumsArray);
+   int arraySize = fileSize1 / 5;
+
+   arraySize = arraySize < 100 ? 100 : arraySize;
+
+   float *sumsArray = (float *)malloc(arraySize*sizeof(float));
+
+   int elemCount;
+   Vector* c = a->add(b, sumsArray, &elemCount);
 
    MPI_Barrier(MPI_COMM_WORLD);
 
@@ -74,6 +83,7 @@ int main(int narg, char **args)
    int* bins1 = (int *)malloc(binCount1 * sizeof(int));
    int* bins2 = (int *)malloc(binCount2 * sizeof(int));
    int* bins3 = (int *)malloc(binCount3 * sizeof(int));
+
    for (i=0;i<binCount1;i++) {
       *(bins1+i)=0;
    }
@@ -103,11 +113,14 @@ int main(int narg, char **args)
    char fname1[] = "hist.a";
    char fname2[] = "hist.b";
    char fname3[] = "hist.c";
+   char fname4[] = "result.out";
 
    if (me == 0) {
       //printf("%d total words, %d unique words\n",nwords,nunique);
-      printf("Time to process %d files on %d procs = %g (secs)\n",
-	  2,1,tstop-tstart);
+      // printf("Time to process %d files on %d procs = %g (secs)\n",
+	  // 2,1,tstop-tstart);
+
+            printf("Time to process files: %g secs\n", tstop-tstart);
 
    	  // write results to files
       // should this be in here?
@@ -115,13 +128,14 @@ int main(int narg, char **args)
       // old file output for debugging
       print(bins1, binCount1, fname1, Min, max1, BinWidth, NULL);
       print(bins2, binCount2, fname2, Min, max2, BinWidth, NULL);
-      print(bins3, binCount3, fname3, Min3, max3, BinWidth, sumsArray);
+      print(bins3, binCount3, fname3, Min3, max3, BinWidth, NULL);
+      print(bins3, elemCount, fname4, Min3, max3, BinWidth, sumsArray);
    }
 
    MPI_Finalize();
 }
 
-char* serialReadfile(char *fname) {
+char* serialReadfile(char *fname, int *sizeofFile) {
    struct stat stbuf;
    int flag = stat(fname,&stbuf);
    if (flag < 0) {
@@ -129,6 +143,7 @@ char* serialReadfile(char *fname) {
     MPI_Abort(MPI_COMM_WORLD,1);
    }
    int filesize = stbuf.st_size;
+   *sizeofFile = filesize;
    FILE *fp = fopen(fname,"r");
    char *text = new char[filesize+1];
    int nchar = fread(text,1,filesize,fp);
@@ -138,7 +153,8 @@ char* serialReadfile(char *fname) {
    return text;   
 }
 
-void print(int* bins, int size, char *filename, float min, float max, float width, float* vec) {
+void print(int* bins, int size, char *filename, float min,
+           float max, float width, float* vec) {
    FILE *f = fopen(filename, "w");
    float low, up;
    int i;
@@ -148,16 +164,19 @@ void print(int* bins, int size, char *filename, float min, float max, float widt
       exit(1);
    }
 
-   for(i = 0; i < size;i++){
-      low = min + width*i;
-      up = low + width;
-      fprintf(f, "%d, %d\n", i, bins[i]);
+   if (vec == NULL) {
+      for(i = 0; i < size;i++){
+         low = min + width*i;
+         up = low + width;
+         fprintf(f, "%d, %d\n", i, bins[i]);
+      }
    }
 
    if (vec != NULL) {
-      for(i = 0; i < 10000;i++){
+      for(i = 0; i < size; i++){
          fprintf(f, "%.2f ",*(vec+i));
       }
+      fprintf(f, "\n");
    }
    fclose(f);
 }
