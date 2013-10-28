@@ -51,8 +51,8 @@ public:
         Profiler.Start("Send");
         for (int i = 1; i < ProcessorCount; ++ i)
         {
-            MPI_Send(& A.Values[i-1], 1, MPI_FLOAT, i, 1234, MPI_COMM_WORLD);
-            MPI_Send(& B.Values[i-1], 1, MPI_FLOAT, i, 4321, MPI_COMM_WORLD);
+            MPI_Bsend(& A.Values[i-1], 1, MPI_FLOAT, i, 1234, MPI_COMM_WORLD);//, 0);
+            MPI_Bsend(& B.Values[i-1], 1, MPI_FLOAT, i, 4321, MPI_COMM_WORLD);//, 0);
         }
         Profiler.End();
     }
@@ -62,13 +62,28 @@ public:
         Profiler.Start("Recv");
         for (int i = 1; i < ProcessorCount; ++ i)
         {
-            MPI_Status Status;
-            float Result;
-            MPI_Recv(& Result, 1, MPI_FLOAT, i, 9876, MPI_COMM_WORLD, & Status);
-            printf("Received result from %d\n", i);
+            MPI_Request Request;
+            float Result = 0;
+            MPI_Irecv(& Result, 1, MPI_FLOAT, i, 9876, MPI_COMM_WORLD, & Request);
+            for (int t = 0; t < 10000; ++ t)
+            {
+                int Flag;
+                MPI_Test(& Request, & Flag, 0);
+                if (Flag)
+                {
+                    printf("Received result from %d\n", i);
+                    break;
+                }
+            }
             if (C.Values[i-1] != Result)
-                printf("ERROR! Worker results incorrect!\n");
-            C.Values[i-1] = Result;
+            {
+                if (Result == 0)
+                    printf("Worker was not fast enough, haha!\n");
+                else
+                    printf("ERROR! Worker results incorrect!\n");
+            }
+            else
+                C.Values[i-1] = Result;
         }
         Profiler.End();
     }
