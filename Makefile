@@ -6,7 +6,7 @@ INC_DIRS=-I. -I./deps/src/inc
 ###############################################################################
 # Source                                                                      #
 ###############################################################################
-MAIN=./Histogram/Parallel/MrMain.o ./Histogram/Parallel/vector.o ./Histogram/Parallel/strutil.o ./Histogram/Parallel/fileOutput.o
+MAIN=./Histogram/Parallel/MrMain.o ./Histogram/Parallel/vector.o ./Histogram/Parallel/strutil.o ./Histogram/Parallel/fileOutput.o ./Histogram/Parallel/DataSet.o ./Histogram/Parallel/MappedFile.o
 
 SRCS=$(wildcard src/*.cpp src/**/*.cpp)
 OBJS=$(patsubst %.cpp,%.o,$(SRCS))

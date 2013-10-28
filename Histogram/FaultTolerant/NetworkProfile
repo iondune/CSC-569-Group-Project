@@ -1,0 +1,12 @@
+#! /bin/sh
+
+make -s
+
+for test in 10000 100000 1000000 10000000
+do
+    echo "Checking time for test $test"
+    echo "-----------------------------------"
+    time mpirun -mca btl_tcp_if_include eth0 --hostfile Hostfiles/hosts2 FaultTolerant ../Tests/$test/$test.a ../Tests/$test/$test.b NetworkBenchmark
+    rm hist.a hist.b hist.c result.out
+    echo
+done
