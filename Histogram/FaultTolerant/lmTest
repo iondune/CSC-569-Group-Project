@@ -30,7 +30,7 @@ do
         then
             echo "Diff failure for $file"
             echo "---------------------------"
-            diff ./TestOutput/$file $testdir/$file
+            #diff ./TestOutput/$file $testdir/$file
             echo
             failed="yes"
         fi

@@ -53,12 +53,14 @@ public:
         Profiler.Start("Map");
         MappedFile FileA(FileNameA), FileB(FileNameB);
         Profiler.End();
-        
+
         Profiler.Start("Read");
         A.ParseFromString(FileA.Contents);
         B.ParseFromString(FileB.Contents);
         VectorSize = A.Values.size();
         Profiler.End();
+
+        MPI_Barrier(MPI_COMM_WORLD);
     }
 
     void SendSumToSlaves()
@@ -85,11 +87,12 @@ public:
     void ReceiveSumFromSlaves()
     {
         Profiler.Start("RecS");
+        int Received = 0;
         for (int i = 1; i < ProcessorCount; ++ i)
         {
             MPI_Status Status;
-            float Result = 0;
-            MPI_Recv(& Result, N, MPI_FLOAT, i, 345, MPI_COMM_WORLD, & Status);
+            MPI_Recv(& C.Values[Received], N, MPI_FLOAT, i, 345, MPI_COMM_WORLD, & Status);
+            Received += N;
         }
         BinCountA = A.GetBinCount(Min, BinWidth);
         BinCountB = B.GetBinCount(Min, BinWidth);
@@ -108,9 +111,9 @@ public:
         Profiler.Start("Hist");
         static float const BinWidth = 0.5f;
         static float const Min = -10.f;
-        HistA = A.MakeHistogram(Min, BinWidth, BinCountA);
-        HistB = B.MakeHistogram(Min, BinWidth, BinCountB);
-        HistC = C.MakeHistogram(Min*2, BinWidth, BinCountC);
+        HistA = A.MakeHistogram(Min, BinWidth, BinCountA, 0, A.Size());
+        HistB = B.MakeHistogram(Min, BinWidth, BinCountB, 0, B.Size());
+        HistC = C.MakeHistogram(Min*2, BinWidth, BinCountC, 0, C.Size());
         Profiler.End();
     }
     
@@ -133,8 +136,8 @@ public:
                 std::transform(HistBWork.begin(), HistBWork.end(), HistB.begin(), HistB.end(), std::plus<float>());
                 std::transform(HistCWork.begin(), HistCWork.end(), HistC.begin(), HistC.end(), std::plus<float>());
             }
+            Profiler.End();
         }
-        Profiler.End();
     }
 
     void WriteOutputFiles()

@@ -30,6 +30,7 @@ public:
 
     void DoSumForMaster()
     {
+        MPI_Barrier(MPI_COMM_WORLD);
         Profiler.Start("Recv");
 
         MPI_Bcast(& N, 1, MPI_INT, 0, MPI_COMM_WORLD);
@@ -39,9 +40,10 @@ public:
         MPI_Status Status;
         MPI_Recv(& A.Values.front(), N, MPI_FLOAT, 0, 123, MPI_COMM_WORLD, & Status);
         MPI_Recv(& B.Values.front(), N, MPI_FLOAT, 0, 234, MPI_COMM_WORLD, & Status);
-        Profiler.Say("Received work!");
+        Profiler.End();
+
+        Profiler.Start("Work");
         C.MakeSum(A, B);
-        Profiler.Say("Did work!");
         MPI_Send(& C.Values.front(), N, MPI_FLOAT, 0, 345, MPI_COMM_WORLD);
         Profiler.End();
     }

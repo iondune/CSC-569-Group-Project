@@ -54,14 +54,19 @@ int DataSet::GetBinCount(float const Min, float const BinWidth)
 
 std::vector<int> DataSet::MakeHistogram(float const Min, float const BinWidth)
 {
-    return MakeHistogram(Min, BinWidth, GetBinCount(Min, BinWidth));
+    return MakeHistogram(Min, BinWidth, GetBinCount(Min, BinWidth), 0, Size());
 }
 
 std::vector<int> DataSet::MakeHistogram(float const Min, float const BinWidth, int const BinCount)
 {
+    return MakeHistogram(Min, BinWidth, BinCount, 0, Size());
+}
+
+std::vector<int> DataSet::MakeHistogram(float const Min, float const BinWidth, int const BinCount, unsigned int i0, unsigned int i1)
+{
     std::vector<int> Histogram;
     Histogram.resize(BinCount);
-    for (unsigned int i = 0; i < Values.size(); ++ i)
+    for (unsigned int i = i0; i < i1; ++ i)
     {
         int index = Clamp((int) ((Values[i] - Min) / BinWidth), 0, BinCount);
         Histogram[Clamp(index, 0, BinCount)] ++;
@@ -95,7 +100,7 @@ void DataSet::MakeSum(DataSet const & A, DataSet const & B, unsigned int const i
         std::cerr << "Vector sizes differ! " << A.Size() << " " << B.Size() << std::endl;
         exit(EXIT_FAILURE);
     }
-    if (i1 >= A.Size())
+    if (i1 > A.Size())
     {
         std::cerr << "Vector index out of range! " << i1 << " " << A.Size() << std::endl;
         exit(EXIT_FAILURE);
