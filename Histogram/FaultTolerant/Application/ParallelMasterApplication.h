@@ -58,6 +58,8 @@ public:
         A.ParseFromString(FileA.Contents);
         B.ParseFromString(FileB.Contents);
         VectorSize = A.Values.size();
+        if (N == 0)
+            N = VectorSize / ProcessorCount;
         Profiler.End();
 
         MPI_Barrier(MPI_COMM_WORLD);
