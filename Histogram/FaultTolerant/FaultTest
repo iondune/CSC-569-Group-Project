@@ -35,7 +35,7 @@ do
 
     echo "Checking time for test $test"
     echo "-----------------------------------"
-    time $program --hostfile Hostfiles/$hostprefix$hostnum -quiet --quiet -q FaultTolerant ../Tests/$test/$test.a ../Tests/$test/$test.b FaultTolerant
+    time $program --hostfile Hostfiles/$hostprefix$hostnum FaultTolerant ../Tests/$test/$test.a ../Tests/$test/$test.b FaultTolerant
     mv hist.a hist.b hist.c result.out TestOutput/
 
     for file in hist.a hist.b hist.c result.out
