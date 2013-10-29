@@ -97,7 +97,10 @@ public:
                         printf("ERROR! Worker results incorrect!\n");
                 }
                 else
+                {
+                    printf(KCYN"Worker results verified %d"KNRM"\n", i);
                     C.Values[i-1] = Result;
+                }
 
                 exit(0);
             }
@@ -123,7 +126,7 @@ public:
 
         for (int i = 0; i < Children.size(); ++ i)
         {
-            printf(KCYN"Killing child %d"KNRM"\n", i+1);
+            printf(KYEL"Killing child %d"KNRM"\n", i+1);
             if (kill(Children[i], SIGKILL) == -1)
                 printf("Failed! %s\n", strerror(errno));
         }
