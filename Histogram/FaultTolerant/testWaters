@@ -1,0 +1,27 @@
+#! /bin/sh
+
+function ssh_check
+{
+	ssh -o ConnectTimeout=5 -q $1 exit
+	if [ $? -eq 0 ] ; then
+		echo $1;
+	fi
+}
+
+rooms=
+if [ $# -eq 0 ]
+then
+	rooms="301 302 303 235 255 256"
+else
+	rooms=$@
+fi
+
+for room in $rooms
+do
+	for machine in {1..60}
+	do
+		printf -v server $room"x%02d" $machine
+		ssh_check $server &
+	done
+done
+wait

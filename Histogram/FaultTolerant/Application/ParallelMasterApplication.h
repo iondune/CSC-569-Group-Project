@@ -111,11 +111,18 @@ public:
     void MakeHistograms()
     {
         Profiler.Start("Hist");
-        static float const BinWidth = 0.5f;
-        static float const Min = -10.f;
-        HistA = A.MakeHistogram(Min, BinWidth, BinCountA, 0, A.Size());
-        HistB = B.MakeHistogram(Min, BinWidth, BinCountB, 0, B.Size());
-        HistC = C.MakeHistogram(Min*2, BinWidth, BinCountC, 0, C.Size());
+        if (DoHistSend)
+        {
+            HistA = A.MakeHistogram(Min, BinWidth, BinCountA, Sent, A.Size());
+            HistB = B.MakeHistogram(Min, BinWidth, BinCountB, Sent, B.Size());
+            HistC = C.MakeHistogram(Min*2, BinWidth, BinCountC, Sent, C.Size());
+        }
+        else
+        {
+            HistA = A.MakeHistogram(Min, BinWidth, BinCountA, 0, A.Size());
+            HistB = B.MakeHistogram(Min, BinWidth, BinCountB, 0, B.Size());
+            HistC = C.MakeHistogram(Min*2, BinWidth, BinCountC, 0, C.Size());
+        }
         Profiler.End();
     }
     

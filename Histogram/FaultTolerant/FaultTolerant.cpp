@@ -49,9 +49,9 @@ int main(int argc, char * argv[])
     else if (Mode == "Parallel")
     {
         if (ProcessorId == 0)
-            App = new ParallelMasterApplication(argv[1], argv[2], ProcessorCount, 0, false);
+            App = new ParallelMasterApplication(argv[1], argv[2], ProcessorCount, 0, true);
         else
-            App = new ParallelSlaveApplication(ProcessorId, false);
+            App = new ParallelSlaveApplication(ProcessorId, true);
     }
 
     if (App)
