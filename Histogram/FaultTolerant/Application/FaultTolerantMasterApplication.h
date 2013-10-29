@@ -157,13 +157,13 @@ public:
         B.WriteHistogramToFile(HistB, "hist.b");
         C.WriteHistogramToFile(HistC, "hist.c");
         Profiler.End();
-        printf("Writing successfully completed.\n");
+        printf(KGRN"Writing successfully completed."KNRM"\n");
     }
 
     void GetTheFuckOutOfHere()
     {
         printf(KMAG"Killing parent (%d) and self (%d)!"KNRM"\n", (int) getppid(), (int) getpid());
-        kill(getppid(), SIGKILL);
+        kill(getppid(), SIGTERM);
         kill(getpid(), SIGKILL);
         printf("What!?!\n");
         exit(0);
