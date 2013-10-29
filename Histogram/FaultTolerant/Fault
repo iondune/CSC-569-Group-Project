@@ -27,3 +27,5 @@ do
     rm hist.a hist.b hist.c result.out
     echo
 done
+
+echo "Script survived!"

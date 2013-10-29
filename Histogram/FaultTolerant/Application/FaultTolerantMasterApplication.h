@@ -8,6 +8,15 @@
 #include <errno.h>
 #include "MappedFile.h"
 
+#define KNRM  "\x1B[0m"
+#define KRED  "\x1B[31m"
+#define KGRN  "\x1B[32m"
+#define KYEL  "\x1B[33m"
+#define KBLU  "\x1B[34m"
+#define KMAG  "\x1B[35m"
+#define KCYN  "\x1B[36m"
+#define KWHT  "\x1B[37m"
+
 
 class FaultTolerantMasterApplication : public Application
 {
@@ -75,7 +84,7 @@ public:
                     MPI_Test(& Request, & Flag, 0);
                     if (Flag)
                     {
-                        printf("Received result from %d\n", i);
+                        printf(KGRN"Received result from %d"KNRM"\n", i);
                         break;
                     }
                     usleep(10000);
@@ -109,16 +118,14 @@ public:
         int AttemptsCounter = 25;
         while (select(0, 0, 0, 0, & WaitTime) == -1 && AttemptsCounter-- > 0)
         {
-            printf("Failed! (%s) Making %d more attempts to wait\n", strerror(errno), AttemptsCounter);
+            printf(KRED"Waiting failed! (%s) Making %d more attempts to wait"KNRM"\n", strerror(errno), AttemptsCounter);
         }
 
         for (int i = 0; i < Children.size(); ++ i)
         {
-            printf("Attempting to kill child %d\n", i+1);
+            printf(KCYN"Killing child %d"KNRM"\n", i+1);
             if (kill(Children[i], SIGKILL) == -1)
-            {
                 printf("Failed! %s\n", strerror(errno));
-            }
         }
         Profiler.End();
     }
@@ -155,12 +162,10 @@ public:
 
     void GetTheFuckOutOfHere()
     {
-        // printf("Attempting to exit normally.\n");
-        // int ForkId = fork();
-        // if (ForkId == 0)
-        //     MPI_Finalize();
-
-        printf("See you later, assholes!\n");
+        printf(KMAG"Killing parent (%d) and self (%d)!"KNRM"\n", (int) getppid(), (int) getpid());
+        kill(getppid(), SIGKILL);
+        kill(getpid(), SIGKILL);
+        printf("What!?!\n");
         exit(0);
     }
 
