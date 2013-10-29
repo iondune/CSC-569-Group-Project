@@ -1,0 +1,36 @@
+#! /bin/sh
+
+mode="Parallel"
+if [ ! -z "$1" ]
+then
+    mode=$1
+fi
+shift
+
+program=
+hostprefix=
+uname -a | grep -q "ARCH"
+if [ $? -eq 0 ]
+then
+    program="/usr/local/bin/mpirun"
+    hostprefix="pkhosts"
+else
+    program="mpirun -mca btl_tcp_if_include eth0"
+    hostprefix="hosts"
+fi
+
+hostnum="4"
+if [ ! -z "$1" ]
+then
+    hostnum=$1
+fi
+shift
+
+for test in 10000 100000 1000000 10000000
+do
+    echo "Checking time for test $test with mode $mode using $hostnum hosts"
+    echo "--------------------------------------------------------------------------"
+    time $program --hostfile Hostfiles/$hostprefix$hostnum FaultTolerant ../Tests/$test/$test.a ../Tests/$test/$test.b $mode
+    rm hist.a hist.b hist.c result.out
+    echo
+done

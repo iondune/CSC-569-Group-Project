@@ -1,0 +1,29 @@
+#! /bin/sh
+
+program=
+hostprefix=
+uname -a | grep -q "ARCH"
+if [ $? -eq 0 ]
+then
+    program="/usr/local/bin/mpirun"
+    hostprefix="pkhosts"
+else
+    program="mpirun -mca btl_tcp_if_include eth0"
+    hostprefix="hosts"
+fi
+
+hostnum="4"
+if [ ! -z "$1" ]
+then
+    hostnum=$1
+fi
+shift
+
+for test in 1000000 #10000 100000 1000000 10000000
+do
+    echo "Checking time for test $test"
+    echo "-----------------------------------"
+    time $program --hostfile Hostfiles/$hostprefix$hostnum -quiet FaultTolerant ../Tests/$test/$test.a ../Tests/$test/$test.b FaultTolerant
+    rm hist.a hist.b hist.c result.out
+    echo
+done

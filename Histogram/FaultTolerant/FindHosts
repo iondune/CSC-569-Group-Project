@@ -8,11 +8,9 @@ function ssh_check
 	fi
 }
 
-rooms=
-if [ $# -eq 0 ]
+rooms="302"
+if [ $# -ne 0 ]
 then
-	rooms="301 302 303 235 255 256"
-else
 	rooms=$@
 fi
 
