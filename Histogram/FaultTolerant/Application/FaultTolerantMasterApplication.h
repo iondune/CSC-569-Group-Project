@@ -5,6 +5,7 @@
 #include <mpi.h>
 #include <unistd.h>
 #include <signal.h>
+#include <errno.h>
 #include "MappedFile.h"
 
 
@@ -52,8 +53,10 @@ public:
     void SendWorkToSlaves()
     {
         Profiler.Start("Send");
+        printf("\n");
         for (int i = 1; i < ProcessorCount; ++ i)
         {
+            printf("Forking process %d\n", i);
             int forkId = fork();
             if (forkId == 0)
             {
@@ -89,20 +92,34 @@ public:
 
                 exit(0);
             }
+            printf("Process forked with id %d\n", forkId);
             Children.push_back(forkId);
         }
+        printf("\n");
         Profiler.End();
     }
 
     void ReceiveWorkFromSlaves()
     {
         Profiler.Start("Recv");
-        int x = 0;
-        for (int j = 0; j < 100; ++ j)
-            for (int i = 0; i < 10000000; ++ i)
-                x ++;
+        printf("Waiting 5 seconds for children to catch up.\n");
+        struct timeval WaitTime;
+        WaitTime.tv_sec = 5;
+        WaitTime.tv_usec = 0;
+        int AttemptsCounter = 25;
+        while (select(0, 0, 0, 0, & WaitTime) == -1 && AttemptsCounter-- > 0)
+        {
+            printf("Failed! (%s) Making %d more attempts to wait\n", strerror(errno), AttemptsCounter);
+        }
+
         for (int i = 0; i < Children.size(); ++ i)
-            kill(Children[i], SIGKILL);
+        {
+            printf("Attempting to kill child %d\n", i+1);
+            if (kill(Children[i], SIGKILL) == -1)
+            {
+                printf("Failed! %s\n", strerror(errno));
+            }
+        }
         Profiler.End();
     }
 
@@ -133,10 +150,16 @@ public:
         B.WriteHistogramToFile(HistB, "hist.b");
         C.WriteHistogramToFile(HistC, "hist.c");
         Profiler.End();
+        printf("Writing successfully completed.\n");
     }
 
     void GetTheFuckOutOfHere()
     {
+        // printf("Attempting to exit normally.\n");
+        // int ForkId = fork();
+        // if (ForkId == 0)
+        //     MPI_Finalize();
+
         printf("See you later, assholes!\n");
         exit(0);
     }

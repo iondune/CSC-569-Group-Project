@@ -24,6 +24,7 @@ public:
     void DoWorkForMaster()
     {
         Profiler.Start("Recv");
+        Profiler.Say("Alive in slave");
         MPI_Status Status;
         float ValueA, ValueB;
         MPI_Recv(& ValueA, 1, MPI_FLOAT, 0, 1234, MPI_COMM_WORLD, & Status);
