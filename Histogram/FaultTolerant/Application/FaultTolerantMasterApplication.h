@@ -29,8 +29,8 @@ public:
     void Run()
     {
         ReadInFiles();
-        CalculateSum();
         SendWorkToSlaves();
+        CalculateSum();
         ReceiveWorkFromSlaves();
         MakeHistograms();
         WriteOutputFiles();
@@ -85,6 +85,14 @@ public:
         Profiler.End();
     }
 
+    void CalculateSum()
+    {
+        Profiler.Start("Sum");
+        C.MakeSum(A, B);
+        C.Maximum = A.Maximum + B.Maximum;
+        Profiler.End();
+    }
+
     void ReceiveWorkFromSlaves()
     {
         Profiler.Start("Recv");
@@ -100,43 +108,39 @@ public:
             WaitTime.tv_usec = 0;
         }
 
+        printf("Waiting 3 seconds each for child to write.\n");
         for (int i = 0; i < Children.size(); ++ i)
         {
-            WaitTime.tv_sec = 0;
-            WaitTime.tv_usec = 500000;
+            WaitTime.tv_sec = 3;
+            WaitTime.tv_usec = 0;
             fd_set FDs;
             FD_ZERO(& FDs);
             FD_SET(Pipes[i], & FDs);
-            // int Return = select(1, & FDs, 0, 0, & WaitTime);
-            // if (Return == 1)
-            //     perror("select(Pipe)");
-            // else if (Return)
+            int Return = select(1+Pipes[i], & FDs, 0, 0, & WaitTime);
+            if (Return == -1)
+                perror("select(Pipe)");
+            else
             {
-                float Result = -1;
-                if (read(Pipes[i], & Result, sizeof(Result)) == -1)
-                    perror("read(PIPE)");
-                else if (C.Values[i] != Result)
-                     printf("ERROR! Master results incorrect (%.2f), replacing with Worker result (%.2f)!\n", C.Values[i], Result);
+                if (Return && FD_ISSET(Pipes[i], &FDs))
+                {
+                    float Result = -1;
+                    if (read(Pipes[i], & Result, sizeof(Result)) == -1)
+                        perror("read(PIPE)");
+                    else if (C.Values[i] != Result)
+                         printf("ERROR! Master results incorrect (%.2f), replacing with Worker result (%.2f)!\n", C.Values[i], Result);
+                    else
+                        printf(KCYN"Worker results verified %d"KNRM"\n", i);
+                    C.Values[i] = Result;
+                }
                 else
-                    printf(KCYN"Worker results verified %d"KNRM"\n", i);
-                C.Values[i] = Result;
+                    printf(KRED"Worker not heard from: %d"KNRM"\n", i+1);
             }
-            // else
-            //     printf(KRED"Worker not heard from: %d"KNRM"\n", i);
 
             printf(KYEL"Killing child %d"KNRM"\n", i+1);
             close(Pipes[i]);
             if (kill(Children[i], SIGKILL) == -1)
                 printf("Failed! %s\n", strerror(errno));
         }
-        Profiler.End();
-    }
-
-    void CalculateSum()
-    {
-        Profiler.Start("Sum");
-        C.MakeSum(A, B);
-        C.Maximum = A.Maximum + B.Maximum;
         Profiler.End();
     }
 
