@@ -33,8 +33,8 @@ public:
     void Run()
     {
         SendFilesToSlaves();
-        CalculateSum();
         ReceiveVectorsFromSlaves();
+        CalculateSum();
         MakeHistograms();
         WriteOutputFiles();
     }
@@ -96,14 +96,6 @@ public:
         Profiler.End();
     }
 
-    void CalculateSum()
-    {
-        Profiler.Start("Sum");
-        C.MakeSum(A, B);
-        printf(KGRN"Calculated %d sums on host"KNRM"\n", C.Size());
-        Profiler.End();
-    }
-
     void ReceiveVectorsFromSlaves()
     {
         Profiler.Start("RecvV");
@@ -115,10 +107,21 @@ public:
             A.Values.insert(A.Values.begin(), Received.begin(), Received.end());
             MPI_Recv(& Received.front(), NperNode, MPI_FLOAT, i, 212, MPI_COMM_WORLD, & Status);
             B.Values.insert(B.Values.begin(), Received.begin(), Received.end());
-            MPI_Recv(& Received.front(), NperNode, MPI_FLOAT, i, 213, MPI_COMM_WORLD, & Status);
-            C.Values.insert(C.Values.begin(), Received.begin(), Received.end());
         }
-        C.CalculateMaximum();
+        Profiler.End();
+        
+        Profiler.Start("Max");
+        A.CalculateMaximum();
+        B.CalculateMaximum();
+        Profiler.End();
+    }
+
+    void CalculateSum()
+    {
+        Profiler.Start("Sum");
+        C.MakeSum(A, B);
+        C.Maximum = A.Maximum + B.Maximum;
+        printf(KGRN"Calculated %d sums on host"KNRM"\n", C.Size());
         Profiler.End();
     }
 

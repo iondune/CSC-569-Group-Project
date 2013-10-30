@@ -45,15 +45,9 @@ public:
 
     void SendVectorsToMaster()
     {
-        Profiler.Start("Sum");
-        C.MakeSum(A, B);
-        printf(KGRN"%sCalculated %d sums on slave."KNRM"\n", Profiler.GetPrefix().c_str(), C.Size());
-        Profiler.End();
-
         Profiler.Start("SendV");
         MPI_Send(& A.Values.front(), A.Size(), MPI_FLOAT, 0, 211, MPI_COMM_WORLD);
         MPI_Send(& B.Values.front(), B.Size(), MPI_FLOAT, 0, 212, MPI_COMM_WORLD);
-        MPI_Send(& C.Values.front(), C.Size(), MPI_FLOAT, 0, 213, MPI_COMM_WORLD);
         Profiler.End();
     }
 
