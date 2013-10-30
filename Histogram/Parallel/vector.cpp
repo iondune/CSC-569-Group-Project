@@ -160,7 +160,7 @@ float Vector::max() {
   // Must gather first, because sort_values will only sort each processor's
   // KeyValue pairs.
   gather(1);
-  //sort_values(&maxCompare);
+  sort_values(&maxCompare);
 
   float max;
   scan(&maxScan, &max);
@@ -235,6 +235,13 @@ vector<float> Vector::values() {
   return values;
 }
 
+vector<float> Vector::myValues() {
+  sort_keys(3); // 3 means compare two floats
+  vector<float> values;
+  scan(&valuesScan, &values);
+  return values;
+}
+
 void valuesScan(char* keyStr, int keyLen, char* valueStr, int valueLen, void* extra) {
   vector<float>* values = (vector<float>*) extra;
   float val = *((float*) valueStr);
@@ -244,6 +251,10 @@ void valuesScan(char* keyStr, int keyLen, char* valueStr, int valueLen, void* ex
 void Vector::print() {
   gather(1);
   scan(&printScan, NULL);
+}
+
+void Vector::myGather() {
+  gather(1);
 }
 
 void printScan(char* key, int keyLen, char* value, int valueLen, void* extra) {
