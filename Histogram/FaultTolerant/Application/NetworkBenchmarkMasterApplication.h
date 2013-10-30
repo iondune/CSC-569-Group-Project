@@ -44,6 +44,7 @@ public:
 
     void SendVectorsToSlaves()
     {
+        MPI_Barrier(MPI_COMM_WORLD);
         Profiler.Start("Send");
         MPI_Bcast(& VectorSize, 1, MPI_INT, 0, MPI_COMM_WORLD);
         MPI_Bcast(& A.Values.front(), VectorSize, MPI_FLOAT, 0, MPI_COMM_WORLD);

@@ -21,6 +21,7 @@ public:
 
     void ReceiveVectorsFromMaster()
     {
+        MPI_Barrier(MPI_COMM_WORLD);
         Profiler.Start("Recv");
         MPI_Bcast(& VectorSize, 1, MPI_INT, 0, MPI_COMM_WORLD);
         A.Values.resize(VectorSize);
