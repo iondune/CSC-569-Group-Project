@@ -19,6 +19,8 @@ void printHistogram(int* bins, int size, const char *filename);
 void printVector(const vector<float>& vec, const char* filename);
 int* initializeBins(Vector* vec, float min, int* binCount);
 
+int globalMe;
+
 int main(int narg, char **args)
 {
    MPI_Init(&narg,&args);
@@ -26,10 +28,11 @@ int main(int narg, char **args)
    int me,nprocs;
    MPI_Comm_rank(MPI_COMM_WORLD,&me);
    MPI_Comm_size(MPI_COMM_WORLD,&nprocs);
-   // printf("Let's start! My Rank is %d\n", me);
 
-   if (narg <= 1) {
-     if (me == 0) printf("Syntax: wordfreq file1 file2 ...\n");
+   globalMe = me;
+
+   if (narg <= 2) {
+     if (me == 0) printf("Must specify input vector files.\n");
      MPI_Abort(MPI_COMM_WORLD,1);
    }
 
@@ -40,7 +43,7 @@ int main(int narg, char **args)
    {
       data1 = serialReadfile(args[1], &fileSize1);
       data2 = serialReadfile(args[2], &fileSize2);
-      int StringSize = strlen(data1);
+      int StringSize = strlen(data1) + 1;
       MPI_Bcast(& StringSize, 1, MPI_INT, 0, MPI_COMM_WORLD);
       MPI_Bcast(data1, StringSize, MPI_CHAR, 0, MPI_COMM_WORLD);
       MPI_Bcast(data2, StringSize, MPI_CHAR, 0, MPI_COMM_WORLD);
@@ -52,7 +55,9 @@ int main(int narg, char **args)
       data1 = new char[StringSize];
       data2 = new char[StringSize];
       MPI_Bcast(data1, StringSize, MPI_CHAR, 0, MPI_COMM_WORLD);
+      data1[StringSize - 1] = '\0';
       MPI_Bcast(data2, StringSize, MPI_CHAR, 0, MPI_COMM_WORLD);
+      data2[StringSize - 1] = '\0';
    }
 
    MPI_Barrier(MPI_COMM_WORLD);
@@ -66,7 +71,10 @@ int main(int narg, char **args)
    Vector* c = a->add(b);
 
    MPI_Barrier(MPI_COMM_WORLD);
+
    printVector(c->values(), "result.out");
+
+   MPI_Barrier(MPI_COMM_WORLD);
 
    int binCountA, binCountB, binCountC;
    int* binsA = initializeBins(a, MIN_VAL,           &binCountA);
@@ -83,15 +91,13 @@ int main(int narg, char **args)
       printHistogram(binsA, binCountA, "hist.a");
       printHistogram(binsB, binCountB, "hist.b");
       printHistogram(binsC, binCountC, "hist.c");
-      // printVector(c->values(), "result.out");
    }
 
    MPI_Finalize();
 }
 
 int* initializeBins(Vector* vec, float min, int* binCount) {
-  // float max = vec->max();
-  float max = 10.0;
+  float max = vec->max();
 
   (*binCount) = getBinCount(min, max, BIN_WIDTH);
 
@@ -111,11 +117,20 @@ char* serialReadfile(char *fname, int *sizeofFile) {
     MPI_Abort(MPI_COMM_WORLD,1);
    }
    int filesize = stbuf.st_size;
-   *sizeofFile = filesize;
+   // *sizeofFile = filesize;
    FILE *fp = fopen(fname,"r");
    char *text = new char[filesize+1];
    int nchar = fread(text,1,filesize,fp);
-   text[nchar] = '\0';
+
+   // remove trailing whitespace
+   int cursor = nchar;
+   while (text[cursor] == ' ' || text[cursor] == '\n' || text[cursor] == '\0') {
+      cursor--;
+   }
+
+   text[cursor + 1] = '\0';
+   *sizeofFile = cursor + 1;
+
    fclose(fp);
    return text;
 }
@@ -133,18 +148,21 @@ void printHistogram(int* bins, int size, const char* filename) {
 }
 
 void printVector(const vector<float>& vec, const char *filename) {
-   FILE *f = fopen(filename, "w");
-   if (f == NULL) {
-      printf("Error opening file!\n");
-      exit(1);
-   }
+   if(globalMe == 0) {
+      FILE *f = fopen(filename, "w");
+      if (f == NULL) {
+         printf("Error opening file!\n");
+         exit(1);
+      }
 
-   int size = vec.size();
-   for (int i = 0; i < size; i++){
-      fprintf(f, "%.2f ", vec[i]);
+      int size = vec.size();
+
+      for (int i = 0; i < size; i++){
+         fprintf(f, "%.2f ", vec[i]);
+      }
+      fprintf(f, "\n");
+      fclose(f);
    }
-   fprintf(f, "\n");
-   fclose(f);
 }
 
 int getBinCount(float min, float max, float width) {

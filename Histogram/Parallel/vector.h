@@ -22,6 +22,9 @@ class Vector : private MAPREDUCE_NS::MapReduce {
    */
   Vector* add(Vector* other);
 
+  void myGather();
+  vector<float> myValues();
+
   /**
    * Get the maximum value. Has the following side effects:
    *    The computation is gathered to one processor.
