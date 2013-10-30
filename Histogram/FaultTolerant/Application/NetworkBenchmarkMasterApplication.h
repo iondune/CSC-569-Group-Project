@@ -33,9 +33,18 @@ public:
     {
         Profiler.Start("Map");
         MappedFile FileA(FileNameA), FileB(FileNameB);
+        unsigned int SizeA = strlen(FileA.Contents), SizeB = strlen(FileB.Contents);
+        Profiler.End();
+
+        MPI_Barrier(MPI_COMM_WORLD);
+        Profiler.Start("Send");
+        MPI_Bcast(& SizeA, 1, MPI_UNSIGNED, 0, MPI_COMM_WORLD);
+        MPI_Bcast(& SizeB, 1, MPI_UNSIGNED, 0, MPI_COMM_WORLD);
+        MPI_Bcast(FileA.Contents, SizeA, MPI_CHAR, 0, MPI_COMM_WORLD);
+        MPI_Bcast(FileB.Contents, SizeB, MPI_CHAR, 0, MPI_COMM_WORLD);
         Profiler.End();
         
-        Profiler.Start("Read");
+        Profiler.Start("Parse");
         A.ParseFromString(FileA.Contents);
         B.ParseFromString(FileB.Contents);
         VectorSize = A.Values.size();
@@ -44,14 +53,6 @@ public:
 
     void SendVectorsToSlaves()
     {
-        MPI_Barrier(MPI_COMM_WORLD);
-        Profiler.Start("Send");
-        MPI_Bcast(& VectorSize, 1, MPI_INT, 0, MPI_COMM_WORLD);
-        MPI_Bcast(& A.Values.front(), VectorSize, MPI_FLOAT, 0, MPI_COMM_WORLD);
-        MPI_Bcast(& B.Values.front(), VectorSize, MPI_FLOAT, 0, MPI_COMM_WORLD);
-        MPI_Bcast(& A.Maximum, 1, MPI_FLOAT, 0, MPI_COMM_WORLD);
-        MPI_Bcast(& B.Maximum, 1, MPI_FLOAT, 0, MPI_COMM_WORLD);
-        Profiler.End();
     }
 
     void CalculateSum()

@@ -23,13 +23,12 @@ public:
     {
         MPI_Barrier(MPI_COMM_WORLD);
         Profiler.Start("Recv");
-        MPI_Bcast(& VectorSize, 1, MPI_INT, 0, MPI_COMM_WORLD);
-        A.Values.resize(VectorSize);
-        B.Values.resize(VectorSize);
-        MPI_Bcast(& A.Values.front(), VectorSize, MPI_FLOAT, 0, MPI_COMM_WORLD);
-        MPI_Bcast(& B.Values.front(), VectorSize, MPI_FLOAT, 0, MPI_COMM_WORLD);
-        MPI_Bcast(& A.Maximum, 1, MPI_FLOAT, 0, MPI_COMM_WORLD);
-        MPI_Bcast(& B.Maximum, 1, MPI_FLOAT, 0, MPI_COMM_WORLD);
+        unsigned int SizeA, SizeB;
+        MPI_Bcast(& SizeA, 1, MPI_UNSIGNED, 0, MPI_COMM_WORLD);
+        MPI_Bcast(& SizeB, 1, MPI_UNSIGNED, 0, MPI_COMM_WORLD);
+        char * FileA = new char[SizeA], * FileB = new char[SizeB];
+        MPI_Bcast(FileA, SizeA, MPI_CHAR, 0, MPI_COMM_WORLD);
+        MPI_Bcast(FileB, SizeB, MPI_CHAR, 0, MPI_COMM_WORLD);
         Profiler.End();
     }
 
