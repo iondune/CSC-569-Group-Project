@@ -36,6 +36,15 @@ public:
         unsigned int SizeA = strlen(FileA.Contents), SizeB = strlen(FileB.Contents);
         Profiler.End();
 
+        Profiler.Start("Count");
+        char * Iterator = FileA.Contents;
+        int ValueCount = 0;
+        while (* Iterator)
+            if (* Iterator ++ == ' ')
+                ValueCount ++;
+        printf("Values: %d\n", ValueCount);
+        Profiler.End();
+
         MPI_Barrier(MPI_COMM_WORLD);
         Profiler.Start("Send");
         MPI_Bcast(& SizeA, 1, MPI_UNSIGNED, 0, MPI_COMM_WORLD);
