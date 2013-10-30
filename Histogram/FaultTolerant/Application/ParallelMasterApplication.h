@@ -18,9 +18,6 @@ class ParallelMasterApplication : public Application
 
     std::string FileNameA, FileNameB;
     int ProcessorCount;
-    std::vector<int> Children;
-    // int N, Sent;
-    int BinCountA, BinCountB, BinCountC;
     int NperNode, Count;
 
 public:
@@ -31,19 +28,13 @@ public:
         FileNameB = fileNameB;
         Profiler.SetProcessorId(0);
         ProcessorCount = processorCount;
-        // N = n;
-        // if (N == 0)
-        //     N = VectorSize / ProcessorCount;
-        // Sent = 0;
-        BinCountA = BinCountB = BinCountC = -1;
-        // DoHistSend = doHistSend;
     }
 
     void Run()
     {
         SendFilesToSlaves();
         CalculateSum();
-        ReceiveSumFromSlaves();
+        ReceiveVectorsFromSlaves();
         MakeHistograms();
         WriteOutputFiles();
     }
@@ -113,14 +104,18 @@ public:
         Profiler.End();
     }
 
-    void ReceiveSumFromSlaves()
+    void ReceiveVectorsFromSlaves()
     {
-        Profiler.Start("RecvS");
+        Profiler.Start("RecvV");
         for (int i = ProcessorCount - 1; i > 0; -- i)
         {
             MPI_Status Status;
             std::vector<float> Received(NperNode);
             MPI_Recv(& Received.front(), NperNode, MPI_FLOAT, i, 211, MPI_COMM_WORLD, & Status);
+            A.Values.insert(A.Values.begin(), Received.begin(), Received.end());
+            MPI_Recv(& Received.front(), NperNode, MPI_FLOAT, i, 212, MPI_COMM_WORLD, & Status);
+            B.Values.insert(B.Values.begin(), Received.begin(), Received.end());
+            MPI_Recv(& Received.front(), NperNode, MPI_FLOAT, i, 213, MPI_COMM_WORLD, & Status);
             C.Values.insert(C.Values.begin(), Received.begin(), Received.end());
         }
         C.CalculateMaximum();
