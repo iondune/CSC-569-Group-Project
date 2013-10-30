@@ -24,7 +24,7 @@ do
     echo "Checking time for test $test"
     echo "-----------------------------------"
     time $program --hostfile Hostfiles/$hostprefix$hostnum FaultTolerant ../Tests/$test/$test.a ../Tests/$test/$test.b FaultTolerant
-    rm hist.a hist.b hist.c result.out
+    #rm hist.a hist.b hist.c result.out
     echo
 done
 
