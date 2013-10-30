@@ -108,11 +108,11 @@ public:
             WaitTime.tv_usec = 0;
         }
 
-        printf("Waiting 3 seconds each for child to write.\n");
+        printf("Waiting 0.5 seconds each for child to write.\n");
         for (int i = 0; i < Children.size(); ++ i)
         {
-            WaitTime.tv_sec = 3;
-            WaitTime.tv_usec = 0;
+            WaitTime.tv_sec = 0;
+            WaitTime.tv_usec = 500000;
             fd_set FDs;
             FD_ZERO(& FDs);
             FD_SET(Pipes[i], & FDs);
