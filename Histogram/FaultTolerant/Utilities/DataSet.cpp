@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include <limits>
+#include <algorithm>
 #include <cstring>
 #include <cstdio>
 #include <cstdlib>
@@ -109,6 +110,11 @@ void DataSet::MakeSum(DataSet const & A, DataSet const & B, unsigned int const i
     Values.resize(A.Size());
     for (unsigned int i = i0; i < i1; ++ i)
         Values[i] = A[i] + B[i];
+}
+
+void DataSet::CalculateMaximum()
+{
+    Maximum = * std::max_element(Values.begin(), Values.end());
 }
 
 unsigned int DataSet::Size() const

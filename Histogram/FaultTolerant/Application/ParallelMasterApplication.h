@@ -109,7 +109,6 @@ public:
     {
         Profiler.Start("Sum");
         C.MakeSum(A, B);
-        C.Maximum = A.Maximum + B.Maximum;
         printf("Calculated %d sums on host\n", C.Size());
         Profiler.End();
     }
@@ -124,6 +123,7 @@ public:
             MPI_Recv(& Received.front(), NperNode, MPI_FLOAT, i, 211, MPI_COMM_WORLD, & Status);
             C.Values.insert(C.Values.begin(), Received.begin(), Received.end());
         }
+        C.CalculateMaximum();
         Profiler.End();
     }
 

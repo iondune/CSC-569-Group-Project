@@ -19,6 +19,7 @@ public:
     void WriteHistogramToFile(std::vector<int> const & Histogram, std::string const & fileName);
     void MakeSum(DataSet const & A, DataSet const & B);
     void MakeSum(DataSet const & A, DataSet const & B, unsigned int const i0, unsigned int const i1);
+    void CalculateMaximum();
 
     unsigned int Size() const;
     float operator[] (unsigned int const i) const;
