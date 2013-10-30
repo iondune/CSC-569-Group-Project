@@ -79,7 +79,7 @@ public:
             while (* IteratorA && CountA < NperNode)
                 if (* IteratorA ++ == ' ')
                     CountA ++;
-            while (* IteratorB && CountA < NperNode)
+            while (* IteratorB && CountB < NperNode)
                 if (* IteratorB ++ == ' ')
                     CountB ++;
             int SentA = (int) (IteratorA - StartA);
@@ -110,13 +110,13 @@ public:
         Profiler.Start("Sum");
         C.MakeSum(A, B);
         C.Maximum = A.Maximum + B.Maximum;
-        printf("%sCalculated %d sums on host\n", Profiler.GetPrefix().c_str(), C.Size());
+        printf("Calculated %d sums on host\n", C.Size());
         Profiler.End();
     }
 
     void ReceiveSumFromSlaves()
     {
-        Profiler.Start("RecS");
+        Profiler.Start("RecvS");
         for (int i = ProcessorCount - 1; i > 0; -- i)
         {
             MPI_Status Status;

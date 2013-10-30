@@ -21,11 +21,12 @@ public:
     void Run()
     {
         ReceiveFilesFromMaster();
+        SendSumToMaster();
     }
 
     void ReceiveFilesFromMaster()
     {
-        Profiler.Start("RecF");
+        Profiler.Start("RecvF");
         MPI_Status Status;
         int SentA, SentB;
         MPI_Recv(& SentA, 1, MPI_INT, 0, 111, MPI_COMM_WORLD, & Status);
@@ -46,10 +47,10 @@ public:
     {
         Profiler.Start("Sum");
         C.MakeSum(A, B);
-        printf("Calculated %d sums on slave.\n", C.Size());
+        printf("%sCalculated %d sums on slave.\n", Profiler.GetPrefix().c_str(), C.Size());
         Profiler.End();
 
-        Profiler.Start("Work");
+        Profiler.Start("SendS");
         MPI_Send(& C.Values.front(), C.Size(), MPI_FLOAT, 0, 211, MPI_COMM_WORLD);
         Profiler.End();
     }
