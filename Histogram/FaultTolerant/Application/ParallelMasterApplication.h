@@ -86,7 +86,7 @@ public:
             MPI_Send(SendA, SentA, MPI_CHAR, i, 113, MPI_COMM_WORLD);
             MPI_Send(SendB, SentB, MPI_CHAR, i, 114, MPI_COMM_WORLD);
 
-            printf(KCYN"Sent %d %d byte files to node %d (%d floats)"KNRM"\n", SentA, SentB, i, NperNode);
+            printf(KCYN"Sent (%d, %d) byte files to node %d (%d floats)"KNRM"\n", SentA, SentB, i, NperNode);
         }
         Profiler.End();
 
