@@ -54,7 +54,7 @@ public:
                 CountB ++;
         if (CountA != CountB)
         {
-            printf("Vector A and B size mismatch: %d %d\n", CountA, CountB);
+            printf(KRED"Vector A and B size mismatch: %d %d"KNRM"\n", CountA, CountB);
             exit(0);
         }
         Count = CountA;
@@ -86,7 +86,7 @@ public:
             MPI_Send(SendA, SentA, MPI_CHAR, i, 113, MPI_COMM_WORLD);
             MPI_Send(SendB, SentB, MPI_CHAR, i, 114, MPI_COMM_WORLD);
 
-            printf("Sent %d %d byte files to node %d (%d floats)\n", SentA, SentB, i, NperNode);
+            printf(KCYN"Sent %d %d byte files to node %d (%d floats)"KNRM"\n", SentA, SentB, i, NperNode);
         }
         Profiler.End();
 
@@ -100,7 +100,7 @@ public:
     {
         Profiler.Start("Sum");
         C.MakeSum(A, B);
-        printf("Calculated %d sums on host\n", C.Size());
+        printf(KGRN"Calculated %d sums on host"KNRM"\n", C.Size());
         Profiler.End();
     }
 

@@ -47,7 +47,7 @@ public:
     {
         Profiler.Start("Sum");
         C.MakeSum(A, B);
-        printf("%sCalculated %d sums on slave.\n", Profiler.GetPrefix().c_str(), C.Size());
+        printf(KGRN"%sCalculated %d sums on slave."KNRM"\n", Profiler.GetPrefix().c_str(), C.Size());
         Profiler.End();
 
         Profiler.Start("SendV");
