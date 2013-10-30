@@ -71,18 +71,8 @@ public:
                 MPI_Recv(& Result, 1, MPI_FLOAT, i, 9876, MPI_COMM_WORLD, & Status);
 
                 printf(KGRN"Received result from %d"KNRM"\n", i);
-                if (C.Values[i-1] != Result)
-                {
-                    if (Result == 0)
-                        printf("Worker was not fast enough, haha!\n");
-                    else
-                        printf("ERROR! Worker results incorrect!\n");
-                }
-                else
-                {
-                    printf(KCYN"Worker results verified %d"KNRM"\n", i);
-                    C.Values[i-1] = Result;
-                }
+                if (write(Pipe[1], & Result, sizeof(Result)) == -1)
+                    perror("write(Pipe)");
                 close(Pipe[1]);
                 exit(0);
             }
@@ -106,10 +96,34 @@ public:
         while (select(0, 0, 0, 0, & WaitTime) == -1 && AttemptsCounter-- > 0)
         {
             printf(KRED"Found %d processes! (%s) Making %d more attempts to wait"KNRM"\n", ProcessorCount - AttemptsCounter, strerror(errno), AttemptsCounter);
+            WaitTime.tv_sec = 5;
+            WaitTime.tv_usec = 0;
         }
 
         for (int i = 0; i < Children.size(); ++ i)
         {
+            WaitTime.tv_sec = 0;
+            WaitTime.tv_usec = 500000;
+            fd_set FDs;
+            FD_ZERO(& FDs);
+            FD_SET(Pipes[i], & FDs);
+            // int Return = select(1, & FDs, 0, 0, & WaitTime);
+            // if (Return == 1)
+            //     perror("select(Pipe)");
+            // else if (Return)
+            {
+                float Result = -1;
+                if (read(Pipes[i], & Result, sizeof(Result)) == -1)
+                    perror("read(PIPE)");
+                else if (C.Values[i] != Result)
+                     printf("ERROR! Master results incorrect (%.2f), replacing with Worker result (%.2f)!\n", C.Values[i], Result);
+                else
+                    printf(KCYN"Worker results verified %d"KNRM"\n", i);
+                C.Values[i] = Result;
+            }
+            // else
+            //     printf(KRED"Worker not heard from: %d"KNRM"\n", i);
+
             printf(KYEL"Killing child %d"KNRM"\n", i+1);
             close(Pipes[i]);
             if (kill(Children[i], SIGKILL) == -1)
