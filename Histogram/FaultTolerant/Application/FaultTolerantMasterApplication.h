@@ -8,22 +8,13 @@
 #include <errno.h>
 #include "MappedFile.h"
 
-#define KNRM  "\x1B[0m"
-#define KRED  "\x1B[31m"
-#define KGRN  "\x1B[32m"
-#define KYEL  "\x1B[33m"
-#define KBLU  "\x1B[34m"
-#define KMAG  "\x1B[35m"
-#define KCYN  "\x1B[36m"
-#define KWHT  "\x1B[37m"
-
 
 class FaultTolerantMasterApplication : public Application
 {
 
     std::string FileNameA, FileNameB;
     int ProcessorCount;
-    std::vector<int> Children;
+    std::vector<int> Children, Pipes;
 
 public:
 
@@ -38,8 +29,8 @@ public:
     void Run()
     {
         ReadInFiles();
-        CalculateSum();
         SendWorkToSlaves();
+        CalculateSum();
         ReceiveWorkFromSlaves();
         MakeHistograms();
         WriteOutputFiles();
@@ -65,49 +56,40 @@ public:
         printf("\n");
         for (int i = 1; i < ProcessorCount; ++ i)
         {
+            int Pipe[2];
+            pipe(Pipe);
             printf("Forking process %d\n", i);
             int forkId = fork();
             if (forkId == 0)
             {
-                MPI_Bsend(& A.Values[i-1], 1, MPI_FLOAT, i, 1234, MPI_COMM_WORLD);//, 0);
-                MPI_Bsend(& B.Values[i-1], 1, MPI_FLOAT, i, 4321, MPI_COMM_WORLD);//, 0);
-                //MPI_Isend(& A.Values[i-1], 1, MPI_FLOAT, i, 1234, MPI_COMM_WORLD, 0);
-                //MPI_Isend(& B.Values[i-1], 1, MPI_FLOAT, i, 4321, MPI_COMM_WORLD, 0);
+                close(Pipe[0]);
+                MPI_Send(& A.Values[i-1], 1, MPI_FLOAT, i, 1234, MPI_COMM_WORLD);
+                MPI_Send(& B.Values[i-1], 1, MPI_FLOAT, i, 4321, MPI_COMM_WORLD);
 
-                MPI_Request Request;
+                MPI_Status Status;
                 float Result = 0;
-                MPI_Irecv(& Result, 1, MPI_FLOAT, i, 9876, MPI_COMM_WORLD, & Request);
+                MPI_Recv(& Result, 1, MPI_FLOAT, i, 9876, MPI_COMM_WORLD, & Status);
 
-                for (int t = 0; t < 10; ++ t)
-                {
-                    int Flag;
-                    MPI_Test(& Request, & Flag, 0);
-                    if (Flag)
-                    {
-                        printf(KGRN"Received result from %d"KNRM"\n", i);
-                        break;
-                    }
-                    usleep(10000);
-                }
-                if (C.Values[i-1] != Result)
-                {
-                    if (Result == 0)
-                        printf("Worker was not fast enough, haha!\n");
-                    else
-                        printf("ERROR! Worker results incorrect!\n");
-                }
-                else
-                {
-                    printf(KCYN"Worker results verified %d"KNRM"\n", i);
-                    C.Values[i-1] = Result;
-                }
-
+                printf(KGRN"Received result from %d"KNRM"\n", i);
+                if (write(Pipe[1], & Result, sizeof(Result)) == -1)
+                    perror("write(Pipe)");
+                close(Pipe[1]);
                 exit(0);
             }
+            close(Pipe[1]);
             printf("Process forked with id %d\n", forkId);
             Children.push_back(forkId);
+            Pipes.push_back(Pipe[0]);
         }
         printf("\n");
+        Profiler.End();
+    }
+
+    void CalculateSum()
+    {
+        Profiler.Start("Sum");
+        C.MakeSum(A, B);
+        C.Maximum = A.Maximum + B.Maximum;
         Profiler.End();
     }
 
@@ -118,26 +100,47 @@ public:
         struct timeval WaitTime;
         WaitTime.tv_sec = 5;
         WaitTime.tv_usec = 0;
-        int AttemptsCounter = 25;
+        int AttemptsCounter = ProcessorCount;
         while (select(0, 0, 0, 0, & WaitTime) == -1 && AttemptsCounter-- > 0)
         {
-            printf(KRED"Waiting failed! (%s) Making %d more attempts to wait"KNRM"\n", strerror(errno), AttemptsCounter);
+            printf(KRED"Found %d processes! (%s) Making %d more attempts to wait"KNRM"\n", ProcessorCount - AttemptsCounter, strerror(errno), AttemptsCounter);
+            WaitTime.tv_sec = 5;
+            WaitTime.tv_usec = 0;
         }
 
+        printf("Waiting 0.5 seconds each for child to write.\n");
         for (int i = 0; i < Children.size(); ++ i)
         {
+            WaitTime.tv_sec = 0;
+            WaitTime.tv_usec = 500000;
+            fd_set FDs;
+            FD_ZERO(& FDs);
+            FD_SET(Pipes[i], & FDs);
+            int Return = select(1+Pipes[i], & FDs, 0, 0, & WaitTime);
+            if (Return == -1)
+                perror("select(Pipe)");
+            else
+            {
+                if (Return && FD_ISSET(Pipes[i], &FDs))
+                {
+                    float Result = -1;
+                    if (read(Pipes[i], & Result, sizeof(Result)) == -1)
+                        perror("read(PIPE)");
+                    else if (C.Values[i] != Result)
+                         printf("ERROR! Master results incorrect (%.2f), replacing with Worker result (%.2f)!\n", C.Values[i], Result);
+                    else
+                        printf(KCYN"Worker results verified %d"KNRM"\n", i);
+                    C.Values[i] = Result;
+                }
+                else
+                    printf(KRED"Worker not heard from: %d"KNRM"\n", i+1);
+            }
+
             printf(KYEL"Killing child %d"KNRM"\n", i+1);
+            close(Pipes[i]);
             if (kill(Children[i], SIGKILL) == -1)
                 printf("Failed! %s\n", strerror(errno));
         }
-        Profiler.End();
-    }
-
-    void CalculateSum()
-    {
-        Profiler.Start("Sum");
-        C.MakeSum(A, B);
-        C.Maximum = A.Maximum + B.Maximum;
         Profiler.End();
     }
 

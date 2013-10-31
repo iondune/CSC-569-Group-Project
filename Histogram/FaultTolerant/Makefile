@@ -1,7 +1,7 @@
 CXX=mpic++
 RM=rm -f
 CPPFLAGS=-O3 -I./Utilities
-LDFLAGS=-lrt
+LDFLAGS=-O3
 LDLIBS=
 
 SRCS=$(wildcard *.cpp) $(wildcard */*.cpp)

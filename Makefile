@@ -48,10 +48,11 @@ test-linux: $(TEST_OBJS)
 	      $(TEST_LIBS_LINUX) \
 	      -o bin/test-linux
 
-pi: makeDirectories $(OBJS_PI)
+pi: makeDirectories $(OBJS_PI) $(MAIN)
 	$(CC) $(LDFLAGS) \
 	      $(INC_DIRS) \
 	      $(OBJS_PI) \
+	      $(MAIN) \
 	      $(LIBS_PI) \
 	      -o bin/main-pi
 

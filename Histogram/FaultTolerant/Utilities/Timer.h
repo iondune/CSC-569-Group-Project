@@ -20,6 +20,7 @@ public:
     void End();
 
     void SetPrefix(std::string const & prefix);
+    std::string const & GetPrefix() const;
     void SetProcessorId(int const processorId);
     void Say(std::string const & message);
 

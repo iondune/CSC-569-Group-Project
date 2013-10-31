@@ -11,59 +11,44 @@ class ParallelSlaveApplication : public Application
     static float const BinWidth = 0.5f;
     static float const Min = -10.f;
 
-    int N;
-    bool DoHistSend;
-    int BinCountA, BinCountB, BinCountC;
-
 public:
 
-    ParallelSlaveApplication(int ProcessorId, bool doHistSend)
+    ParallelSlaveApplication(int ProcessorId)
     {
         Profiler.SetProcessorId(ProcessorId);
     }
 
     void Run()
     {
-        DoSumForMaster();
-        DoHistogramsForMaster();
+        ReceiveFilesFromMaster();
+        SendVectorsToMaster();
     }
 
-    void DoSumForMaster()
+    void ReceiveFilesFromMaster()
     {
-        MPI_Barrier(MPI_COMM_WORLD);
-        Profiler.Start("Recv");
-
-        MPI_Bcast(& N, 1, MPI_INT, 0, MPI_COMM_WORLD);
-        A.Values.resize(N);
-        B.Values.resize(N);
-
+        Profiler.Start("RecvF");
         MPI_Status Status;
-        MPI_Recv(& A.Values.front(), N, MPI_FLOAT, 0, 123, MPI_COMM_WORLD, & Status);
-        MPI_Recv(& B.Values.front(), N, MPI_FLOAT, 0, 234, MPI_COMM_WORLD, & Status);
+        int SentA, SentB;
+        MPI_Recv(& SentA, 1, MPI_INT, 0, 111, MPI_COMM_WORLD, & Status);
+        MPI_Recv(& SentB, 1, MPI_INT, 0, 112, MPI_COMM_WORLD, & Status);
+        char * SendA = new char[SentA];
+        char * SendB = new char[SentB];
+        MPI_Recv(SendA, SentA, MPI_CHAR, 0, 113, MPI_COMM_WORLD, & Status);
+        MPI_Recv(SendB, SentB, MPI_CHAR, 0, 114, MPI_COMM_WORLD, & Status);
         Profiler.End();
 
-        Profiler.Start("Work");
-        C.MakeSum(A, B);
-        MPI_Send(& C.Values.front(), N, MPI_FLOAT, 0, 345, MPI_COMM_WORLD);
+        Profiler.Start("Parse");
+        A.ParseFromString(SendA);
+        B.ParseFromString(SendB);
         Profiler.End();
     }
 
-    void DoHistogramsForMaster()
+    void SendVectorsToMaster()
     {
-        if (DoHistSend)
-        {
-            MPI_Bcast(& BinCountA, 1, MPI_INT, 0, MPI_COMM_WORLD);
-            MPI_Bcast(& BinCountB, 1, MPI_INT, 0, MPI_COMM_WORLD);
-            MPI_Bcast(& BinCountC, 1, MPI_INT, 0, MPI_COMM_WORLD);
-
-            HistA = A.MakeHistogram(Min, BinWidth, BinCountA);
-            HistB = B.MakeHistogram(Min, BinWidth, BinCountB);
-            HistC = C.MakeHistogram(Min*2, BinWidth, BinCountC);
-
-            MPI_Send(& HistA.front(), BinCountA, MPI_FLOAT, 0, 456, MPI_COMM_WORLD);
-            MPI_Send(& HistB.front(), BinCountB, MPI_FLOAT, 0, 457, MPI_COMM_WORLD);
-            MPI_Send(& HistC.front(), BinCountC, MPI_FLOAT, 0, 458, MPI_COMM_WORLD);
-        }
+        Profiler.Start("SendV");
+        MPI_Send(& A.Values.front(), A.Size(), MPI_FLOAT, 0, 211, MPI_COMM_WORLD);
+        MPI_Send(& B.Values.front(), B.Size(), MPI_FLOAT, 0, 212, MPI_COMM_WORLD);
+        Profiler.End();
     }
 
 };

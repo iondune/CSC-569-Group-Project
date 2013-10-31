@@ -32,6 +32,11 @@ void Timer::SetPrefix(std::string const & prefix)
     Prefix = prefix;
 }
 
+std::string const & Timer::GetPrefix() const
+{
+    return Prefix;
+}
+
 void Timer::SetProcessorId(int const processorId)
 {
     ProcessorId = processorId;
