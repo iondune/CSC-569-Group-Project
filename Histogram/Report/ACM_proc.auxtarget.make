@@ -1,6 +1,12 @@
-\newlabel{PiTable}
+\newlabel{MPITable}
+\newlabel{MPI}
+\newlabel{MrMPITable}
+\newlabel{MrMPI}
+\newlabel{hist10000000c}
 \newlabel{hist10000000}
+\newlabel{hist1000000c}
 \newlabel{hist1000000}
+\newlabel{hist100000c}
 \newlabel{hist100000}
+\newlabel{hist10000c}
 \newlabel{hist10000}
-\newlabel{hist10}

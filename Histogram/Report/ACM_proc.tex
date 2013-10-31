@@ -75,78 +75,148 @@ This project familiarized us with MapReduce, MPI, and distributed computing perf
 One program's aim was to distribute the work among the five Pis and compute the results as quickly as possible. The other program made this process fault-tolerant (albeit less efficient) with a different method that allowed one node to be disconnected during its run.
 
 \section{Part A: Distributed Performance}
-This section describes our non-fault-tolerant program that distributes histogram creation among the five nodes.
+This section describes our non-fault-tolerant programs that distributes histogram creation among the five nodes.
 
 \subsection{Program Setup}
-Using MPI, this first program sends the input vector files residing on the master to the other four nodes as character arrays. Each node then breaks the input vector character arrays into large chunks and maps them.
+\subsubsection{MR-MPI}
+Using MPI, this first MR-MPI-based program sends the input vector files residing on the master to the other four nodes as character arrays. Each node then breaks the input vector character arrays into large chunks and maps them.
 
-The map callback tokenizes each large string on whitespace, converts each token into a float, and creates KeyValues with the float's index as the key and the float as the value. The addition happens after the two vector's MapReduce objects are combined (with MaprReduce's add and collate functions), and the results are reduced by summing the values for each index and creating new KeyValues with the index as key and the summed result as value.
+The map callback tokenizes each large string on whitespace, converts each token into a float, and creates KeyValues with the float's index as the key and the float as the value. The addition happens after the two vectors' MapReduce objects are combined (with MapReduce's add and collate functions), and the results are reduced by summing the values for each index and creating new KeyValues with the index as key and the summed result as value.
 
 Now that each of the three vectors (the third being the summed vector) are available, each one's maximum is found by performing a built-in MapReduce sort on the values and returning the first element of the vector.
 
 Next, histogram counts are calculated with a map function that creates KeyValues with a bin number as key, a collate that combines them, and a reduce that counts the number of (empty or null) values per bin number. Those counts are then scanned into arrays on the master node, and are written to result files (in addition to the summed vector).
 
+\subsubsection{MPI}
+We ran into an issue where our MR-MPI setup wouldn't calculate histograms for input vector sizes 10,000, 100,000, or 10,000,000, so we added another implementation based solely on MPI (without MapReduce) that performs the same task.
+
+This version of the program has the master break the input vectors into equal-sized chunks and send them to slaves, which convert their two vector portions into floats and sum them. The slaves then return those sums to the master, which creates the histogram.
+
+\clearpage
+
 \subsection{Performance Analysis}
-Performance analysis information.
+This section includes the performance information for our three implementations as well as the outputted program results (shown in Figures~\ref{hist10000} through~\ref{hist10000000c}).
+
+\subsubsection{MR-MPI}
+The MR-MPI implementation runtimes are shown in Table~\ref{MrMPITable} and Figure~\ref{MrMPI}.
 
 \begin{table}[tbp]
 \centering
-\caption{Histogram Creation Performance}
-\label{PiTable}
+\caption{MR-MPI Histogram Creation Performance}
+\label{MrMPITable}
 \begin{tabular}{ c || c }
-	Input Size & Time \\ \hline
-    10 & Time \\
-    10,000 & Time \\
-    100,000 & Time \\
-    1,000,000 & Time \\
-    10,000,000 & Time \\
+	Input Size & Time (s) \\ \hline
+    10 & 2.157 \\
+    1,000,000 & 95.231 \\
 \end{tabular}
 \end{table}
 
-\begin{figure}[tbp]
+\begin{figure*}[tbp]
   \centering
-  \caption{Histogram for 10-Count Vectors}
-	\label{hist10}
-  \includegraphics[width=19pc]{Pics/BT.png}
-\end{figure}
+  \caption{Performance with MR-MPI}
+	\label{MrMPI}
+  \includegraphics[width=40pc]{Pics/MrMPI.png}
+\end{figure*}
 
-\begin{figure}[tbp]
+\subsubsection{MPI}
+The MPI implementation runtimes are shown in Table~\ref{MPITable} and Figure~\ref{MPI}.
+
+\begin{table}[tbp]
+\centering
+\caption{MPI Histogram Creation Performance}
+\label{MPITable}
+\begin{tabular}{ c || c }
+	Input Size & Time (s) \\ \hline
+    10,000 & 1.990 \\
+    100,000 & 3.525 \\
+    1,000,000 & 17.494 \\
+    10,000,000 & 170.553 \\
+\end{tabular}
+\end{table}
+
+%%%
+
+\begin{figure*}[tbp]
+  \centering
+  \caption{Performance with MPI}
+	\label{MPI}
+  \includegraphics[width=40pc]{Pics/MPI.png}
+\end{figure*}
+
+%%%
+
+\begin{figure*}[tbp]
   \centering
   \caption{Histogram for 10,000-Count Vectors}
 	\label{hist10000}
-  \includegraphics[width=19pc]{Pics/BT.png}
-\end{figure}
+  \includegraphics[width=40pc]{Pics/10000.png}
+\end{figure*}
 
-\begin{figure}[tbp]
+\begin{figure*}[tbp]
   \centering
   \caption{Histogram for 100,000-Count Vectors}
 	\label{hist100000}
-  \includegraphics[width=19pc]{Pics/BT.png}
-\end{figure}
+  \includegraphics[width=40pc]{Pics/100000.png}
+\end{figure*}
 
-\begin{figure}[tbp]
+\begin{figure*}[tbp]
   \centering
   \caption{Histogram for 1,000,000-Count Vectors}
 	\label{hist1000000}
-  \includegraphics[width=19pc]{Pics/BT.png}
-\end{figure}
+  \includegraphics[width=40pc]{Pics/1000000.png}
+\end{figure*}
 
-\begin{figure}[tbp]
+\begin{figure*}[tbp]
   \centering
   \caption{Histogram for 10,000,000-Count Vectors}
 	\label{hist10000000}
-  \includegraphics[width=19pc]{Pics/BT.png}
-\end{figure}
+  \includegraphics[width=40pc]{Pics/10000000.png}
+\end{figure*}
+
+%%%
+
+\begin{figure*}[tbp]
+  \centering
+  \caption{Histogram for 10,000-Count Vector Sum}
+	\label{hist10000c}
+  \includegraphics[width=40pc]{Pics/10000c.png}
+\end{figure*}
+
+\begin{figure*}[tbp]
+  \centering
+  \caption{Histogram for 100,000-Count Vector Sum}
+	\label{hist100000c}
+  \includegraphics[width=40pc]{Pics/100000c.png}
+\end{figure*}
+
+\begin{figure*}[tbp]
+  \centering
+  \caption{Histogram for 1,000,000-Count Vector Sum}
+	\label{hist1000000c}
+  \includegraphics[width=40pc]{Pics/1000000c.png}
+\end{figure*}
+
+\begin{figure*}[tbp]
+  \centering
+  \caption{Histogram for 10,000,000-Count Vector Sum}
+	\label{hist10000000c}
+  \includegraphics[width=40pc]{Pics/10000000c.png}
+\end{figure*}
 
 \section{Part B: Fault-Tolerance}
 This section describes our fault-tolerant program that distributes histogram creation among the five nodes.
 
 \subsection{Program Setup}
-Setup description.
+The fault-tolerant program using MPI first has the master read and parse the input files. The master forks one process and opens one pipe for every slave node. Each extra process sends a single pair of floats to its respective node, and the slave node adds the floats and sends back the sum. The extra process waits for the node response indefinitely and sends back the result through the pipe (if such response comes); it then calls exit(0) to avoid MPI\_Finalize.
+
+The master computes the sum for all vector elements and waits five seconds for extra processes to catch up. This wait is performed using select() and may be interrupted by an MPI\_Recv returning. Master continually retries to wait until either the wait times equals the number of processors or the wait is successful.
+
+The master then performs a 0.5-second select on each child's pipe to see if anything is ready to read. If a read is possible, the result is read and compared to the master's calculation. In the event of a mismatch, an error is reported and the slave's version is accepted.
+
+Last, master sends SIGKILL to all children, makes histogram and writes output files, sends SIGKTERM to its parent, and sends SIGKILL to itself.
 
 \subsection{Performance Analysis}
-Performance analysis information.
-
+Just as a point of reference, on average, this fault-tolerant implementation could complete the 1,000,000-element test in 42 seconds (most of which is spent in file reading and writing). A node death adds approximately 0.5 seconds.
 
 \bibliographystyle{abbrv}
 %\bibliography{sample}

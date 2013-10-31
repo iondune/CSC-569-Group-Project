@@ -29,18 +29,33 @@ ACM_proc.aux ACM_proc.aux.make ACM_proc.d ACM_proc.pdf: $(call path-norm,/usr/lo
 ACM_proc.aux ACM_proc.aux.make ACM_proc.d ACM_proc.pdf: $(call path-norm,ACM_proc.tex)
 ACM_proc.aux ACM_proc.aux.make ACM_proc.d ACM_proc.pdf: $(call path-norm,acm_proc_article-sp.cls)
 .SECONDEXPANSION:
--include Pics/BT.png.gpi.d
-ACM_proc.d: $$(call graphics-source,Pics/BT.png)
-ACM_proc.pdf ACM_proc._graphics: $$(call graphics-target,Pics/BT.png)
--include Pics/BT.png.gpi.d
-ACM_proc.d: $$(call graphics-source,Pics/BT.png)
-ACM_proc.pdf ACM_proc._graphics: $$(call graphics-target,Pics/BT.png)
--include Pics/BT.png.gpi.d
-ACM_proc.d: $$(call graphics-source,Pics/BT.png)
-ACM_proc.pdf ACM_proc._graphics: $$(call graphics-target,Pics/BT.png)
--include Pics/BT.png.gpi.d
-ACM_proc.d: $$(call graphics-source,Pics/BT.png)
-ACM_proc.pdf ACM_proc._graphics: $$(call graphics-target,Pics/BT.png)
--include Pics/BT.png.gpi.d
-ACM_proc.d: $$(call graphics-source,Pics/BT.png)
-ACM_proc.pdf ACM_proc._graphics: $$(call graphics-target,Pics/BT.png)
+-include Pics/MrMPI.png.gpi.d
+ACM_proc.d: $$(call graphics-source,Pics/MrMPI.png)
+ACM_proc.pdf ACM_proc._graphics: $$(call graphics-target,Pics/MrMPI.png)
+-include Pics/MPI.png.gpi.d
+ACM_proc.d: $$(call graphics-source,Pics/MPI.png)
+ACM_proc.pdf ACM_proc._graphics: $$(call graphics-target,Pics/MPI.png)
+-include Pics/10000.png.gpi.d
+ACM_proc.d: $$(call graphics-source,Pics/10000.png)
+ACM_proc.pdf ACM_proc._graphics: $$(call graphics-target,Pics/10000.png)
+-include Pics/100000.png.gpi.d
+ACM_proc.d: $$(call graphics-source,Pics/100000.png)
+ACM_proc.pdf ACM_proc._graphics: $$(call graphics-target,Pics/100000.png)
+-include Pics/1000000.png.gpi.d
+ACM_proc.d: $$(call graphics-source,Pics/1000000.png)
+ACM_proc.pdf ACM_proc._graphics: $$(call graphics-target,Pics/1000000.png)
+-include Pics/10000000.png.gpi.d
+ACM_proc.d: $$(call graphics-source,Pics/10000000.png)
+ACM_proc.pdf ACM_proc._graphics: $$(call graphics-target,Pics/10000000.png)
+-include Pics/10000c.png.gpi.d
+ACM_proc.d: $$(call graphics-source,Pics/10000c.png)
+ACM_proc.pdf ACM_proc._graphics: $$(call graphics-target,Pics/10000c.png)
+-include Pics/100000c.png.gpi.d
+ACM_proc.d: $$(call graphics-source,Pics/100000c.png)
+ACM_proc.pdf ACM_proc._graphics: $$(call graphics-target,Pics/100000c.png)
+-include Pics/1000000c.png.gpi.d
+ACM_proc.d: $$(call graphics-source,Pics/1000000c.png)
+ACM_proc.pdf ACM_proc._graphics: $$(call graphics-target,Pics/1000000c.png)
+-include Pics/10000000c.png.gpi.d
+ACM_proc.d: $$(call graphics-source,Pics/10000000c.png)
+ACM_proc.pdf ACM_proc._graphics: $$(call graphics-target,Pics/10000000c.png)
