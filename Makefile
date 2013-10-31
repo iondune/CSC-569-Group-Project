@@ -52,6 +52,7 @@ pi: makeDirectories $(OBJS_PI) $(MAIN)
 	$(CC) $(LDFLAGS) \
 	      $(INC_DIRS) \
 	      $(OBJS_PI) \
+	      $(MAIN) \
 	      $(LIBS_PI) \
 	      -o bin/main-pi
 
